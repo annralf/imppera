@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>Imppera SAS | Sites manager</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.png">
+    <!-- Bootstrap -->
+    <link href="vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    <!-- bootstrap-progressbar -->
+    <link href="vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+    <!-- JQVMap -->
+    <link href="vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
+    <!-- bootstrap-daterangepicker -->
+    <link href="vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+    <!-- Custom Theme Style -->
+    <link href="build/css/custom.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="js/alertify.js/themes/alertify.core.css" />
+    <link rel="stylesheet" href="js/alertify.js/themes/alertify.default.css" />
+    <style type="text/css" media="screen">
+    .x_title {
+    border-bottom: 2px solid #1A4E95;
+    padding: 1px 5px 6px;
+    }
+    .x_content {
+    padding: 0 5px 6px;
+    float: left;
+    clear: both;
+    margin-top: 5px;
+    background-color: #c4d3db;
+    }
+    .table-bordered {
+    border: 1px solid #ddd;
+    background-color: whitesmoke;
+    }
+    b, strong {
+    font-weight: 700;
+    color: #1A4E95;
+    }
+    .nav-sm .container.body .col-md-3.left_col{
+    width: 100px !important;
+    }
+    .nav-sm .main_container .top_nav{
+    margin-left: 100px;
+    }
+    .nav-sm .container.body .right_col{
+    margin-left: 100px;
+    }
+    .nav-sm .nav.side-menu li a{
+    font-size: 12px;
+    }
+    .nav-sm .nav.side-menu li a i{
+    font-size: 50px !important;
+    }
+    </style>
+  </head>
+<body class="nav-sm" style="display: none;">
+  <div class="container body">
+    <div class="main_container">
+      <div class="col-md-3 left_col">
+        <div class="left_col scroll-view">
+          <div class="navbar nav_title" style="border: 0;">
+            <a href="index_1.html" class="site_title"></a>
+          </div>
+          <div class="clearfix"></div>
+          <!-- menu profile quick info -->
+          <div class="profile clearfix">
+            <div class="profile_info">
+              <span>Welcome,</span>
+              <h2 id="enk_user_name">user name</h2>
+            </div>
+          </div>
+          <!-- /menu profile quick info -->
+          <br />
+          <!-- sidebar menu -->
+          <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+            <div class="menu_section">
+              <h3>Sites Manager</h3>
+              <ul class="nav side-menu">
+                <li onclick="window.location.replace('main.html')"><a data-toggle="tooltip" data-placement="right" title="Ir al men&uacute; de inicio" ><i class="fa fa-home"></i> Inicio <span class=""></span></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        <!-- /sidebar menu -->
+        </div>
+      </div>
+<!-- top navigation -->
+      <div class="top_nav" style="height: 100px;">
+        <div class="nav_menu">
+          <nav>
+            <ul class="nav navbar-nav navbar-left" style="width: 200px; height: 120px;">
+              <li class="">
+                <img src="images/logo.png" alt="" style="width: 60%;position: relative;margin-top: 0%;color: white;">
+              </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li class="">
+                <li><a onclick="logout()" title="Cerrar sesión"><p id="user_name" style="text-transform: uppercase; font-size: 15px;"></p><i class="fa fa-sign-out pull-right" style="font-size: 24px"></i></a></li>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+      <!-- /top navigation -->
+<!-- page content -->
+<div class="right_col" role="main">
+  <!-- top tiles -->
+  <div class="row title_count" >
+    <!-- /top tiles -->
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="row mauxi_panel">
+          <div class="x_panel">
+            <div class="x_title collapse-link row" data-toggle="tooltip" data-placement="bottom" title="Ver listado de productos disponibles en Mauxi">
+              <div class="title col-md-10 col-sm-10 col-xs-12">
+                <h2>Acciones Mauxi <small></small></h2>
+                <div class="clearfix"></div>
+              </div>
+              <div class="col-md-2 col-sm-2 col-xs-12" style="text-align: right;">
+                <img  class="" src="images/mauxi.png" style="width: 100px;">
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content" display="" style="display: block; background-color: #FFFFFF;">
+              <p class="text-muted font-12 m-b-30">
+                <!--b>Productos Disponibles en Amazon.</b-->
+              </p>
+                    <div class="modal-body">
+                      <form class="row">
+                        <div class="form-group modal-content" style='border-radius: 6px;border: 1px solid #c4d3db; width: 30%; height: 250px; padding: 1%; margin: 1%;float: left;'>
+                          <div class="modal-header" style="display: block;">
+                            <h4 class="modal-title" id="enk_item_title">Consulta Producto Mauxi</h4>
+                          </div>
+                          <label>SKU:</label>
+                          <input type="text" class="form-control" id="sku1_mx" placeholder="" maxlength="10" onkeyup="mayus(this);">
+                            <div style="text-align: center;position: absolute; bottom: 0; width: 95% ">
+                              <button type="button"  onclick="search_sku_mx()" title="Buscar SKU"><i class="fa fa-search" style="font-size:36px;"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="form-group modal-content" style='border-radius: 6px;border: 1px solid #c4d3db; width: 30%; padding: 1%; margin: 1%;float: left;'>
+                          <div class="modal-header" style="display: block;">
+                            <h4 class="modal-title" id="enk_item_title">Cargar Producto</h4>
+                          </div>
+                          <label>SKU</label>
+                          <input type="text" class="form-control" id="sku2_mx" placeholder="" maxlength="10" onkeyup="mayus(this);">
+                          <label for="category_p_mx">Categoria Padre</label>
+                          <div id="cmbo_p">
+                            <select class="form-control" id="category_p_mx" onchange="combo_h1(this.value,'2')">
+                              <option value="">Seleccione</option>
+                              <option value="MCO1747">Accesorios para Vehículos</option>
+                              <option value="MCO1071">Animales y Mascotas</option>
+                              <option value="MCO1384">Bebés</option>
+                              <option value="MCO40433">Boletas para Espectáculos</option>
+                              <option value="MCO1039">Cámaras y Accesorios</option>
+                              <option value="MCO1743">Carros, Motos y Otros</option>
+                              <option value="MCO1051">Celulares y Teléfonos</option>
+                              <option value="MCO1798">Coleccionables y Hobbies</option>
+                              <option value="MCO1648">Computación</option>
+                              <option value="MCO1144">Consolas y Videojuegos </option>
+                              <option value="MCO1276">Deportes y Fitness</option>
+                              <option value="MCO5726">Electrodomésticos</option>
+                              <option value="MCO1000">Electrónica, Audio y Video</option>
+                              <option value="MCO175794">Herramientas y Construcción</option>
+                              <option value="MCO1574">Hogar y Muebles</option>
+                              <option value="MCO1499">Industrias y Oficinas</option>
+                              <option value="MCO1459">Inmuebles</option>
+                              <option value="MCO1182">Instrumentos Musicales</option>
+                              <option value="MCO1132">Juegos y Juguetes</option>
+                              <option value="MCO3025">Libros, Revistas y Comics</option>
+                              <option value="MCO1168">Música, Películas y Series</option>
+                              <option value="MCO1953">Otras categorías</option>
+                              <option value="MCO3937">Relojes y Joyas</option>
+                              <option value="MCO1430">Ropa y Accesorios</option>
+                              <option value="MCO1246">Salud y Belleza</option>
+                              <option value="MCO1540">Servicios</option>
+                            </select>
+                          </div>
+                          <div id="cmbo_1_mx" style="margin-top: 5px"></div>
+                          <div id="cmbo_2_mx" style="margin-top: 5px"></div>
+                          <div id="cmbo_3_mx" style="margin-top: 5px"></div>
+                          <div id="cmbo_4_mx" style="margin-top: 5px"></div>
+                          <div id="cmbo_5_mx" style="margin-top: 5px"></div>
+                          <div id="cmbo_6_mx" style="margin-top: 5px"></div>
+                          <div id="cmbo_7_mx" style="margin-top: 5px"></div>
+                          <div id="cmbo_8_mx" style="margin-top: 5px"></div>
+                          <div id="cmbo_9_mx" style="margin-top: 5px"></div>
+                          <div id="cmbo_color_mx" style="margin-top: 5px;float: left; width: 50%;"></div>
+                          <div id="cmbo_talla_mx" style="margin-top: 5px;float: left; width: 50%;"></div>
+                          
+
+                          <div style="text-align: center;">
+                            <button type="button" id='boton_mx' onclick="publicar_mx()" title="Publicar SKU" disabled="disabled"><i class="fa fa-plus-square" style="font-size:36px;"></i></button>
+                          </div>
+                        </div>
+                        <div class="form-group modal-content" style='border-radius: 6px;border: 1px solid #c4d3db; width: 30%; height: 250px; padding: 1%; margin: 1%;float: left;'>
+                          <div class="modal-header" style="display: block;">
+                            <h4 class="modal-title" id="enk_item_title">Acciones de Producto</h4>
+                          </div>
+                          <label for="mpid">MPID:</label>
+                          <input type="text" class="form-control" id="mpid_mx" name="mpid_mx" placeholder="" maxlength="9">
+                          <div style="text-align: center;position: absolute; bottom: 0; width: 95% ">
+                            <button type="button"  onclick="update_mpid_mx()" title="Actualizar"><i class="fa fa-refresh" style="font-size:36px;"></i></button>
+                            <button type="button"  onclick="paused_mpid_mx()" title="Pausar"><i class="fa fa-hand-stop-o" style="font-size:36px;"></i></button>
+                            <button type="button"  onclick="closed_mpid_mx()" title="Finalizar"><i class="fa fa-ban" style="font-size:36px;"></i></button>
+                            <button type="button"  onclick="delete_mpid_mx()" title="Eliminar"><i class="fa fa-trash" style="font-size:36px;"></i></button>
+                          </div>
+                        </div>
+
+                      </form>
+                        
+                            <div class="modal response" tabindex="-1" role="dialog" id="response" style="background: rgba( 0, 0, 0, .5 )" >
+                              <div class="modal-dialog modal-lg" style="margin-top: 15%;">
+                                <div class="modal-content" >
+                                  <div class="modal-header">
+                                    <h4 class="modal-title" id="enk_item_title">Respuesta</h4>
+                                  </div>
+                                  <div class="modal-body" >
+                                    <div id="response_1"></div>
+                                  </div>
+                                  <div style="text-align: center; bottom: 0; width: 95% ">
+                                      <button type="button"  onclick="close_response()" data-dismiss="modal" title="Cerrar"><i class="fa fa-times-circle" style="font-size:36px;"></i></button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                    </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Queen bee shop items avaliables-->
+      <div class="row queen_panel">
+        <div class="x_panel">
+          <div class="x_title collapse-link row" data-toggle="tooltip" data-placement="bottom" title="Ver listado de productos disponibles en Quee Bee">
+            <div class="title col-md-10 col-sm-10 col-xs-12">
+              <h2>Acciones Queen Bee <small></small></h2>
+              <div class="clearfix"></div>
+            </div>
+            <div class="col-md-2 col-sm-2 col-xs-12" style="text-align: right;">
+              <img  class="" src="images/queen_bee.png" style="width: 100px;">
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content" display="" style="display: block; background-color: #FFFFFF;">
+            <p class="text-muted font-12 m-b-30">
+              <!--b>Productos Disponibles en Amazon.</b-->
+            </p>
+             <div class="modal-body">
+                      <form class="row">
+                        <div class="form-group modal-content" style='border-radius: 6px;border: 1px solid #c4d3db; width: 30%; height: 250px; padding: 1%; margin: 1%;float: left;'>
+                          <div class="modal-header" style="display: block;">
+                            <h4 class="modal-title" id="enk_item_title">Consulta Producto Queen Bee</h4>
+                          </div>
+                          <label>SKU:</label>
+                          <input type="text" class="form-control" id="sku1_qb" placeholder="" maxlength="10" onkeyup="mayus(this);">
+                            <div style="text-align: center;position: absolute; bottom: 0; width: 95% ">
+                              <button type="button"  onclick="search_sku_qb()" title="Buscar SKU"><i class="fa fa-search" style="font-size:36px;"></i></button>
+                            </div>
+                        </div>
+
+                         <div class="form-group modal-content" style='border-radius: 6px;border: 1px solid #c4d3db; width: 30%; padding: 1%; margin: 1%;float: left;'>
+                          <div class="modal-header" style="display: block;">
+                            <h4 class="modal-title" id="enk_item_title">Cargar Producto</h4>
+                          </div>
+                         <label>SKU</label>
+                          <input type="text" class="form-control" id="sku2_qb" placeholder="" maxlength="10" onkeyup="mayus(this);">
+                          <label for="category_p_qb">Categoria Padre</label>
+                          <div id="cmbo_p">
+                            <select class="form-control" id="category_p_qb" onchange="combo_h1(this.value,'1')">
+                              <option value="">Seleccione</option>
+                              <option value="MCO1747">Accesorios para Vehículos</option>
+                              <option value="MCO1071">Animales y Mascotas</option>
+                              <option value="MCO1384">Bebés</option>
+                              <option value="MCO40433">Boletas para Espectáculos</option>
+                              <option value="MCO1039">Cámaras y Accesorios</option>
+                              <option value="MCO1743">Carros, Motos y Otros</option>
+                              <option value="MCO1051">Celulares y Teléfonos</option>
+                              <option value="MCO1798">Coleccionables y Hobbies</option>
+                              <option value="MCO1648">Computación</option>
+                              <option value="MCO1144">Consolas y Videojuegos </option>
+                              <option value="MCO1276">Deportes y Fitness</option>
+                              <option value="MCO5726">Electrodomésticos</option>
+                              <option value="MCO1000">Electrónica, Audio y Video</option>
+                              <option value="MCO175794">Herramientas y Construcción</option>
+                              <option value="MCO1574">Hogar y Muebles</option>
+                              <option value="MCO1499">Industrias y Oficinas</option>
+                              <option value="MCO1459">Inmuebles</option>
+                              <option value="MCO1182">Instrumentos Musicales</option>
+                              <option value="MCO1132">Juegos y Juguetes</option>
+                              <option value="MCO3025">Libros, Revistas y Comics</option>
+                              <option value="MCO1168">Música, Películas y Series</option>
+                              <option value="MCO1953">Otras categorías</option>
+                              <option value="MCO3937">Relojes y Joyas</option>
+                              <option value="MCO1430">Ropa y Accesorios</option>
+                              <option value="MCO1246">Salud y Belleza</option>
+                              <option value="MCO1540">Servicios</option>
+                            </select>
+                          </div>
+                          <div id="cmbo_1_qb" style="margin-top: 5px"></div>
+                          <div id="cmbo_2_qb" style="margin-top: 5px"></div>
+                          <div id="cmbo_3_qb" style="margin-top: 5px"></div>
+                          <div id="cmbo_4_qb" style="margin-top: 5px"></div>
+                          <div id="cmbo_5_qb" style="margin-top: 5px"></div>
+                          <div id="cmbo_6_qb" style="margin-top: 5px"></div>
+                          <div id="cmbo_7_qb" style="margin-top: 5px"></div>
+                          <div id="cmbo_8_qb" style="margin-top: 5px"></div>
+                          <div id="cmbo_9_qb" style="margin-top: 5px"></div>
+                          <div id="cmbo_color_qb" style="margin-top: 5px;float: left; width: 50%;"></div>
+                          <div id="cmbo_talla_qb" style="margin-top: 5px;float: left; width: 50%;"></div>
+                          
+
+                          <div style="text-align: center;">
+                            <button type="button" id='boton_qb' onclick="publicar_qb()" title="Publicar SKU" disabled="disabled"><i class="fa fa-plus-square" style="font-size:36px;"></i></button>
+                          </div>
+                        </div>
+                        <div class="form-group modal-content" style='border-radius: 6px;border: 1px solid #c4d3db; width: 30%; height: 250px; padding: 1%; margin: 1%;float: left;'>
+                          <div class="modal-header" style="display: block;">
+                            <h4 class="modal-title" id="enk_item_title">Acciones de Producto</h4>
+                          </div>
+                          <label for="mpid_qb">MPID:</label>
+                          <input type="text" class="form-control" id="mpid_qb" name="mpid_qb" placeholder="" maxlength="9" >
+                          <div style="text-align: center;position: absolute; bottom: 0; width: 95% ">
+                            <button type="button"  onclick="update_mpid_qb()" title="Actualizar"><i class="fa fa-refresh" style="font-size:36px;"></i></button>
+                            <button type="button"  onclick="paused_mpid_qb()" title="Pausar"><i class="fa fa-hand-stop-o" style="font-size:36px;"></i></button>
+                            <button type="button"  onclick="closed_mpid_qb()" title="Finalizar"><i class="fa fa-ban" style="font-size:36px;"></i></button>
+                            <button type="button"  onclick="delete_mpid_qb()" title="Eliminar"><i class="fa fa-trash" style="font-size:36px;"></i></button>
+                          </div>
+                        </div>
+
+                      </form>
+                        
+                            <div class="modal response" tabindex="-1" role="dialog" id="response" style="background: rgba( 0, 0, 0, .5 )" >
+                              <div class="modal-dialog modal-lg" style="margin-top: 15%;">
+                                <div class="modal-content" >
+                                  <div class="modal-header">
+                                    <h4 class="modal-title" id="enk_item_title">Respuesta</h4>
+                                  </div>
+                                  <div class="modal-body" >
+                                    <div id="response_1"></div>
+                                  </div>
+                                  <div style="text-align: center; bottom: 0; width: 95% ">
+                                      <button type="button"  onclick="close_response()" data-dismiss="modal" title="Cerrar"><i class="fa fa-times-circle" style="font-size:36px;"></i></button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                    </div>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<!-- /page content -->
+<!--Price Tool Modal-->
+<div class="modal fade bs-example-modal-lg price_tool_modal" tabindex="-1" role="dialog" aria-hidden="true" id="price_tool_modal">
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+      </button>
+      <h4 class="modal-title" id="enk_item_title">Liquidador</h4>
+    </div>
+    <div class="modal-body">
+      <div class="container" style="">
+        <div class="row" style="">
+          <div class="col-sm-3 col-md-3 col-xs-3"></div>
+          <div class="col-sm-6 col-md-6 col-xs-6">
+            <label for="site_name">Seleccione la tienda</label>
+            <select class="form-control" id="shop">
+              <option value="1"> Queen Bee</option>
+              <option value="2"> Mauxi</option>
+            </select>
+          </div>
+          <div class="col-sm-3 col-md-3 col-xs-3"></div>
+        </div>
+        <div class="row" style="margin-top: 3%;">
+          <div class="col-sm-3 col-md-3 col-xs-3"></div>
+          <div class="col-sm-6 col-md-6 col-xs-6">
+            <div class="form-group">
+              <label for="range_1">Precio base menor a $19</label>
+              <input class="form-control" type="text" name="" value="" placeholder="" id="range_1">
+            </div>
+            <div class="form-group">
+              <label for="range_2">Precio base mayor a $19 y menor a $25</label>
+              <input class="form-control" type="text" name="" value="" placeholder="" id="range_2">
+            </div>
+            <div class="form-group">
+              <label for="range_3">Precio base mayor a $25 y menor a $32</label>
+              <input class="form-control" type="text" name="" value="" placeholder="" id="range_3">
+            </div>
+            <div class="form-group">
+              <label for="range_4">Precio base mayor a $32 y menor a $42</label>
+              <input class="form-control" type="text" name="" value="" placeholder="" id="range_4">
+            </div>
+            <div class="form-group">
+              <label for="range_5">Precio base mayor a $42 y menor a $66</label>
+              <input class="form-control" type="text" name="" value="" placeholder="" id="range_5">
+            </div>
+            <div class="form-group">
+              <label for="range_6">Precio base mayor a $66 y menor a $145</label>
+              <input class="form-control" type="text" name="" value="" placeholder="" id="range_6">
+            </div>
+            <div class="form-group">
+              <label for="range_7">Precio base mayor a 145$</label>
+              <input class="form-control" type="text" name="" value="" placeholder="" id="range_7">
+            </div>
+            <div class="form-group">
+              <label for="tax">Tax</label>
+              <input class="form-control" type="text" name="" value="" placeholder="" id="tax">
+            </div>
+            <div class="form-group">
+              <label for="iva">IVA</label>
+              <input class="form-control" type="text" name="" value="" placeholder="" id="iva">
+            </div>
+          </div>
+          <div class="col-sm-3 col-md-3 col-xs-3"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="text-align: center;">
+      <button type="button" class="btn btn-app" onclick="price_tool()" title="Guardar cambios"><i class="fa fa-save"></i></button>
+      <button type="button" class="btn btn-app" data-dismiss="modal" title="Cancelar cambios"><i class="fa fa-times"></i></button>
+    </div>
+  </div>
+</div>
+</div>
+<!-- /page modal -->
+<div class="modal fade bs-example-modal-lg item_detail_modal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+      </button>
+      <h4 class="modal-title cbt_modal" id="item_detail_modal_title"></h4>
+    </div>
+    <div class="modal-body">
+      <div class="detail_modal form-group" id="detail_modal" style="display: block;">
+        <label for="comment">Nota:</label>
+        <textarea class="form-control" rows="5" id="comment"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer" style="text-align: center;">
+      <button type="button" class="btn btn-default save_comment" data-dismiss="modal" id_order="" onclick="send_message(this)"><<i class='fa fa-paper-plane-o' style='font-size:20px;'></i> Guardar nota</button>
+      <button type="button" class="btn btn-default close_modal" data-dismiss="modal" id_order="" onclick=""><i class='fa fa-times' style='font-size:20px;'></i> Cerrar</button>
+    </div>
+  </div>
+</div>
+</div>
+<!--Page modal comentary-->
+<div class="modal fade bs-example-modal-lg item_comentary_modal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+      </button>
+      <h4 class="modal-title cbt_modal" id="item_comentary_modal_title"></h4>
+    </div>
+    <div class="modal-body">
+      <div class="detail_modal form-group" id="detail_modal" style="display: block;">
+        <label for="comment_local">Comentario:</label>
+        <textarea class="form-control" rows="5" id="comment_local"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer" style="text-align: center;">
+      <button type="button" class="btn btn-default save_comment" data-dismiss="modal" id_order="" onclick="update_comment(this)"><i class='fa fa-refresh' style='font-size:20px;'></i> Guardar</button>
+      <button type="button" class="btn btn-default close_modal" data-dismiss="modal" id_order="" onclick=""><i class='fa fa-times' style='font-size:20px;'></i> Cerrar</button>
+    </div>
+  </div>
+</div>
+</div>
+<!-- /page modal choose-->
+<div class="modal fade bs-example-modal-lg amz_item_detail_modal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+      </button>
+      <h4 class="modal-title" id="item_detail_modal_title">Seleccione la cuenta donde publicar los &iacute;tems</h4>
+    </div>
+    <div class="modal-body" style="text-align: center;">
+      <button type="button" class="btn btn-default btn-lg close_modal" data-dismiss="modal" onclick="load_items(2)">Mauxi eshop</button>
+      <button type="button" class="btn btn-default btn-lg close_modal" data-dismiss="modal" onclick="load_items(1)">Queen Bee</button>
+      <button type="button" class="btn btn-default btn-lg close_modal" data-dismiss="modal" onclick="load_items(3)">Publicar en todas las cuentas</button>
+    </div>
+    <div class="modal-footer" >
+    </div>
+  </div>
+</div>
+</div>
+<!-- footer content -->
+<footer>
+<div class="pull-right">
+  Imppera SAS
+</div>
+<div class="clearfix"></div>
+</footer>
+<!-- /footer content -->
+</div>
+</div>
+<!-- jQuery -->
+<script src="vendors/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- FastClick -->
+<script src="vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="vendors/nprogress/nprogress.js"></script>
+<!-- Chart.js -->
+<script src="vendors/Chart.js/dist/Chart.min.js"></script>
+<!-- gauge.js -->
+<script src="vendors/gauge.js/dist/gauge.min.js"></script>
+<!-- bootstrap-progressbar -->
+<script src="vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+<!-- iCheck -->
+<script src="vendors/iCheck/icheck.min.js"></script>
+<!-- Skycons -->
+<script src="vendors/skycons/skycons.js"></script>
+<!-- Flot -->
+<script src="vendors/Flot/jquery.flot.js"></script>
+<script src="vendors/Flot/jquery.flot.pie.js"></script>
+<script src="vendors/Flot/jquery.flot.time.js"></script>
+<script src="vendors/Flot/jquery.flot.stack.js"></script>
+<script src="vendors/Flot/jquery.flot.resize.js"></script>
+<!-- Flot plugins -->
+<script src="vendors/flot.orderbars/js/jquery.flot.orderBars.js"></script>
+<script src="vendors/flot-spline/js/jquery.flot.spline.min.js"></script>
+<script src="vendors/flot.curvedlines/curvedLines.js"></script>
+<!-- DateJS -->
+<script src="vendors/DateJS/build/date.js"></script>
+<!-- JQVMap -->
+<script src="vendors/jqvmap/dist/jquery.vmap.js"></script>
+<script src="vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+<script src="vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
+<!-- bootstrap-daterangepicker -->
+<script src="vendors/moment/min/moment.min.js"></script>
+<script src="vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+<!-- Datatables -->
+<script src="vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+<script src="vendors/jszip/dist/jszip.min.js"></script>
+<script src="vendors/pdfmake/build/pdfmake.min.js"></script>
+<script src="vendors/pdfmake/build/vfs_fonts.js"></script>
+<!--Application functions-->
+<script src="js/config.js?version=0.2"></script>
+<script src="js/meli_actions.js"></script>
+<script src="js/login.js"></script>
+<script src="vendors/fastclick/lib/fastclick.js"></script>
+<!-- Custom Theme Scripts -->
+<script src="build/js/custom.min.js"></script>
+<script type="text/javascript" src="js/alertify.js/lib/jcombo.js"></script>
+<script type="text/javascript" src="js/alertify.js/lib/alertify.js"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+  check_user();
+  set_menu();
+  $("#mpid_mx").keypress(function (e) {
+     //if the letter is not digit then display error and don't type anything
+     $("#mpid_mx").css({ "box-shadow": "0 0 0px #ccc","border":"1px solid #ccc"});
+     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+      return false;
+    }
+   });
+  $("#mpid_qb").keypress(function (e) {
+     //if the letter is not digit then display error and don't type anything
+     $("#mpid_qb").css({ "box-shadow": "0 0 0px #ccc","border":"1px solid #ccc"});
+     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+      return false;
+    }
+   });
+});
+</script>
+  <div id="loading" style='display: none;   
+   position: fixed; 
+   top: 0; 
+   left: 0; 
+   height: 100%; 
+   width: 100%; 
+   background: rgba( 255, 255, 255, .5 ) url("https://core.enkargo.com.co/views/images/spinner.gif") 50% 50% no-repeat; '>
+  </div>
+</body>
+</html>

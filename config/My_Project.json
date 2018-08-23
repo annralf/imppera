@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "axial-acrobat-207817",
+  "private_key_id": "bf3f26c96a83a5d924f0ecfa8a4a26ff68285cf0",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEuwIBADANBgkqhkiG9w0BAQEFAASCBKUwggShAgEAAoIBAQDZJGg9bYn4++iA\neSPQgLPmp9Xn4EECMNSXNjgiyCvgjy4UJAXyJQtIFKR8szROiwzHUWEjP4Ak72Zc\nXrPFuEAGBy6h67ycN7CDjHJz9pekh+n+c218r1Enkb5/XAbY2pliFtTeBZp+rrUZ\n/Quy+5CR6zkKaQ/kmfOc+hTTTnv6gNAeCfVJblHvjUuAZ4tKEOhlsfAsgn601uIX\nzzFUg8odt3HBE5q4TW2fJ3espweOOt5i9QPqY8Pu+i0mZdHIzcJeMZr/6zWTqsB0\nP0cXvKuwzvY+ep7BwYpaaBj6jse9qxZfndF/QNzh6ttKMyc2BmoYQwfoy5zmL4O5\nBrXYwYQ9AgMBAAECgf80YFPEfWeKZzjtxEqfQGwkdtdh1vXXUW/2CV4BBcePovm6\nYfYNMmJGQLRsX81+JIwwh7Cmj+qY/iXyoeU7C/ZlfdYBuJsGE2jAUmBJGHH7fc0z\nUyRVrvQkV0Nb9RaxuAjHYDp4U2GwrPOCEUeBJKz6hYJ8wFrVCU15z9i2H3hIM9hA\nAgUneWwkdwEMNDXoDs4vcCIv2FRUktd+t3PjYKLzhmjCM03Bz1YshTDIkV9fnuHM\nGHHae8zJMNjhefG4LOW2wXrZjHE0v5mSWYSzx5kO4vdtyQEZ7s6m4Kz4wOHVklSr\nIRW2gUhEmoKWas9XNnA3Nlj2TmoK1rTTccf4slkCgYEA7jldupTD6zCG0EspfXF8\nnVJU193YdR37QBw+3HGPr2XgwWlbqOK6C0p1IwpLQYxbMjlnWQ+bvOsm9gAKJnJ8\nbX2luRxC+40pw+DtAaUxwqwiibrc8tN5dYBtPjSsVZ6ZQ6/rdDS2A9b/OpzBjGgI\nIUQ8rH2iW8UwbSY0TDo8XNUCgYEA6VhUDG42ALD7gmk8+8TPhzeqitV9Zy2LHQjL\noBypYN6NriFejXnl6SKBJLw8CJUTeK5Pg66C/JHa9IVny7EHQq4pp2k9TKl4dpWa\nctXXZhAjgwth1dvi48mqujtLu1hD7KNs6NQEIX95gMrD6IE0DxW7eMCMOoBWJ4Km\ncC+2nckCgYA7IE3dI1NFKnQrepw/oE03ltmsAknZN6nGjbwkZqMs+3I/TvELB8r5\nRm+wVLu89yMjYg/+kNsslojDAduDE2NCoa7iNNuDJ9Q347mvcNra4HJqENEKC+bX\nfRqgF962GXkczar42qRaa6BJYeLAAIoUB6Wvgjcr49NTI+pTCRk2SQKBgCMHPWa4\nTKcB6l+DSMJKoxSbSKCat757Wby8C0U3yD1ga0hOfhEi0V6T7WsETsbDCi89i3Yr\nBkK/6mx2ckRjiMF7v4kABVGyxwCWKJ9Adps9pPcRCFjAL2keZuCZ8h5ne5rUVY8F\n9LDKoASza4FFk/kHvCK+VM6bYVOBC1cf8nvxAoGBAJ8UETt7H7U9i2zoqnGticwe\nxIK1GlICrtTFQ85SyEiGLC+uQ5VqJrTXsw+DF7n5KFFvp/XF3EPlWtsvSm/K3tKp\nyXzBFxE7b8MSXq3e8pDBZVyp2UszzzsiQrlYJIn2kiDil6vgzxGaxMuUqj5r2BKz\n9A6ToZRLsE4Zz1AAIdgl\n-----END PRIVATE KEY-----\n",
+  "client_email": "traductor@axial-acrobat-207817.iam.gserviceaccount.com",
+  "client_id": "100192457986424672336",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/traductor%40axial-acrobat-207817.iam.gserviceaccount.com"
+}

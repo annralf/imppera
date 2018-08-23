@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Imppera SAS| Sites manager</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.png">
+    <!-- Bootstrap -->
+    <link href="vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- NProgress -->
+    <link href="vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    
+    <!-- bootstrap-progressbar -->
+    <link href="vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+    <!-- JQVMap -->
+    <link href="vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
+    <!-- bootstrap-daterangepicker -->
+    <link href="vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+    <!-- Custom Theme Style -->
+    <link href="build/css/custom.min.css" rel="stylesheet">
+    <style type="text/css" media="screen">
+    .x_title {
+    border-bottom: 2px solid #1A4E95;
+    padding: 1px 5px 6px;
+    }
+    .x_content {
+    padding: 0 5px 6px;
+    float: left;
+    clear: both;
+    margin-top: 5px;
+    background-color: #c4d3db;
+    }
+    .table-bordered {
+    border: 1px solid #ddd;
+    background-color: whitesmoke;
+    }
+    b, strong {
+    font-weight: 700;
+    color: #1A4E95;
+    }
+    .fileUpload {
+    position: relative;
+    overflow: hidden;
+    }
+    .fileUpload input.upload {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    }
+    .nav-sm .container.body .col-md-3.left_col{
+    width: 100px !important;
+    }
+    .nav-sm .main_container .top_nav{
+    margin-left: 100px;
+    }
+    .nav-sm .container.body .right_col{
+    margin-left: 100px;
+    }
+    .nav-sm .nav.side-menu li a{
+    font-size: 12px;
+    }
+    .nav-sm .nav.side-menu li a i{
+    font-size: 50px !important;
+    }
+    </style>
+  </head>
+  <body class="nav-sm" style="display: none;">
+    <div class="container body">
+      <div class="main_container">
+        <div class="col-md-3 left_col">
+          <div class="left_col scroll-view">
+            <div class="navbar nav_title" style="border: 0;">
+              <a href="index_1.html" class="site_title"></a>
+            </div>
+            <div class="clearfix"></div>
+            <!-- menu profile quick info -->
+            <div class="profile clearfix">
+              <div class="profile_info">
+                <span>Welcome,</span>
+                <h2 id="enk_user_name">user name</h2>
+              </div>
+            </div>
+            <!-- /menu profile quick info -->
+            <br />
+            <!-- sidebar menu -->
+            <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+              <div class="menu_section">
+                <h3>Sites Manager</h3>
+                <ul class="nav side-menu">
+                  <li onclick="window.location.replace('main_manager.html')" menu="ordenes"><a data-toggle="tooltip" data-placement="right" title="Administrador de órdenes" ><i class="fa fa-cart-arrow-down"></i>Órdenes <span class=""></span></a></li>
+                  <li onclick="window.location.replace('main_orders.html')" menu="compras"><a data-toggle="tooltip" data-placement="right" title="Administrador de compras" ><i class="fa fa-cart-plus"></i>Compras <span class=""></span></a></li>
+                  <li onclick="window.location.replace('main_tracking.html')" menu="tracking"><a data-toggle="tooltip" data-placement="right" title="Administrador de envíos" ><i class="fa fa-truck"></i>Despacho <span class=""></span></a></li>
+                  <li onclick="window.location.replace('meli_manager_actions.html')" menu="offer"><a data-toggle="tooltip" data-placement="right" title="Administrador de Mercado Libre" ><i class="fa fa-cog"></i>Manejo de acciones <span class=""></span></a></li>
+                  <li onclick="window.location.replace('user_manager.html')" menu="user"><a data-toggle="tooltip" data-placement="right" title="Gestión de usuarios" ><i class="fa fa-user"></i>Usuarios <span class=""></span></a></li>
+            </ul>
+          </div>
+        </div>
+        <!-- /sidebar menu -->
+      </div>
+    </div>
+    <!-- top navigation -->
+    <div class="top_nav" style="height: 100px;">
+      <div class="nav_menu">
+        <nav>
+          <ul class="nav navbar-nav navbar-left" style="width: 200px; height: 120px;">
+            <li class="">
+              <img src="images/logo.png" alt="" style="width: 60%;position: relative;margin-top: 0%;color: white;">
+            </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li class="">
+              <li><a onclick="logout()" title="Cerrar sesión"><p id="user_name" style="text-transform: uppercase; font-size: 15px;"></p><i class="fa fa-sign-out pull-right" style="font-size: 24px"></i></a></li>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+    <!-- /top navigation -->
+    <!-- page content -->
+    <div class="right_col" role="main">
+      <!-- top tiles -->
+      <div class="row loading_gif" style="text-align: center; display: none;">
+        <img src="images/cargando.gif" style="width: 30%; height: 30%;">
+        <h2>Cargando...</h2>
+      </div>
+      <div class="row tile_count">
+        <!-- /top tiles -->
+        <div class="row amazon_table">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="row" style="
+              text-align:  center;
+              color:  black;
+              margin-top:  8%;
+              ">
+              <h1 style="text-transform: uppercase;font-family: sans-serif;font-size:  50px;font-weight: 500;">bienvenido <br> imppera sys</h1>
+              <h3 style="padding-top: 2%">Sistema de Logistica y Abastecimiento 2018</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /page content -->
+      <!-- /page modal -->
+      <div class="modal fade bs-example-modal-lg item_detail_modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+              </button>
+              <h4 class="modal-title modal_detail" id="item_detail_modal_title">Confirmaci&oacute;n de env&iacute;o</h4>
+            </div>
+            <div class="modal-body">
+              <table>
+                <tr>
+                  <td style="width: 300px; margin-left: 10%;">
+                    <img style="width: 100%;" src="" alt="image" id="item_detail_modal_image" class="modal_detail" />
+                  </td>
+                  <td>
+                    <div style=" margin-left: 10%; width: 300px;">
+                      <p><b>Marca:</b> <p class="modal_detail" id="item_detail_modal_brand"></p></p>
+                      <p><b>Condici&oacute;n:</b> <p class="modal_detail" id="item_detail_modal_condition"></p></p>
+                      <p><b>Moneda:</b> <p class="modal_detail" id="item_detail_modal_currency"></p></p>
+                      <p><b>Prime:</b> <p class="modal_detail" id="item_detail_modal_prime"></p></p>
+                      <p><b>Cantidad:</b> <p class="modal_detail" id="item_detail_modal_quantity"></p></p>
+                      <p><b>Precio de venta:</b> <p class="modal_detail" id="item_detail_modal_sale_price"></p></p>
+                      <p><b>Especificaciones:</b> <p class="modal_detail" id="item_detail_modal_specification"></p></p>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="modal-footer" style="text-align: center;">
+              <button type="button" class="btn btn-default close_modal" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- footer content -->
+      <footer>
+        <div class="pull-right" style="margin-top: 10%;">
+          Imppera SAS
+        </div>
+        <div class="clearfix"></div>
+      </footer>
+      <!-- /footer content -->
+    </div>
+  </div>
+  <!-- jQuery -->
+  <script src="vendors/jquery/dist/jquery.min.js"></script>
+  <!-- Bootstrap -->
+  <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+  <!-- FastClick -->
+  <script src="vendors/fastclick/lib/fastclick.js"></script>
+  <!-- NProgress -->
+  <script src="vendors/nprogress/nprogress.js"></script>
+  <!-- Chart.js -->
+  <script src="vendors/Chart.js/dist/Chart.min.js"></script>
+  <!-- gauge.js -->
+  <script src="vendors/gauge.js/dist/gauge.min.js"></script>
+  <!-- bootstrap-progressbar -->
+  <script src="vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+  <!-- iCheck -->
+  <script src="vendors/iCheck/icheck.min.js"></script>
+  <!--Application functions-->
+  <script src="js/login.js"></script>
+  <script src="vendors/fastclick/lib/fastclick.js"></script>
+  <!-- Custom Theme Scripts -->
+  <script src="build/js/custom.min.js"></script>
+  <script type="text/javascript">
+      $(document).ready(function(){
+            check_user(); 
+            set_menu();           
+      });
+  </script>
+</body>
+</html>
