@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Imppera SAS | Sites manager</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.png">
+    <!-- Bootstrap -->
+    <link href="vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    
+    <!-- bootstrap-progressbar -->
+    <link href="vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+    <!-- JQVMap -->
+    <link href="vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
+    <!-- bootstrap-daterangepicker -->
+    <link href="vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+    <link href="css/customStyle.css" rel="stylesheet">
+    <!-- Custom Theme Style -->
+    <link href="build/css/custom.min.css" rel="stylesheet">
+    <style type="text/css" media="screen">
+    .x_title {
+    border-bottom: 2px solid #1A4E95;
+    padding: 1px 5px 6px;
+    }
+    .x_content {
+    padding: 0 5px 6px;
+    float: left;
+    clear: both;
+    margin-top: 5px;
+    background-color: #c4d3db;
+    }
+    .table-bordered {
+    border: 1px solid #ddd;
+    background-color: whitesmoke;
+    }
+    b, strong {
+    font-weight: 700;
+    color: #1A4E95;
+    }
+    </style>
+  </head>
+  <body class="login">
+    <div>
+      <a class="hiddenanchor" id="signup"></a>
+      <a class="hiddenanchor" id="signin"></a>
+      <div class="login_wrapper">
+        <div class="animate form login_form">
+          <section class="login_content">
+            <form>
+              <h1>Sites Manager <br> Acceso</h1>
+              <div>
+                <input type="text" class="form-control" placeholder="Nombre de usuario" required="" id="userName" />
+              </div>
+              <div>
+                <input type="password" class="form-control" placeholder="Contraseña" required="" id="password" />
+              </div>
+              <div>
+                <a class="btn btn-dark" onclick="user_login()" >Ingresar</a>
+                <a class="btn btn-danger">Cancelar</a>
+                <div class="clearfix"></div>
+                <div class="separator">
+                  <div class="clearfix"></div>
+                  <br />
+                  <div>
+                    <img src="images/logo.png" alt="" style="width: 100px;">
+                    <p>©2017 All Rights Reserved. Imppera SAS</p>
+                  </div>
+                </div>
+              </form>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- jQuery -->
+    <script src="vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="vendors/fastclick/lib/fastclick.js"></script>
+    
+    <!--Application functions-->
+    <script src="js/rollups/md5.js"></script>
+    <script src="js/login.js?version=1.6"></script>
+    <script src="vendors/fastclick/lib/fastclick.js"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="build/js/custom.min.js"></script>
+    
+  </body>
+</html>

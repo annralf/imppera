@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- Meta, title, CSS, favicons, etc. -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Imppera SAS | Sites manager</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.png">
+  <!-- Bootstrap -->
+  <link href="vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  <!-- NProgress -->
+  <link href="vendors/nprogress/nprogress.css" rel="stylesheet">
+  <!-- iCheck -->
+  <link href="vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+  <!-- bootstrap-progressbar -->
+  <link href="vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+  <!-- JQVMap -->
+  <link href="vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
+  <!-- bootstrap-daterangepicker -->
+  <link href="vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+  <!-- Custom Theme Style -->
+  <link href="build/css/custom.min.css" rel="stylesheet">
+  <style type="text/css" media="screen">
+  .x_title {
+    border-bottom: 2px solid #1A4E95;
+    padding: 1px 5px 6px;
+  }
+  .x_content {
+    padding: 0 5px 6px;
+    float: left;
+    clear: both;
+    margin-top: 5px;
+    background-color: #c4d3db;
+  }
+  .table-bordered {
+    border: 1px solid #ddd;
+    background-color: whitesmoke;
+  }
+  b, strong {
+    font-weight: 700;
+    color: #1A4E95;
+  }
+  .nav-sm .container.body .col-md-3.left_col{
+    width: 100px !important;
+  }
+  .nav-sm .main_container .top_nav{
+    margin-left: 100px;
+  }
+  .nav-sm .container.body .right_col{
+    margin-left: 100px;
+  }
+  .nav-sm .nav.side-menu li a{
+    font-size: 12px;
+  }
+  .nav-sm .nav.side-menu li a i{
+    font-size: 50px !important;
+  }
+</style>
+</head>
+<body class="nav-sm" style="display: none;">
+  <div class="container body">
+    <div class="main_container">
+      <div class="col-md-3 left_col">
+        <div class="left_col scroll-view">
+          <div class="navbar nav_title" style="border: 0;">
+            <a href="index_1.html" class="site_title"></a>
+          </div>
+          <div class="clearfix"></div>
+          <!-- menu profile quick info -->
+          <div class="profile clearfix">
+            <div class="profile_info">
+              <span>Welcome,</span>
+              <h2 id="enk_user_name">user name</h2>
+            </div>
+          </div>
+          <!-- /menu profile quick info -->
+          <br />
+          <!-- sidebar menu -->
+          <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+            <div class="menu_section">
+              <h3>Sites Manager</h3>
+              <ul class="nav side-menu">
+                <li onclick="window.location.replace('main_tracking.html')"><a data-toggle="tooltip" data-placement="right" title="Ir al men&uacute; de inicio" ><i class="fa fa-home"></i> Inicio <span class=""></span></a>
+                </li>
+                <li onclick="window.location.replace('tracking_manager.html')"><a data-toggle="tooltip" data-placement="right" title="Listar órdenes canceladas" ><i class="fa fa-search" aria-hidden="true"></i> Buscar órdenes <span class=""></span></a>
+                </li>
+                <li onclick="window.location.replace('delivered_manager.html')" ><a data-toggle="tooltip" data-placement="right" title="Listar todas las órdenes enviadas"><i class="fa fa-check-circle-o"></i> Enviadas <span class=""></span></a>
+                </li>
+                <li onclick="window.location.replace('later_manager.html')" style="background-color:#ededed;"><a data-toggle="tooltip" data-placement="right" title="Listar órdenes pendientes" style="color:#2a3f54"><i class="fa fa-clock-o" aria-hidden="true"></i> Pendientes <span class=""></span></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- /sidebar menu -->
+        </div>
+      </div>
+      <!-- top navigation -->
+     <div class="top_nav" style="height: 100px;">
+        <div class="nav_menu">
+          <nav>
+            <ul class="nav navbar-nav navbar-left" style="width: 200px; height: 120px;">
+              <li class="">
+                <img src="images/logo.png" alt="" style="width: 60%;position: relative;margin-top: 0%;color: white;">
+              </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li class="">
+                <li><a onclick="logout()" title="Cerrar sesión"><p id="user_name" style="text-transform: uppercase; font-size: 15px;"></p><i class="fa fa-sign-out pull-right" style="font-size: 24px"></i></a></li>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+      <!-- /top navigation -->
+      <!-- page content -->
+      <div class="right_col" role="main">
+        <!-- top tiles -->
+        <div class="row title_count" >
+          <!-- /top tiles -->
+          <div class="row">
+            <div class="container" id="base_content">
+              <div class="row loading_gif" style="text-align: center; display: none;">
+                <img src="images/cargando.gif" style="width: 30%; height: 50%;">   
+                <h2>Cargando...</h2>         
+              </div>    
+            </div>
+          </div>
+        </div>
+        <!-- footer content -->
+        <footer>
+          <div class="pull-right">
+            Imppera SAS
+          </div>
+          <div class="clearfix"></div>
+        </footer>
+        <!-- /footer content -->
+      </div>
+    </div>
+    <!-- jQuery -->
+    <script src="vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="vendors/nprogress/nprogress.js"></script>
+    <!-- Chart.js -->
+    <script src="vendors/Chart.js/dist/Chart.min.js"></script>
+    <!-- gauge.js -->
+    <script src="vendors/gauge.js/dist/gauge.min.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <!-- iCheck -->
+    <script src="vendors/iCheck/icheck.min.js"></script>
+    <!-- Skycons -->
+    <script src="vendors/skycons/skycons.js"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="vendors/moment/min/moment.min.js"></script>
+    <script src="vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <!--Application functions-->
+    <script src="js/config.js?version=0.3"></script>
+    <script src="js/meli.js"></script>
+    <script src="js/login.js"></script>
+    <script src="vendors/fastclick/lib/fastclick.js"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="build/js/custom.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        check_user();
+        set_menu();
+        get_meli_not_delivered();
+        $('[data-toggle="tooltip"]').tooltip();
+      });
+    </script>
+  </body>
+  </html>

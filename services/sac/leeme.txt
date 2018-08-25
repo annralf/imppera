@@ -1,0 +1,87 @@
+#https://core.enkargo.com.co/enkargo/services/sac/php-sdk/examples/example_login.php
+
+access_token actual:
+
+Array
+(
+    [access_token] => APP_USR-5901029757366125-092620-d60e2d51bfebbeb777205bcf50bb2f1e__E_G__-275248481
+    [expires_in] => 1506494968
+    [refresh_token] => TG-59caf598e4b0bb40edac4898-275248481
+)
+
+1. crer usuario test vendedor
+
+curl -X POST -H "Content-Type: application/json" -d '{ "site_id":"MCO" }' https://api.mercadolibre.com/users/test_user?access_token=APP_USR-5901029757366125-092620-d60e2d51bfebbeb777205bcf50bb2f1e__E_G__-275248481
+
+vendedor
+{
+    "id":275248481,
+    "nickname":"TETE9661922",
+    "password":"qatest2126",
+    "site_status":"active",
+    "email":"test_user_58110602@testuser.com"
+}
+
+2. crear aplicion notificaciones
+
+
+3. crear productos test.
+Camisa lacoste verde – Por favor, NO OFERTAR
+#456795521
+Camisa lacoste azul – Por favor, NO OFERTAR
+#456795532
+4. crear usuario test comprador
+{
+    "id":275259960,
+    "nickname":"TETE3612170",
+    "password":"qatest4629",
+    "site_status":"active",
+    "email":"test_user_29521239@testuser.com"
+}
+
+
+
+curl -i -X POST -H "Content-Type: application/json" -H “X-Client-Id: {application id}” -d
+'{
+    "from": {
+        "user_id": 275248481,
+    },
+    "to": [
+        {
+            "user_id": 275259960,
+            "resource": "orders",
+            "resource_id": 1487940209,
+            "site_id": "MCO"
+        }
+    ],
+    "text": {
+        "plain": "Plain text message here"
+    }
+}’ https://api.mercadolibre.com/messages?access_token=$ACCESS_TOKEN&application_id=$APPLICATION_ID
+
+
+
+curl -i -X POST -H "Content-Type: application/json" -H "X-Client-Id: {application id}" -d'{
+    "from": {
+        "user_id": 275248481,
+    },
+    "to": [
+        {
+            "user_id": 275259960,
+            "resource": "orders",
+            "resource_id": 1487940209,
+            "site_id": "MCO"
+        }
+    ],
+    "text": {
+        "plain": "Plain text message here"
+    }
+}' https://api.mercadolibre.com/messages?access_token=APP_USR-5901029757366125-092620-d60e2d51bfebbeb777205bcf50bb2f1e__E_G__-275248481&application_id=5901029757366125
+
+
+
+
+
+
+
+curl -i -X POST -H "Content-Type: application/json" -H "X-Client-Id: {application id}" -d'{ "from": { "user_id": 275248481, }, "to": [ { "user_id": 275259960, "resource": "orders", "resource_id": 1487940209, "site_id": "MCO" } ], "text": { "plain": "Plain text message here" } }' https://api.mercadolibre.com/messages?access_token=APP_USR-5901029757366125-092620-d60e2d51bfebbeb777205bcf50bb2f1e__E_G__-275248481&application_id=5901029757366125
