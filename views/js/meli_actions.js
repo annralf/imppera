@@ -7,7 +7,7 @@ function mayus(e) {
 }
 
 function combo_p() {
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post('http://185.44.66.53/enkargo/services/meli_manager.php',
 		{ 	action  : 'combo_p', 
 			shop_id : 2
 		}).fail(function(){
@@ -43,7 +43,7 @@ function combo_h1(valor,shop_id) {
   	$('#cmbo_9'+pre).empty();
 	$('#cmbo_talla'+pre).empty();
 	$('#cmbo_color'+pre).empty();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post('http://185.44.66.53/enkargo/services/meli_manager.php',
 		{ 	action  : 'combo_h', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -92,7 +92,7 @@ function combo_h2(valor,shop_id) {
   	$('#cmbo_9'+pre).empty();
 	$('#cmbo_talla'+pre).empty();
 	$('#cmbo_color'+pre).empty();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post('http://185.44.66.53/enkargo/services/meli_manager.php',
 		{ 	action  : 'combo_h', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -146,7 +146,7 @@ function combo_h3(valor,shop_id) {
   	$('#cmbo_9'+pre).empty();
 	$('#cmbo_talla'+pre).empty();
 	$('#cmbo_color'+pre).empty();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post('http://185.44.66.53/enkargo/services/meli_manager.php',
 		{ 	action  : 'combo_h', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -199,7 +199,7 @@ function combo_h4(valor,shop_id) {
   	$('#cmbo_9'+pre).empty();
 	$('#cmbo_talla'+pre).empty();
 	$('#cmbo_color'+pre).empty();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post('http://185.44.66.53/enkargo/services/meli_manager.php',
 		{ 	action  : 'combo_h', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -251,7 +251,7 @@ function combo_h5(valor,shop_id) {
   	$('#cmbo_9'+pre).empty();
 	$('#cmbo_talla'+pre).empty();
 	$('#cmbo_color'+pre).empty();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post('http://185.44.66.53/enkargo/services/meli_manager.php',
 		{ 	action  : 'combo_h', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -302,7 +302,7 @@ function combo_h6(valor,shop_id) {
   	$('#cmbo_9'+pre).empty();
 	$('#cmbo_talla'+pre).empty();
 	$('#cmbo_color'+pre).empty();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post('http://185.44.66.53/enkargo/services/meli_manager.php',
 		{ 	action  : 'combo_h', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -342,7 +342,7 @@ function combo_h7(valor,shop_id) {
   	$('#cmbo_9'+pre).empty();
 	$('#cmbo_talla'+pre).empty();
 	$('#cmbo_color'+pre).empty();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post('http://185.44.66.53/enkargo/services/meli_manager.php',
 		{ 	action  : 'combo_h', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -391,7 +391,7 @@ function combo_h8(valor,shop_id) {
   	$('#cmbo_9'+pre).empty();
 	$('#cmbo_talla'+pre).empty();
 	$('#cmbo_color'+pre).empty();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post('http://185.44.66.53/enkargo/services/meli_manager.php',
 		{ 	action  : 'combo_h', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -439,7 +439,7 @@ function combo_h9(valor,shop_id) {
   	$('#cmbo_9'+pre).empty();
 	$('#cmbo_talla'+pre).empty();
 	$('#cmbo_color'+pre).empty();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post('http://185.44.66.53/enkargo/services/meli_manager.php',
 		{ 	action  : 'combo_h', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -483,7 +483,7 @@ function combo_color(valor,shop_id) {
 		pre="_mx";
 	}
 	
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post('http://185.44.66.53/enkargo/services/meli_manager.php',
 		{ 	action  : 'combo_color', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -512,7 +512,7 @@ function combo_talla(valor,shop_id) {
 		pre="_mx";
 	}
 	
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post('http://185.44.66.53/enkargo/services/meli_manager.php',
 		{ 	action  : 'combo_talla', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -543,7 +543,7 @@ function publicar_mx(){
         return false;
     }else{
 		$('#loading').show();
-		$.post('https://core.enkargo.com.co/process/meli_create.php',
+		$.post('http://185.44.66.53/enkargo/process/meli_create.php',
 			{
 				action 	: 'publicar_mx',
 				sku2_mx	: $('#sku2_mx').val(),
@@ -609,7 +609,7 @@ function search_sku_mx(){
     }else{
 	
 		$('#loading').show();
-		$.post('https://core.enkargo.com.co/services/meli_manager.php',
+		$.post('http://185.44.66.53/enkargo/services/meli_manager.php',
 			{
 				action 	: 'search_sku_mx',
 				sku1_mx	: $('#sku1_mx').val(),
@@ -641,7 +641,7 @@ function update_mpid_mx(){
         return false;
     }else{
 		$('#loading').show();
-		$.post('https://core.enkargo.com.co/process/meli_update_by_items.php',
+		$.post('http://185.44.66.53/enkargo/process/meli_update_by_items.php',
 			{
 				action 	: 'update_mpid_mx',
 				mpid_mx	: $('#mpid_mx').val(),
@@ -718,7 +718,7 @@ function paused_mpid_mx(){
         return false;
     }else{
 	$('#loading').show();
-	$.post('https://core.enkargo.com.co/process/meli_update_by_items.php',
+	$.post('http://185.44.66.53/enkargo/process/meli_update_by_items.php',
 		{
 			action 	: 'paused_mpid_mx',
 			mpid_mx	: $('#mpid_mx').val(),
@@ -795,7 +795,7 @@ function closed_mpid_mx(){
         return false;
     }else{
 	$('#loading').show();
-	$.post('https://core.enkargo.com.co/process/meli_update_by_items.php',
+	$.post('http://185.44.66.53/enkargo/process/meli_update_by_items.php',
 		{
 			action 	: 'closed_mpid_mx',
 			mpid_mx	: $('#mpid_mx').val(),
@@ -872,7 +872,7 @@ function delete_mpid_mx(){
         return false;
     }else{
 	$('#loading').show();
-	$.post('https://core.enkargo.com.co/process/meli_update_by_items.php',
+	$.post('http://185.44.66.53/enkargo/process/meli_update_by_items.php',
 		{
 			action 	: 'delete_mpid_mx',
 			mpid_mx	: $('#mpid_mx').val(),
@@ -951,7 +951,7 @@ function publicar_qb(){
         return false;
     }else{
 		$('#loading').show();
-		$.post('https://core.enkargo.com.co/process/meli_create.php',
+		$.post('http://185.44.66.53/enkargo/process/meli_create.php',
 			{
 				action 	: 'publicar_qb',
 				sku2_qb	: $('#sku2_qb').val(),
@@ -1016,7 +1016,7 @@ function search_sku_qb(){
     }else{
 	
 		$('#loading').show();
-		$.post('https://core.enkargo.com.co/services/meli_manager.php',
+		$.post('http://185.44.66.53/enkargo/services/meli_manager.php',
 			{
 				action 	: 'search_sku_qb',
 				sku1_qb	: $('#sku1_qb').val(),
@@ -1043,7 +1043,7 @@ function update_mpid_qb(){
         return false;
     }else{
 		$('#loading').show();
-		$.post('https://core.enkargo.com.co/process/meli_update_by_items.php',
+		$.post('http://185.44.66.53/enkargo/process/meli_update_by_items.php',
 			{
 				action 	: 'update_mpid_qb',
 				mpid_qb	: $('#mpid_qb').val(),
@@ -1120,7 +1120,7 @@ function paused_mpid_qb(){
         return false;
     }else{
 	$('#loading').show();
-	$.post('https://core.enkargo.com.co/process/meli_update_by_items.php',
+	$.post('http://185.44.66.53/enkargo/process/meli_update_by_items.php',
 		{
 			action 	: 'paused_mpid_qb',
 			mpid_qb	: $('#mpid_qb').val(),
@@ -1197,7 +1197,7 @@ function closed_mpid_qb(){
         return false;
     }else{
 	$('#loading').show();
-	$.post('https://core.enkargo.com.co/process/meli_update_by_items.php',
+	$.post('http://185.44.66.53/enkargo/process/meli_update_by_items.php',
 		{
 			action 	: 'closed_mpid_qb',
 			mpid_qb	: $('#mpid_qb').val(),
@@ -1274,7 +1274,7 @@ function delete_mpid_qb(){
         return false;
     }else{
 	$('#loading').show();
-	$.post('https://core.enkargo.com.co/process/meli_update_by_items.php',
+	$.post('http://185.44.66.53/enkargo/process/meli_update_by_items.php',
 		{
 			action 	: 'delete_mpid_qb',
 			mpid_qb	: $('#mpid_qb').val(),

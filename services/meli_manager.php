@@ -785,7 +785,10 @@ if ($_POST['action'] == 'combo_talla') {
      		$aws_order = $data[$i][1];		
      		$aws_quantity = $data[$i][13];
      		$email_account = $data[$i][17];
-     		$aws_shipping_date = $data[$i][18];		
+     		$aws_shipping_date = $data[$i][18];
+                if(empty($aws_shipping_date)){
+                    $aws_shipping_date='01/00/00';
+               }    		
      		$aws_order_status = $data[$i][25];
      		preg_match_all($regex, $data[$i][26], $matches);
      		$tracking_number = $matches[1][0];
@@ -794,11 +797,11 @@ if ($_POST['action'] == 'combo_talla') {
      		$aws_total = (float) str_replace("$","",$data[$i][29]);
      		$aws_buyer_name = $data[$i][33];
      		$sku = $data[$i][4];
-     		$sql = "UPDATE system.orders SET track_status='".$aws_order_status."', date_arrival='".$aws_shipping_date."', update_date ='".date("Y-m-d H:i:s")."' WHERE sku = '".$sku."' AND autorice = 'B' AND tracking_aws = '".$tracking_number."';";
+     		$sql = "UPDATE system.orders SET track_status='".$aws_order_status."', date_arrival='".$aws_shipping_date."', update_date ='".date("Y-m-d H:i:s")."' WHERE sku = '".$sku."' AND autorice = 'B' AND id_order_aws = '".$aws_order."';";
      		$result = pg_query($sql);
      		if ($result > 0) {
 			#Set tracking number only if item was buy and has the same SKU
-     			$sql = "UPDATE system.orders SET  id_order_aws = '".$aws_order."', create_date_buy= '".$aws_order_date."', tracking_aws ='".$tracking_number."', track_status='".$aws_order_status."', date_arrival='".$aws_shipping_date."', cuenta='".$email_account."', aws_subtotal='".$aws_subtotal."', aws_total_price='".$aws_total."',aws_buyer_name ='".$aws_buyer_name."', aws_quantity='".$aws_quantity."', aws_subtotal_tax = '".$aws_subtotal_tax."', update_date ='".date("Y-m-d H:i:s")."'WHERE sku = '".$sku."' AND  autorice = 'B';";
+     			$sql = "UPDATE system.orders SET  create_date_buy= '".$aws_order_date."', tracking_aws ='".$tracking_number."', track_status='".$aws_order_status."', date_arrival='".$aws_shipping_date."', cuenta='".$email_account."', aws_subtotal='".$aws_subtotal."', aws_total_price='".$aws_total."',aws_buyer_name ='".$aws_buyer_name."', aws_quantity='".$aws_quantity."', aws_subtotal_tax = '".$aws_subtotal_tax."', update_date ='".date("Y-m-d H:i:s")."' WHERE sku = '".$sku."' AND autorice = 'B' AND id_order_aws = '".$aws_order."';";
      			$result = pg_query($sql);
      		}
      	}
@@ -842,6 +845,7 @@ if ($_POST['action'] == 'combo_talla') {
      		echo json_encode(array('response'=>0));		
      	}
      }
+
      if ($_POST['action'] == 'update_item_detail') {
 	$sql = "UPDATE system.orders SET ";
      	$sql .= (isset($_POST['priceMl']) && $_POST['priceMl'] !== "")  ? 'sale_price = '.$_POST['priceMl'].',': '';

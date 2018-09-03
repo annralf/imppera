@@ -69,21 +69,19 @@ function user_login(){
   password : password,
   user_id: sessionStorage.getItem('id')
 }).done(function (data) {
-  if (data != 0 || data != 2) { 
-   response = JSON.parse(data);
-   sessionStorage.setItem('avatar',response.avatar);
-   sessionStorage.setItem('id',response.id);
-   sessionStorage.setItem('usuario',response.user_name);
-   sessionStorage.setItem('user_type',response.user_type);
-   $(location).attr('href','http://185.44.66.53/enkargo/views/main.html');
- }
- if (data == 2) {
-  alert('El usuario/contraseña no coinciden');
-  location.reload();
-}
-if (data == 0){
-  alert('Ha ocurrido un error al procesar la información');
-  location.reload();
-}
+  if (data == 2) {
+    alert('El usuario/contraseña no coinciden');
+    location.reload();
+  }else if (data == 0){
+    alert('Ha ocurrido un error al procesar la información');
+    location.reload();
+  }else { 
+    response = JSON.parse(data);
+    sessionStorage.setItem('avatar',response.avatar);
+    sessionStorage.setItem('id',response.id);
+    sessionStorage.setItem('usuario',response.user_name);
+    sessionStorage.setItem('user_type',response.user_type);
+    $(location).attr('href','http://185.44.66.53/enkargo/views/main.html');
+  }
 });
 }
