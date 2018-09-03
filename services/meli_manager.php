@@ -463,7 +463,6 @@ if ($_POST['action'] == 'combo_talla') {
      	$orders = array();
      	$conn = new Connect();
      	$sql = "select * from system.view_orders where shop_id = '$shop_id' and autorice = 'G';";
-	#echo $sql;
      	$result = pg_query($sql);
      	$rows = "";
      	while ($item = pg_fetch_object($result)) {
@@ -845,7 +844,6 @@ if ($_POST['action'] == 'combo_talla') {
      		echo json_encode(array('response'=>0));		
      	}
      }
-
      if ($_POST['action'] == 'update_item_detail') {
 	$sql = "UPDATE system.orders SET ";
      	$sql .= (isset($_POST['priceMl']) && $_POST['priceMl'] !== "")  ? 'sale_price = '.$_POST['priceMl'].',': '';
