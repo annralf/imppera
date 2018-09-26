@@ -56,7 +56,7 @@ function check_user(){
     $('#user_avatar').attr('src',sessionStorage.getItem('avatar',sessionStorage.getItem('avatar')));
     $('#nombre_c').text(sessionStorage.getItem('nombre_c',sessionStorage.getItem('nombre_c')));
   }else{
-    $(location).attr('href','http://192.168.0.52/enkargo/views/');        
+    $(location).attr('href','https://core.enkargo.com.co/views/');        
   } }
 
   function logout(){
@@ -65,7 +65,7 @@ function check_user(){
     action: 'logout_user',
     user_id: sessionStorage.getItem('id')
   });
-  $(location).attr('href','http://192.168.0.52/enkargo/views/');
+  $(location).attr('href','https://core.enkargo.com.co/views/');
 }
 
 function user_login(){
@@ -89,7 +89,7 @@ function user_login(){
     sessionStorage.setItem('usuario',response.user_name);
     sessionStorage.setItem('user_type',response.user_type);
     sessionStorage.setItem('nombre_c',response.name+" "+response.last_name);
-    $(location).attr('href','http://192.168.0.52/enkargo/views/main.html');
+    $(location).attr('href','https://core.enkargo.com.co/views/main.html');
   }
 });
 }
