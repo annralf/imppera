@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>Imppera SAS | Sites manager</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.png">
+    <!-- Bootstrap -->
+    <link href="vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    <!-- bootstrap-progressbar -->
+    <link href="vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+    <!-- JQVMap -->
+    <link href="vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
+    <!-- bootstrap-daterangepicker -->
+    <link href="vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+    <!-- Custom Theme Style -->
+    <link href="build/css/custom.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="js/alertify.js/themes/alertify.core.css" />
+    <link rel="stylesheet" href="js/alertify.js/themes/alertify.default.css" />
+    <link rel="stylesheet" href="js/colorpicker/jquery.simplecolorpicker.css">
+    <link rel="stylesheet" href="js/colorpicker/jquery.simplecolorpicker-regularfont.css">
+    <link rel="stylesheet" href="js/colorpicker/jquery.simplecolorpicker-glyphicons.css">
+    <link rel="stylesheet" href="js/colorpicker/jquery.simplecolorpicker-fontawesome.css">
+    <style type="text/css" media="screen">
+    .x_title {
+    border-bottom: 0px;
+    padding: 1px 5px 6px;
+    }
+    .x_content {
+    padding: 0px;
+    float: left;
+    clear: both;
+    margin-top: 5px;
+    background-color: none;
+    }
+    .x_panel {
+      padding: 0px;
+      border:0px;
+      background: none;
+    }
+    .pagination{
+      margin: -5px;
+    }
+    .dataTables_inf{
+      display: none;
+    }
+    .table-bordered {
+    border: 1px solid #ddd;
+    background-color: whitesmoke;
+    }
+    b, strong {
+    font-weight: 700;
+    color: #1A4E95;
+    }
+    .nav-sm .container.body .col-md-3.left_col{
+    width: 100px !important;
+    }
+    .nav-sm .main_container .top_nav{
+    margin-left: 100px;
+    }
+    .nav-sm .container.body .right_col{
+    margin-left: 100px;
+    }
+    .nav-sm .nav.side-menu li a{
+    font-size: 12px;
+    }
+    .nav-sm .nav.side-menu li a i{
+    font-size: 50px !important;
+    }
+    .btn {
+      padding: 3px;
+    }
+    .thumb {
+            height: 300px;
+            border: 1px solid #000;
+            margin: 10px 5px 0 0;
+          }
+    
+    #top_filters li {
+     min-height:12px;
+     font-size:14px;
+     list-style:none;
+     cursor:pointer;
+     padding:9px 16px 9px 4px;
+     -webkit-transition:color .1s ease-in,background-color .1s ease-in;
+     transition:color .1s ease-in,background-color .1s ease-in;
+     line-height:1.25;
+     display:-webkit-box;
+     display:-ms-flexbox;
+     display:flex;
+     -webkit-box-align:center;
+     -ms-flex-align:center;
+     align-items:center
+    }
+    #list_proyect td {
+     font-size:14px;
+     padding:9px 16px 9px 4px;
+    }
+    .item_name{
+      margin-left: 10px;
+    }
+    #left_menu {
+      float:left;
+     -webkit-touch-callout:none !important;
+     -webkit-user-select:none !important;
+     -moz-user-select:none !important;
+     -ms-user-select:none !important;
+     user-select:none !important;
+     width:22%;
+     padding-left:0px;
+     overflow-x:hidden;
+     overflow-y:hidden;
+     border-right:0px;
+    }
+    #content {
+     width: 65%; 
+     float:left;
+     min-height:580px;
+     padding:0 10px;
+     margin-left:50px;
+     border-right:0px;
+    }
+     .glyphicon {
+      transition: .2s transform ease-in-out;
+    }
+     .collapsed .glyphicon {
+      transform: rotate(-90deg);
+    }
+    .job{
+      text-align: center;
+      font-size: 20px;
+    }
+    .job img.normal {
+    vertical-align: middle;  
+    margin-top: 50px;  
+    width: 50%;
+    opacity: 30%;
+    display: block;
+    margin: auto;
+    }
+    .item_name{
+      cursor:pointer;
+    }
+    .dropbtn {
+    background-color: #fff;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+  }
+  .dropdown-menu>ul>li {
+    width: 60%;
+    font-size: 15px;
+    padding:5px;
+
+  }
+  .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+    padding: 0px;
+    padding-left: 8px;
+    vertical-align: middle;
+    border-top: 1px solid #ddd;
+
+}
+
+    </style>
+  </head>
+<body class="nav-sm" style="display: none;">
+  <div class="container body">
+    <div class="main_container">
+      <div class="col-md-3 left_col">
+        <div class="left_col scroll-view">
+          <div class="navbar nav_title" style="border: 0;">
+            <a href="index_1.html" class="site_title"></a>
+          </div>
+          <div class="clearfix"></div>
+          <!-- menu profile quick info -->
+          <div class="profile clearfix">
+            <div class="profile_info">
+              <span>Welcome,</span>
+              <h2 id="enk_user_name">user name</h2>
+            </div>
+          </div>
+          <!-- /menu profile quick info -->
+          <br />
+          <!-- sidebar menu -->
+          <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+            <div class="menu_section">
+              <h3>Sites Manager</h3>
+              <ul class="nav side-menu">
+                <li onclick="window.location.replace('main.html')"><a data-toggle="tooltip" data-placement="right" title="Ir al men&uacute; de inicio" ><i class="fa fa-home"></i> Inicio <span class=""></span></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        <!-- /sidebar menu -->
+        </div>
+      </div>
+<!-- top navigation -->
+      <div class="top_nav" style="height: 100px;">
+        <div class="nav_menu">
+          <nav>
+            <ul class="nav navbar-nav navbar-left" style="width: 200px; height: 120px;">
+              <li class="">
+                <img src="images/logo.png" alt="" style="width: 60%;position: relative;margin-top: 0%;color: white;">
+              </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li class="">
+                <li><a onclick="logout()" title="Cerrar sesión"><p id="user_name" style="text-transform: uppercase; font-size: 15px;"></p><i class="fa fa-sign-out pull-right" style="font-size: 24px"></i></a></li>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+      <!-- /top navigation -->
+<!-- page content -->
+<div class="right_col" role="main">
+  <!-- top tiles -->
+  <div class="row title_count" style='background: #fff' >
+    <!-- /top tiles -->
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12"> 
+        <!---------------------------------------------------------------> 
+      <div class="left_menu" id="left_menu" style="height: 50%;">
+        <div style='background:#e7e7e7; border-radius:40px;'>
+        <table  width="100%">
+          <tbody>
+            <tr>
+              <td colspan="2"><h3 id ="nombre_c" style="text-align: center"></h3></td>
+            </tr>
+            <tr>
+              <td width="45%" ><div style='width: 130px;height: 130px;background: gold;border-radius: 60px;margin-top: 5px;margin-left: 10px' id='medal'>
+                    <img src="" id="user_avatar"  width="110" height="110" alt="" style='margin-left: 10px;margin-top: 10px; border-radius: 60px'>
+                  </div>
+              </td>
+              <td height='180px'>
+                <div style='width: 100%;height: 140px;float:left;text-align: left;margin-left: 10%'>
+                  <div style='font-size: 40px' id="porcent" name="porcent">
+                   
+                  </div>
+                  <div id="porcent_m">
+                   
+                  </div>
+                  <div id="porcent_a">
+                  
+                  </div>
+                  <div id="porcent_c">
+                   
+                  </div>
+                  <div id="porcent_r">
+                   
+                  </div>
+                  <div id="porcent_s">
+                   
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+
+        <div id="app_holder" style="margin-left: 5px;width: 100%">
+          <div id="left_menu2" class="left_menu2">
+            <div id="list_holder">
+              <div>
+                <div>
+                  <ul id="top_filters" style="list-style:none;">
+                    <li class="filter" id="menu_asig"  data-id="2192358158" data-track="navigation|inbox" > <!--style="visibility: hidden;"--->
+                      <span class="item_icon">
+                        <i class="fa fa-tag" style="font-size:24px"></i>
+                      </span>
+                      <span class="item_content">
+                        <span class="item_name"  onclick="show_asig_tareas()">Asignar Tareas</span>
+                      </span>
+                    </li>
+                    <li class="filter" id="menu_today" data-track="navigation|today">
+                      <span class="item_icon">
+                        <i class="fa fa-calendar-o" style="font-size:24px"></i>
+                          <div style="position: absolute; top:285px; margin-left: 3px;"><p id="today_hoy"></p></div>
+                      </span>
+                      <span class="item_content">
+                        <span class="item_name"  onclick="show_today()">Hoy  <i class="fa fa-bell" id='bell' style="font-size:24px;color:red;display: none"></i></span>
+                      </span>
+                    </li>
+                    <li class="filter" id="menu_week" data-track="navigation|next_7_days">
+                      <span class="item_icon">
+                        <i class="fa fa-calendar" style="font-size:24px"></i>
+                      </span>
+                      <span class="item_content">
+                        <span class="item_name"  onclick="show_week()">Para el mes</span>
+                      </span>
+                    </li>
+                    <li class="filter" id="menu_tareaok" data-track="navigation|next_7_days">
+                      <span class="item_icon">
+                        <i class="fa fa-child" style="font-size:24px"></i>
+                      </span>
+                      <span class="item_content">
+                        <span class="item_name"  onclick="show_check()">Tareas Cumplidas</span>
+                      </span>
+                    </li>
+                    <li class="filter" id="menu_tareanook" data-track="navigation|next_7_days">
+                      <span class="item_icon">
+                        <i class="fa fa-frown-o" style="font-size:24px"></i>
+                      </span>
+                      <span class="item_content">
+                        <span class="item_name"  onclick="show_no_check()">Tareas No Cumplidas</span>
+                      </span>
+                    </li>
+                    <li class="filter" id="menu_panel" data-track="navigation|next_7_days">
+                      <span class="item_icon">
+                        <i class="fa fa-users" style="font-size:24px"></i>
+                      </span>
+                      <span class="item_content">
+                        <span class="item_name"  onclick="show_panel()">Panel Productividad</span>
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="proyect expansion_panel" style='display: none' >
+                <div class="container">
+                  <div data-toggle="collapse" class="collapsed" data-target="#collapseFilter" style="margin-left: 40px;width: 100%">
+                    <span class="item_icon">
+                      <i class="glyphicon glyphicon-chevron-down" style="font-size:24px"></i>
+                    </span>
+                    <span class="item_content">
+                      <span class="item_name" id="proyect"  style="cursor:pointer;font-size:14px;">Proyectos</span>
+                    </span>
+                  </div>
+                  <div class="collapse" id="collapseFilter" style="margin-left: 15%;width: 82%;">
+                    <br>
+                    <div id="list_proyect">
+                    </div>
+                    <br>
+                    <div id="form_proyect" style="display: none;">
+                      <form class="row">
+                        <table>
+                          <tbody>
+                            <tr>
+                              <td width="15%">
+                                <select name="colorpicker-picker-longlist" id="color_proyect">
+                                  <option value="#7bd148">Verde</option>
+                                  <option value="#5484ed">Azul Oscuro</option>
+                                  <option value="#a4bdfc">Azul</option>
+                                  <option value="#46d6db">Turqueza</option>
+                                  <option value="#7ae7bf">Verde Claro</option>
+                                  <option value="#51b749">Verde Oscuro</option>
+                                  <option value="#fbd75b">Amarillo</option>
+                                  <option value="#ffb878">Naranja</option>
+                                  <option value="#ff887c">Rosa</option>
+                                  <option value="#dc2127">Rojo</option>
+                                  <option value="#dbadff">Morado</option>
+                                  <option value="#e1e1e1">Gris</option>
+                                </select>
+                              </td>
+                              <td>
+                                <input type="text" class="form-control" id="name_proyect" style="border-radius:5px;">
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                              </td>
+                              <td>
+                                <button type="button"  onclick="add_proyect()" title="Añadir proyecto">Añadir proyecto</button>
+                                <span class="item_name" onclick="hidde_panel_proyecto()">Cancelar</span>
+                              </td>
+
+                            </tr>
+                          </tbody>
+                        </table>
+                      </form>
+                    </div>
+                    <br>
+                    <div style="color:red;margin-left: 15%" >
+                      <span class="item_icon">
+                      <i class="  fa fa-plus"></i>
+                      </span>
+                      <span class="item_content">
+                        <span class="item_name" id="add_proyect" onclick="show_panel_proyecto()">Añadir Proyecto</span>
+                      </span>
+                    </div>
+
+                  </div>
+                </div>
+            </div>
+          </div> 
+        </div>
+      </div>
+      <div class="main_content" id="content" style="min-height: 287px;background: #fff">
+        <!------------------------------------------------------------------------------------------------------------------------------>
+        <div id="tablero_asignar" style="display: none">
+          <div class="project_editor_instance current_editor" data-project-id="2192843080">
+            <div class="list_editor">
+              <h2 class="project_header section_header">
+                <a href="#" class="project_link">
+                  Asignacion de Tareas <p style="font-size: 12px;color: #918080;" id="asignacion_tablero"></p>
+                </a>
+              </h2>
+            </div>
+            <div class="controller actions pe_controller">
+              <div id="form_tarea" style="display: none;">
+                <form >
+                  <table width="80%" >
+                    <tr>
+                      <td colspan="4" style='font-size: 10px;color: gray'>
+                        <label id='name_user' name='name_user'></label> <label id='name_proye' name='name_proye' style='padding-left: 20px;'></label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="4">
+                        <input type="text" class="form-control" id="new_tarea">
+                      </td>
+                    </tr>
+                      <td width="80%">
+                        <button type="button"  onclick="add_tarea()" title="Añadir tarea">Añadir tarea</button>
+                        <span class="item_name" onclick="hidde_panel_tarea()">Cancelar</span>
+                      </td>
+                      <td style='font-size: 20px;'> 
+                         <div class='dropdown'> 
+                          <a class='fa fa-flag dropdown-toggle' data-toggle='dropdown' id='icon_priority' title='Prioridad' >
+                          </a>  
+                            <ul class='dropdown-menu pull-right' role='menu' aria-labelledby='dLabel' style='width: 70px;'>
+                              <li style='font-size: 20px;background: #fff'>
+                              <i class="fa fa-flag" style='color:#50ca44;padding-left:10px;cursor:pointer;' onclick="select_priority(1,'#50ca44')" title='Para el Mes'></i>
+                              <i class="fa fa-flag" style='color:#FFC300;padding-left:10px;cursor:pointer;' onclick="select_priority(2,'#FFC300')" title='Para la Semana'></i>
+                              <i class="fa fa-flag" style='color:#ff3b3b;padding-left:10px;cursor:pointer;' onclick="select_priority(3,'#ff3b3b')" title='Para Hoy'></i>
+                              </li>
+                            </ul>
+                         </div>                       
+                      </td>
+                      <td style='font-size: 20px;'> 
+                         <div class='dropdown'> 
+                          <a class='fa fa-user dropdown-toggle' data-toggle='dropdown' id='icon_user'>
+                          </a>  
+                            <ul class='dropdown-menu pull-right' role='menu' aria-labelledby='dLabel' style='width: 360px;' id='list_user_tarea'>
+                            </ul>
+                         </div>                       
+                      </td>
+                    </tr>
+                  </table>
+                  <input type="text" name="priority_asig" id="priority_asig" placeholder="" value="" hidden="true">
+                  <input type="text" name="user_asig" id="user_asig"     placeholder="" value="" hidden="true">
+                  <input type="text" name="proyect_asig" id="proyect_asig"  placeholder="" value="0" hidden="true">
+                  <input type="text" name="color_asig" id="color_asig"  placeholder="" value="#50ca44" hidden="true">
+                </form>
+              </div>
+              <br>
+              <div style="color: red;" >
+                <span class="item_icon">
+                <i class="  fa fa-plus"></i>
+                </span>
+                <span class="item_content">
+                  <span class="item_name" id="add_tarea" onclick="show_panel_tarea()">Añadir tarea</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!------------------------------------------------------------------------------------------------------------------------------>
+        <div id="tablero_today" >
+          <div class="project_editor_instance current_editor" data-project-id="2192843080">
+            <div class="list_editor">
+              <h2 class="project_header section_header">
+                <a href="#" class="project_link">
+                  Hoy <p style="font-size: 12px;color: #918080;" id="today_tablero"></p>
+                </a>
+              </h2>
+            </div>
+             <!------------------------>
+            <div class="controller actions pe_controller">
+              <div id='info_t' name='info_t'></div>
+              <!------------------------>
+              <div class="" display="" style="display: block;" id='content_r'>
+                <table id="list_tarea_r" class="table table-striped table-bordered nowrap" width="100%" >
+                  <tbody>
+                  </tbody>
+                </table>
+                <div class="clearfix"></div>
+              </div>
+              <!------------------------>
+              <div id="job" class='job' style='display: none'> 
+                <img class="normal" src="./images/good-job.png" />
+                <div >¡Terminaste por este día!</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!------------------------------------------------------------------------------------------------------------------------------>
+        <div id="tablero_week" style="display: none">
+          <div class="project_editor_instance current_editor" data-project-id="2192843080">
+            <div class="list_editor">
+              <h2 class="project_header section_header">
+                <a href="#" class="project_link">
+                  Para el Mes <p style="font-size: 12px;color: #918080;" id="today_tablero"></p>
+                </a>
+              </h2>
+            </div>
+             <!------------------------>
+            <div class="controller actions pe_controller">
+              <div id='info_t1' name='info_t'></div>
+
+              <!------------------------>
+              <div class="" display="" style="display: block;" id='content_a'>
+                <table id="list_tarea_a" class="table table-striped table-bordered nowrap" width="100%" >
+                  <tbody>
+                  </tbody>
+                </table>
+                <div class="clearfix"></div>
+              </div>
+              <br>
+              <!------------------------>
+              <div class="" display="" style="display: block;" id='content_v'>
+                <table id="list_tarea_v" class="table table-striped table-bordered nowrap" width="100%" >
+                  <tbody>
+                  </tbody>
+                </table>
+                <div class="clearfix"></div>
+              </div>
+              <br>
+              <!------------------------>
+
+              <div id="job1" class='job' style='display: none'> 
+                <img class="normal" src="./images/good-job.png" />
+                <div >¡Terminaste por este día!</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!------------------------------------------------------------------------------------------------------------------------------>
+        <div id="tablero_check" style="display: none">
+          <div class="project_editor_instance current_editor" data-project-id="2192843080">
+            <div class="list_editor">
+              <h2 class="project_header section_header">
+                <a href="#" class="project_link">
+                  Tareas terminadas <p style="font-size: 12px;color: #918080;" id="today_tablero"></p>
+                </a>
+              </h2>
+            </div>
+            <div id="endtareas">
+
+            </div>
+          </div>
+        </div>
+        <!------------------------------------------------------------------------------------------------------------------------------>
+        <div id="tablero_no_check" style="display: none">
+          <div class="project_editor_instance current_editor" data-project-id="2192843080">
+            <div class="list_editor">
+              <h2 class="project_header section_header">
+                <a href="#" class="project_link">
+                  Tareas No terminadas <p style="font-size: 12px;color: #918080;" id="today_tablero"></p>
+                </a>
+              </h2>
+            </div>
+            <div id="endtareasbad">
+              <!-- Queen bee shop items avaliables-->
+              <div class="row queen_panel" style="display: none;">
+                <div class="x_panel">
+                  <div class="x_title collapse-link row" data-toggle="tooltip" data-placement="bottom" title="Ver listado de productos disponibles en Quee Bee">
+                    <div class="">
+                       <img  class="" src="images/queen_bee.png" style="width: 100px;">Órdenes Queen Bee
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content" display="" style="display: block;">
+                    <table id="list_queen_bee" class="table table-striped table-bordered" width="100%">
+
+                      <tbody>
+                         <tr>
+                          <td>ID Orden</td>
+                          <td>Fecha</td>
+                        </tr>
+                        <tr>
+                          <td>ID Orden</td>
+                          <td>Fecha</td>
+                        </tr>
+                        <tr>
+                          <td>ID Orden</td>
+                          <td>Fecha</td>
+                        </tr>
+                        <tr>
+                          <td>ID Orden</td>
+                          <td>Fecha</td>
+                        </tr>
+                        <tr>
+                          <td>ID Orden</td>
+                          <td>Fecha</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div class="clearfix"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- mauxi shop items avaliables-->
+
+              <div class="row mauxi_panel" style="display: none;">
+                <div class="x_panel">
+                  <div class="x_title collapse-link row" data-toggle="tooltip" data-placement="bottom" title="Ver listado de productos disponibles en Mauxi">
+                    <div class="">
+                       <img  class="" src="images/mauxi.png" style="width: 100px;">Órdenes Mauxi
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content" style="display: block;">
+                    <p class="text-muted font-12 m-b-30">
+                      <!--b>Productos Disponibles en Amazon.</b-->
+                    </p>
+                    <table id="list_mauxi" class="table table-striped table-bordered" width="100%">
+                      <thead>
+                        <tr>
+                          <th>ID Orden</th>
+                          <th>Fecha</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                    </table>
+                    <div class="clearfix"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!------------------------------------------------------------------------------------------------------------------------------>
+        <div id="tablero_inbox" style="width: 896px;display:none">
+          <div class="project_editor_instance current_editor" data-project-id="2192843080">
+            <div class="list_editor">
+              <h2 class="project_header section_header">
+                <a href="#" class="project_link">
+                  <span>Hoy</span>
+                </a>
+              </h2>
+            </div>
+            <div class="controller actions pe_controller">
+              <div class="history_icon">
+                <a href="#">
+                  <img src="https://d3ptyyxy2at9ui.cloudfront.net/76084e29cb2cf72b320e888edc583dfb.gif" class="cmp_history_big" width="26" height="16">
+                </a>
+              </div>
+              <a href="" class="action action_add_item">
+                <span class="icon icon-add">
+                  
+                </span>Añadir tarea
+              </a>
+            </div>
+            <div class="history_desc" style="display: none;">
+              <ul class="items project_history">
+                
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!------------------------------------------------------------------------------------------------------------------------------>
+        <div id="tablero_panel" style="width: 896px;display:none">
+          <div class="project_editor_instance current_editor" data-project-id="2192843080">
+            <div class="list_editor">
+              <h2 class="project_header section_header">
+                <a href="#" class="project_link">
+                  <span>Productividad por Usuarios</span>
+                </a>
+              </h2>
+            </div>
+            <div class="controller actions pe_controller">
+              <div id='info_t' name='info_t'></div>
+              <!------------------------>
+              <div class="" display="" style="display: block;" id='panel_user'>
+              </div>
+              <br>
+              <div id="job" style='display: none'> 
+                <img class="normal" src="./images/good-job.png" />
+                <div >¡Terminaste por este día!</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!------------------------------------------------------------------------------------------------------------------------------>
+        <div id="tablero_proyect" style="display: none" >
+          <div class="project_editor_instance current_editor" data-project-id="2192843080">
+            <div class="list_editor">
+              <h2 class="project_header section_header">
+                <a href="#" class="project_link_p" id='project_link_p'>
+                  <span id='title_proyect'>Aca nombre proyect y propietario</span><p style="font-size: 12px;color: #918080;" id="today_tablero_p"></p>
+                </a>
+              </h2>
+            </div>
+            <div class="controller actions pe_controller">
+              <div id='info_p' name='info_p'></div>
+              <div class="x_content" display="" style="display: block;background-color:white;border-radius: 5px" id='content_p' name='content_p'>
+                <table id="list_tarea_p" class="table " width="100%" style="border-radius: 20px">
+                  <thead>
+                    <tr>
+                      <th>Tarea</th>
+                      <th>Acciones</th>
+                    </tr>
+                   </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+                <div class="clearfix"></div>
+              </div>      
+              <br>
+              <div id="form_tarea_p" style="display: none;">
+                <form >
+                  <table width="80%" >
+                    <tr>
+                      <td colspan="4" style='font-size: 10px;color: gray'>
+                        <label id='name_user_p' name='name_user_p'></label> <label id='name_proye_p' name='name_proye_p' style='padding-left: 20px;'></label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="4">
+                        <input type="text" class="form-control" id="new_tarea_p">
+                      </td>
+                    </tr>
+                      <td width="80%">
+                        <button type="button"  onclick="add_tarea_p()" title="Añadir tarea">Añadir tarea</button>
+                        <span class="item_name" onclick="hidde_panel_tarea_p()">Cancelar</span>
+                      </td>
+                      <td style='font-size: 20px;'> 
+                         <div class='dropdown'> 
+                          <a class='fa fa-flag dropdown-toggle' data-toggle='dropdown' id='icon_priority' title='Prioridad' >
+                          </a>  
+                            <ul class='dropdown-menu pull-right' role='menu' aria-labelledby='dLabel' style=''>
+                               <li style='font-size: 20px;background: #fff'>
+
+                              <i class="fa fa-flag" style='color:#50ca44;padding-left:10px;cursor:pointer;' onclick="select_priority('#50ca44')" title='Urgencia Menor'></i>
+                              <i class="fa fa-flag" style='color:#FFC300;padding-left:10px;cursor:pointer;' onclick="select_priority('#FFC300')" title='Urgencia'></i>
+                              <i class="fa fa-flag" style='color:#ff3b3b;padding-left:10px;cursor:pointer;' onclick="select_priority('#ff3b3b')" title='Resucutación'></i>
+                            </ul>
+                         </div>                       
+                      </td>
+                      <td style='font-size: 20px;'> 
+                         <div class='dropdown'> 
+                          <a class='fa fa-list-alt dropdown-toggle' data-toggle='dropdown' id='icon_proyect'>
+                          </a>  
+                            <ul class='dropdown-menu pull-right' role='menu' aria-labelledby='dLabel' style='' id='list_proyect_tarea'>
+                            </ul>
+                         </div>                       
+                      </td>
+                      <td style='font-size: 20px;'> 
+                         <div class='dropdown'> 
+                          <a class='fa fa-user dropdown-toggle' data-toggle='dropdown' id='icon_user'>
+                          </a>  
+                            <ul class='dropdown-menu pull-right' role='menu' aria-labelledby='dLabel' style='width: 200px;' id='list_user_tarea'>
+                            </ul>
+                         </div>                       
+                      </td>
+                    </tr>
+                  </table>
+                  <input type="text" name="priority_asig" id="priority_asig" placeholder="" value="1" >
+                  <input type="text" name="user_asig" id="user_asig"     placeholder="" value="0" >
+                  <input type="text" name="proyect_asig" id="proyect_asig"  placeholder="" value="0" >
+                </form>
+              </div>
+              <br>
+              <div style="color: red;" >
+                <span class="item_icon">
+                <i class="  fa fa-plus"></i>
+                </span>
+                <span class="item_content">
+                  <span class="item_name" id="add_tarea" onclick="show_panel_tarea_p()">Añadir tarea a proyect</span>
+                </span>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+        <!------------------------------------------------------------------------------------------------------------------------------>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<!-- /page content -->
+<div class="modal fade bs-example-modal-lg price_tool_modal" tabindex="-1" role="dialog" aria-hidden="true" id="price_tool_modal">
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+      </button>
+      <h4 class="modal-title" id="enk_item_title">Liquidador</h4>
+    </div>
+    <div class="modal-body">
+      <div class="container" style="">
+        <div class="row" style="">
+          <div class="col-sm-3 col-md-3 col-xs-3"></div>
+          <div class="col-sm-6 col-md-6 col-xs-6">
+            <label for="site_name">Seleccione la tienda</label>
+            <select class="form-control" id="shop">
+              <option value="1"> Queen Bee</option>
+              <option value="2"> Mauxi</option>
+            </select>
+          </div>
+          <div class="col-sm-3 col-md-3 col-xs-3"></div>
+        </div>
+        <div class="row" style="margin-top: 3%;">
+          <div class="col-sm-3 col-md-3 col-xs-3"></div>
+          <div class="col-sm-6 col-md-6 col-xs-6">
+            <div class="form-group">
+              <label for="range_1">Precio base menor a $19</label>
+              <input class="form-control" type="text" name="" value="" placeholder="" id="range_1">
+            </div>
+            <div class="form-group">
+              <label for="range_2">Precio base mayor a $19 y menor a $25</label>
+              <input class="form-control" type="text" name="" value="" placeholder="" id="range_2">
+            </div>
+            <div class="form-group">
+              <label for="range_3">Precio base mayor a $25 y menor a $32</label>
+              <input class="form-control" type="text" name="" value="" placeholder="" id="range_3">
+            </div>
+            <div class="form-group">
+              <label for="range_4">Precio base mayor a $32 y menor a $42</label>
+              <input class="form-control" type="text" name="" value="" placeholder="" id="range_4">
+            </div>
+            <div class="form-group">
+              <label for="range_5">Precio base mayor a $42 y menor a $66</label>
+              <input class="form-control" type="text" name="" value="" placeholder="" id="range_5">
+            </div>
+            <div class="form-group">
+              <label for="range_6">Precio base mayor a $66 y menor a $145</label>
+              <input class="form-control" type="text" name="" value="" placeholder="" id="range_6">
+            </div>
+            <div class="form-group">
+              <label for="range_7">Precio base mayor a 145$</label>
+              <input class="form-control" type="text" name="" value="" placeholder="" id="range_7">
+            </div>
+            <div class="form-group">
+              <label for="tax">Tax</label>
+              <input class="form-control" type="text" name="" value="" placeholder="" id="tax">
+            </div>
+            <div class="form-group">
+              <label for="iva">IVA</label>
+              <input class="form-control" type="text" name="" value="" placeholder="" id="iva">
+            </div>
+          </div>
+          <div class="col-sm-3 col-md-3 col-xs-3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<!-- /page modal -->
+<div class="modal loading" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row loading_gif" id="loading_gif" style="text-align: center;">
+            <img src="images/cargando.gif" style="width: 30%; height: 30%;">
+            <h2>Cargando...</h2>
+          </div>
+        </div>
+        <div class="modal-footer" style="text-align: center;">
+        </div>
+      </div>
+    </div>
+  </div>
+<!--Page modal comentary-->
+ <div class="modal fade bs-example-modal-lg item_comentary_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title cbt_modal" id="item_comentary_modal_title"></h4>
+        </div>
+        <div class="modal-body">
+          <div class="detail_modal form-group" id="detail_modal" style="display: block;">
+            <label for="comment_local">Comentario:</label>
+            <textarea class="form-control" rows="5" id="comment_local"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer" style="text-align: center;">
+          <button type="button" class="btn btn-default save_comment" data-dismiss="modal" id_order="" onclick="update_comment(this)"><i class='fa fa-refresh' style='font-size:20px;'></i> Guardar</button>
+          <button type="button" class="btn btn-default close_modal" data-dismiss="modal" id_order="" onclick=""><i class='fa fa-times' style='font-size:20px;'></i> Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Page modal file-->
+ <div class="modal fade bs-example-modal-lg item_file_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title cbt_modal" id="item_file_modal_title"></h4>
+        </div>
+        <div class="modal-body">
+          <div class="detail_modal form-group" id="detail_modal" style="display: block;">
+            <label for="files">Archivo:</label>
+            <input id="files" name="files[]" type="file" >
+            <output id="list"></output>
+            <!--<textarea class="form-control" rows="5" id="file_local"></textarea>-->
+          </div>
+        </div>
+        <div class="modal-footer" style="text-align: center;">
+          <button type="button" class="btn btn-default save_file" data-dismiss="modal" id_order="" onclick="tarea_file(this)"><i class='fa fa-refresh' style='font-size:20px;'></i> Guardar</button>
+          <button type="button" class="btn btn-default close_modal" data-dismiss="modal" id_order="" onclick=""><i class='fa fa-times' style='font-size:20px;'></i> Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- /page modal choose-->
+
+  <!--Page modal file-->
+ <div class="modal fade bs-example-modal-lg item_file_preview" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title cbt_modal" id="item_file_previw_title"></h4>
+        </div>
+        <div class="modal-body">
+          <div class="detail_modal form-group" id="detail_modal" style="display: block;">
+            <output id="list2"></output>
+            <!--<textarea class="form-control" rows="5" id="file_local"></textarea>-->
+          </div>
+        </div>
+        <div class="modal-footer" style="text-align: center;">
+          <button type="button" class="btn btn-default close_modal" data-dismiss="modal" id_order="" onclick=""><i class='fa fa-times' style='font-size:20px;'></i> Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- /page modal choose-->
+
+<div class="modal fade bs-example-modal-lg amz_item_detail_modal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+      </button>
+      <h4 class="modal-title" id="item_detail_modal_title">Seleccione la cuenta donde publicar los &iacute;tems</h4>
+    </div>
+    <div class="modal-body" style="text-align: center;">
+      <button type="button" class="btn btn-default btn-lg close_modal" data-dismiss="modal" onclick="load_items(2)">Mauxi eshop</button>
+      <button type="button" class="btn btn-default btn-lg close_modal" data-dismiss="modal" onclick="load_items(1)">Queen Bee</button>
+      <button type="button" class="btn btn-default btn-lg close_modal" data-dismiss="modal" onclick="load_items(3)">Publicar en todas las cuentas</button>
+    </div>
+    <div class="modal-footer" >
+    </div>
+  </div>
+</div>
+</div>
+<!-- footer content -->
+
+<!-- /footer content -->
+</div>
+</div>
+<!-- jQuery -->
+<script src="vendors/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- FastClick -->
+<script src="vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="vendors/nprogress/nprogress.js"></script>
+<!-- Chart.js -->
+<script src="vendors/Chart.js/dist/Chart.min.js"></script>
+<!-- gauge.js -->
+<script src="vendors/gauge.js/dist/gauge.min.js"></script>
+<!-- bootstrap-progressbar -->
+<script src="vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+<!-- iCheck -->
+<script src="vendors/iCheck/icheck.min.js"></script>
+<!-- Skycons -->
+<script src="vendors/skycons/skycons.js"></script>
+<!-- Flot -->
+<script src="vendors/Flot/jquery.flot.js"></script>
+<script src="vendors/Flot/jquery.flot.pie.js"></script>
+<script src="vendors/Flot/jquery.flot.time.js"></script>
+<script src="vendors/Flot/jquery.flot.stack.js"></script>
+<script src="vendors/Flot/jquery.flot.resize.js"></script>
+<!-- Flot plugins -->
+<script src="vendors/flot.orderbars/js/jquery.flot.orderBars.js"></script>
+<script src="vendors/flot-spline/js/jquery.flot.spline.min.js"></script>
+<script src="vendors/flot.curvedlines/curvedLines.js"></script>
+<!-- DateJS -->
+<script src="vendors/DateJS/build/date.js"></script>
+<!-- JQVMap -->
+<script src="vendors/jqvmap/dist/jquery.vmap.js"></script>
+<script src="vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+<script src="vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
+<!-- bootstrap-daterangepicker -->
+<script src="vendors/moment/min/moment.min.js"></script>
+<script src="vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+<!-- Datatables -->
+<script src="vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+<script src="vendors/jszip/dist/jszip.min.js"></script>
+<script src="vendors/pdfmake/build/pdfmake.min.js"></script>
+<script src="vendors/pdfmake/build/vfs_fonts.js"></script>
+<!--Application functions-->
+<script src="js/config.js?version=0.2"></script>
+<script src="js/meli_tareas.js"></script>
+<script src="js/login.js"></script>
+<script src="vendors/fastclick/lib/fastclick.js"></script>
+<!-- Custom Theme Scripts -->
+<script src="build/js/custom.min.js"></script>
+<script type="text/javascript" src="js/alertify.js/lib/jcombo.js"></script>
+<script type="text/javascript" src="js/alertify.js/lib/alertify.js"></script>
+<script type="text/javascript" src="js/colorpicker/jquery.simplecolorpicker.js"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+  list_proyect();
+  list_tarea();
+  list_user_tarea();
+  list_proyect_tarea();
+  check_tarea();
+  check_user();
+  set_menu();
+  list_tarea_cumplidas();
+  list_tarea_no_cumplidas();
+  list_porcent();
+  list_all_porcent();
+  chech_menu();
+
+  setInterval(list_tarea, 60000);
+  
+  $('select[name="colorpicker-picker-longlist"]').simplecolorpicker({picker: true, theme: 'glyphicons'});
+  $('select[name="colorpicker-picker-priority"]').simplecolorpicker({picker: true, theme: 'glyphicon-flag'});
+    var today = new Date();
+    var dd = today.getDate();
+    if(dd < 10){
+      dd='0'+dd;
+    }
+  document.getElementById("today_hoy").innerHTML = dd;
+  var meses = new Array ("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+  var diasSemana = new Array("Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado");
+  document.getElementById("today_tablero").innerHTML = (diasSemana[today.getDay()] + ", " + today.getDate() + " de " + meses[today.getMonth()]);
+  document.getElementById("today_tablero_p").innerHTML = (diasSemana[today.getDay()] + ", " + today.getDate() + " de " + meses[today.getMonth()]);
+  document.getElementById('files').addEventListener('change', archivo, false);
+});
+</script>
+  <div id="loading" style='display: none;   
+   position: fixed; 
+   top: 0; 
+   left: 0; 
+   height: 100%; 
+   width: 100%; 
+   background: rgba( 255, 255, 255, .5 ) url("https://core.enkargo.com.co/views/images/spinner.gif") 50% 50% no-repeat; '>
+  </div>
+</body>
+</html>

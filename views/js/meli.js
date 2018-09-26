@@ -1,7 +1,9 @@
-//+++++++++++++++++++++++++++++++++++ START RAFAEL FUNCTIONS ++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ START RAFAEL FUNCTIONS
+//++++++++++++++++++++++++++++++++++++++++++++
+var url_base='http://192.168.0.52/enkargo/';
 
 function combo_p() {
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post(url_base+'services/meli_manager.php',
 		{ 	action  : 'combo_p', 
 			shop_id : 2
 		}).fail(function(){
@@ -38,7 +40,7 @@ function combo_h1(valor,shop_id) {
   	$('#cmbo_9'+pre).empty();
 	$('#cmbo_talla'+pre).empty();
 	$('#cmbo_color'+pre).empty();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post(url_base+'services/meli_manager.php',
 		{ 	action  : 'combo_h', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -84,7 +86,7 @@ function combo_h2(valor,shop_id) {
   	$('#cmbo_9'+pre).empty();
 	$('#cmbo_talla'+pre).empty();
 	$('#cmbo_color'+pre).empty();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post(url_base+'services/meli_manager.php',
 		{ 	action  : 'combo_h', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -129,7 +131,7 @@ function combo_h3(valor,shop_id) {
   	$('#cmbo_9'+pre).empty();
 	$('#cmbo_talla'+pre).empty();
 	$('#cmbo_color'+pre).empty();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post(url_base+'services/meli_manager.php',
 		{ 	action  : 'combo_h', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -173,7 +175,7 @@ function combo_h4(valor,shop_id) {
   	$('#cmbo_9'+pre).empty();
 	$('#cmbo_talla'+pre).empty();
 	$('#cmbo_color'+pre).empty();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post(url_base+'services/meli_manager.php',
 		{ 	action  : 'combo_h', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -216,7 +218,7 @@ function combo_h5(valor,shop_id) {
   	$('#cmbo_9'+pre).empty();
 	$('#cmbo_talla'+pre).empty();
 	$('#cmbo_color'+pre).empty();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post(url_base+'services/meli_manager.php',
 		{ 	action  : 'combo_h', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -258,7 +260,7 @@ function combo_h6(valor,shop_id) {
   	$('#cmbo_9'+pre).empty();
 	$('#cmbo_talla'+pre).empty();
 	$('#cmbo_color'+pre).empty();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post(url_base+'services/meli_manager.php',
 		{ 	action  : 'combo_h', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -296,7 +298,7 @@ function combo_h7(valor,shop_id) {
   	$('#cmbo_9'+pre).empty();
 	$('#cmbo_talla'+pre).empty();
 	$('#cmbo_color'+pre).empty();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post(url_base+'services/meli_manager.php',
 		{ 	action  : 'combo_h', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -336,7 +338,7 @@ function combo_h8(valor,shop_id) {
   	$('#cmbo_9'+pre).empty();
 	$('#cmbo_talla'+pre).empty();
 	$('#cmbo_color'+pre).empty();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post(url_base+'services/meli_manager.php',
 		{ 	action  : 'combo_h', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -375,7 +377,7 @@ function combo_h9(valor,shop_id) {
   	$('#cmbo_9'+pre).empty();
 	$('#cmbo_talla'+pre).empty();
 	$('#cmbo_color'+pre).empty();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post(url_base+'services/meli_manager.php',
 		{ 	action  : 'combo_h', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -411,7 +413,7 @@ function combo_color(valor,shop_id) {
 		pre="_mx";
 	}
 	
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post(url_base+'services/meli_manager.php',
 		{ 	action  : 'combo_color', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -440,7 +442,7 @@ function combo_talla(valor,shop_id) {
 		pre="_mx";
 	}
 	
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post(url_base+'services/meli_manager.php',
 		{ 	action  : 'combo_talla', 
 			category: valor
 		}).fail(function(){ alert('error');
@@ -467,7 +469,7 @@ function search_sku_mx(){
 	valor="";
 	//alert($('#sku1').val());
 	$('#loading').show();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post(url_base+'services/meli_manager.php',
 		{
 			action 	: 'search_sku_mx',
 			sku1_mx	: $('#sku1_mx').val(),
@@ -487,7 +489,7 @@ function search_sku_mx(){
 function update_mpid_mx(){
 	//alert($('#mpid_mx').val());
 	$('#loading').show();
-	$.post('https://core.enkargo.com.co/process/meli_update_by_items.php',
+	$.post(url_base+'process/meli_update_by_items.php',
 		{
 			action 	: 'update_mpid_mx',
 			mpid_mx	: $('#mpid_mx').val(),
@@ -557,7 +559,7 @@ function update_mpid_mx(){
 }
 function paused_mpid_mx(){
 	$('#loading').show();
-	$.post('https://core.enkargo.com.co/process/meli_update_by_items.php',
+	$.post(url_base+'process/meli_update_by_items.php',
 		{
 			action 	: 'paused_mpid_mx',
 			mpid_mx	: $('#mpid_mx').val(),
@@ -627,7 +629,7 @@ function paused_mpid_mx(){
 }
 function closed_mpid_mx(){
 	$('#loading').show();
-	$.post('https://core.enkargo.com.co/process/meli_update_by_items.php',
+	$.post(url_base+'process/meli_update_by_items.php',
 		{
 			action 	: 'closed_mpid_mx',
 			mpid_mx	: $('#mpid_mx').val(),
@@ -697,7 +699,7 @@ function closed_mpid_mx(){
 }
 function delete_mpid_mx(){
 	$('#loading').show();
-	$.post('https://core.enkargo.com.co/process/meli_update_by_items.php',
+	$.post(url_base+'process/meli_update_by_items.php',
 		{
 			action 	: 'delete_mpid_mx',
 			mpid_mx	: $('#mpid_mx').val(),
@@ -770,7 +772,7 @@ function search_sku_qb(){
 	valor="";
 	//alert($('#sku1').val());
 	$('#loading').show();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post(url_base+'services/meli_manager.php',
 		{
 			action 	: 'search_sku_qb',
 			sku1_qb : $('#sku1_qb').val(),
@@ -790,7 +792,7 @@ function search_sku_qb(){
 function update_mpid_qb(){
 	//alert($('#mpid_qb').val());
 	$('#loading').show();
-	$.post('https://core.enkargo.com.co/process/meli_update_by_items.php',
+	$.post(url_base+'process/meli_update_by_items.php',
 		{
 			action 	: 'update_mpid_qb',
 			mpid_qb	: $('#mpid_qb').val(),
@@ -860,7 +862,7 @@ function update_mpid_qb(){
 }
 function paused_mpid_qb(){
 	$('#loading').show();
-	$.post('https://core.enkargo.com.co/process/meli_update_by_items.php',
+	$.post(url_base+'process/meli_update_by_items.php',
 		{
 			action 	: 'paused_mpid_qb',
 			mpid_qb	: $('#mpid_qb').val(),
@@ -930,7 +932,7 @@ function paused_mpid_qb(){
 }
 function closed_mpid_qb(){
 	$('#loading').show();
-	$.post('https://core.enkargo.com.co/process/meli_update_by_items.php',
+	$.post(url_base+'process/meli_update_by_items.php',
 		{
 			action 	: 'closed_mpid_qb',
 			mpid_qb	: $('#mpid_qb').val(),
@@ -1000,7 +1002,7 @@ function closed_mpid_qb(){
 }
 function delete_mpid_qb(){
 	$('#loading').show();
-	$.post('https://core.enkargo.com.co/process/meli_update_by_items.php',
+	$.post(url_base+'process/meli_update_by_items.php',
 		{
 			action 	: 'delete_mpid_qb',
 			mpid_qb	: $('#mpid_qb').val(),
@@ -1079,7 +1081,7 @@ function delete_mpid_qb(){
 function get_meli_not_delivered() {
 	console.log('getting items not delivered ...');
 	$('.loading_gif').show();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',{ action : 'get_order_not_delivered', user_id: sessionStorage.getItem('id')}).fail(function(){
+	$.post(url_base+'services/meli_manager.php',{ action : 'get_order_not_delivered', user_id: sessionStorage.getItem('id')}).fail(function(){
 
 	}).done(function(e){
 		$('.loading_gif').hide();
@@ -1151,7 +1153,7 @@ function get_meli_not_delivered() {
 				switch (response[i].shipping_mode) {
 					case 'me2':
 					if (response[i].order_status != 'delivered'){
-						content += '<button type="button" class="form-control .mercadoenvio" style="background-color: #51cc60; color: white;" onclick="print_meli_label(\''+response[i].token+'\',\''+response[i].shipping_id+'\',\''+response[i].order+'\')">Mercado Envíos</button>';
+						content += '<button type="button" class="form-control .mercadoenvio_'+response[i].order+'" style="background-color: #51cc60; color: white;" onclick="print_meli_label(\''+response[i].token+'\',\''+response[i].shipping_id+'\',\''+response[i].order+'\')">Mercado Envíos</button>';
 						$('.send_later').show();
 					}else{
 						content += '<button type="button" class="form-control" style="background-color: #51cc60; color: white;" onclick="">Enviado</button>';
@@ -1172,12 +1174,89 @@ function get_meli_not_delivered() {
 					content += '<button type="button" class="form-control" style="background-color: #f37171; color: white; onclick="send_later(\''+response[i].order+'\')">Enviar después</button>';
 					content += '</div>';
 					content += '</div>';
-					content += '<div class="row" style="padding-left: 20%; display:none;" id="'+response[i].order+'">';
+					content += '<div class="row" style="margin-left:20%; width: 800px; display:none;" id="'+response[i].order+'">';
+
+
+					//----------------------------------------------------------------------
+
+					content +='<table width="400px" border="1px" style="color:black">';
+					content +='<tr style="text-align:center">';
+					content +='		<td colspan="2" ><i >Guía a Convenir</i></td>';
+					content +='</tr>';
+					content +='<tr style="text-align:center">';
+					content +='		<td colspan="2"><i>Datos del Destinatario</i></td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='		<td>Ciudad</td>';
+					content +='		<td><div class=""><h3>'+response[i].buyer_city+'</h3></div></td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='		<td>Nombre</td>';
+					content +='		<td><div class=""><h3>'+response[i].buyer_fullname+'</h3></div></td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='		<td>Teléfono</td>';
+					content +='		<td><div class=""><h3>'+response[i].buyer_phone+'</h3></div></td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='		<td>Dirección</td>';
+					content +='		<td><div class="" style="width:545px; text-align: center;"><h3>'+response[i].buyer_address+'</h2></div></td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='		<td colspan="2">';
+					content += '		</div>';
+					content += '			<div style="height: 20px; background-color: grey;"></div>';
+					content += '		<div class="row" style="height: auto;text-align: center; padding-bottom: 10px; margin-left: 0px; width: 800px;">';
+					content += '			<h1>Datos del Remitente</h1>';
+					content += '			<h3>QUEENBEE</h3>';
+					content += '			<h3>NIT.: '+seller_nit+'</h3>';
+					content += '			<i>CRA 13 #51 - 25 OFICINA 401</i>';
+					content += '			<br>';
+					content += '			<i>BOGOTÁ DC</i>';
+					content += '			<br>';
+					content += '			<i>TELÉFONO: +57 (320) 917 0419</i>';
+					content += '		</div>';
+					content +='		</td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='		<td colspan="2"></td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='		<td>NOTA DE ENVIO</td>';
+					content +='		<td><div class=""><h3>'+response[i].order+'</h3></div></td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='		<td>Valor Declarado</td>';
+					content +='		<td><div class=""><h3>'+response[i].order_price+'</h3></div></td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='		<td>Dice Contenedor</td>';
+					content +='		<td><div class="" style="border-right: none;"><h3>'+response[i].title+'</h3></div></td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='		<td>CANAL</td>';
+					content +='		<td><h3>'+seller_name+'</h3></td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='<td colspan="2">';
+					content += '<div class="row" style="height: 170px; display: inline-flex; width: 800px; margin-left: 0px;"> <img src="images/logo.png" style="width: 150px; height: 150px; margin-left: 10px;">';
+					content += '<div style="padding-left: 150px; text-align: center; padding-top: 45px;">';
+					content += '<i>Consigue los mejores Productos a un Precio más Bajo</i>';
+					content += '<h2>ingresa a: www.imppera.com</h2>';
+					content += '<h4>320 917 0419</h4>';
+					content += '</div></td>';
+					content +='</tr>';
+
+					content +='</div>';
+
+
+					//--------------------------------------------------------
+/*
 					content += '<div class="body_label">'
 					content += '<div style="text-align: center;">';
 					content += '<i>Guía a Convenir</i>';
 					content += '</div>';
-					content += '<div class="header_label"><h1>Datos del Destinatario</h1></div>';
+					content += '<div class="header_label"><i>Datos del Destinatario</i></div>';
 					content += '<div class="row base_label" style="margin-left: 0px;">';
 					content += '<div class="titles_label">Ciudad</div>';
 					content += '<div class="col_label s3_label">'+response[i].buyer_city+'</div>';
@@ -1221,7 +1300,7 @@ function get_meli_not_delivered() {
 					content += '</div>';
 					content += '</div>';
 					content += '</div>';
-					content += '</div>';
+					content += '</div>';*/
 				}
 				$('.loading_gif').hide();
 				$('#base_content').append(content);
@@ -1235,7 +1314,7 @@ function get_meli_not_delivered() {
 function get_delivered_items_queen_bee() {
 	console.log('getting items delivered queen bee...');
 	var shop_id = 1;
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',{ action : 'get_order_delivered', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
+	$.post(url_base+'services/meli_manager.php',{ action : 'get_order_delivered', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
 
 	}).done(function(e){
 		var rows = "";
@@ -1272,7 +1351,7 @@ function get_delivered_items_queen_bee() {
 function get_delivered_items_mauxi() {
 	console.log('getting items delivered mauxi...');
 	var shop_id = 2;
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',{ action : 'get_order_delivered', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
+	$.post(url_base+'services/meli_manager.php',{ action : 'get_order_delivered', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
 
 	}).done(function(e){
 		var rows = "";
@@ -1312,12 +1391,14 @@ function get_delivered_items_mauxi() {
 function search_item(element){
 	var content = "";
 	$('.loading_gif').show();
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	
+	$.post(url_base+'services/meli_manager.php',
 	{
 		action : 'shipping_search',
 		aws_tracking : $(element).val(),
 		user_id: sessionStorage.getItem('id')
 	}).done(function(e){
+
 		var response = JSON.parse(e);
 		var seller_name = "";
 		var seller_nit = "";
@@ -1379,11 +1460,160 @@ function search_item(element){
 			content += '</div>';
 			content += '</div>';
 			content += '<div class="col-md-3 col-sm-3" style="margin-top: 24px;">';
+			switch (response[i].shipping_mode) {
+				case 'me2':
+					if (response[i].order_status != 'delivered'){
+        				content += '<button type="button" class="form-control mercadoenvio_'+response[i].shipping_id+'" style="background-color: #51cc60; color: white;" onclick="print_meli_label(\''+response[i].token+'\',\''+response[i].shipping_id+'\',\''+response[i].order+'\')">Mercado Envíos</button>';
+        				$('.send_later').show();
+					}else{
+        				content += '<button type="button" class="form-control" style="background-color: #51cc60; color: white;" onclick="">Enviado</button>';}
+					break;
+				case 'custom':
+            		content += '<button type="button" class="form-control" style="background-color: #96e6a0; color: white;" onclick="print_local_label(\''+response[i].order+'\')">Convenir</button>';
+            		$('.send_later').show();
+					break;
+				default:
+            		content += '<button type="button" class="form-control" style="background-color: #96e6a0; color: white;" onclick="print_local_label(\''+response[i].order+'\')">Sin tipo de método</button>';
+            		$('.send_later').show();
+					break;	
+			}
+			content += '<button type="button" class="form-control print" style="background-color: #337ab7; color: white; display:none;" onclick="print_label(\''+response[i].order+'\',\''+response[i].seller_id+'\')">Imprimir</button>';
+			content += '<button type="button" class="form-control preview" style="background-color: #f3091c; color: white; display:none;" onclick="hide_label(\''+response[i].order+'\')">Cerrar vista previa</button>';				
+			content += '<button type="button" class="form-control" style="background-color: #f37171; color: white;" onclick="send_later(\''+response[i].order+'\')">Enviar después</button>';
+			content += '</div>';
+			content += '</div>';
+			
+			content += '<div class="row" style="margin-left: 20%; display:none; width:800px" id="'+response[i].order+'">';
+			content += '<div class="body_label" style="margin-left:0">'
+			content +='<table width="400px" border="1px" style="color:black">';
+			content +='<tr style="text-align:center">';
+			content +='		<td colspan="2" ><i >Guía a Convenir</i></td>';
+			content +='</tr>';
+			content +='<tr style="text-align:center">';
+			content +='		<td colspan="2"><i>Datos del Destinatario</i></td>';	
+			content +='</tr>';
+			content +='<tr>';
+			content +='		<td>Ciudad</td>';
+			content +='		<td><div class=""><h3>'+response[i].buyer_city+'</h3></div></td>';
+			content +='</tr>';
+			content +='<tr>';
+			content +='		<td>Nombre</td>';
+			content +='		<td><div class=""><h3>'+response[i].buyer_fullname+'</h3></div></td>';
+			content +='</tr>';
+			content +='<tr>';
+			content +='		<td>Teléfono</td>';
+			content +='		<td><div class=""><h3>'+response[i].buyer_phone+'</h3></div></td>';
+			content +='</tr>';
+			content +='<tr>';
+			content +='		<td>Dirección</td>';
+			content +='		<td><div class="" style="width:545px; text-align: center;"><h3>'+response[i].buyer_address+'</h2></div></td>';
+			content +='</tr>';
+			content +='<tr>';
+			content +='		<td colspan="2">';
+			content += '		</div>';
+			content += '			<div style="height: 20px; background-color: grey;"></div>';
+			content += '		<div class="row" style="height: auto; text-align: center; padding-bottom: 10px; margin-left: 0px; width: 800px;">';
+			content += '			<h1>Datos del Remitente</h1>';
+			content += '			<h3>QUEENBEE</h3>';
+			content += '			<h3>NIT.: '+seller_nit+'</h3>';
+			content += '			<i>CRA 13 #51 - 25 OFICINA 401</i>';
+			content += '			<br>';
+			content += '			<i>BOGOTÁ DC</i>';
+			content += '			<br>';
+			content += '			<i>TELÉFONO: +57 (320) 917 0419</i>';
+			content += '		</div>';
+			content +='		</td>';
+			content +='</tr>';
+			content +='<tr>';
+			content +='		<td colspan="2"></td>';
+			content +='</tr>';
+			content +='<tr>';
+			content +='		<td>NOTA DE ENVIO</td>';
+			content +='		<td><div class=""><h3>'+response[i].order+'</h3></div></td>';
+			content +='</tr>';
+			content +='<tr>';
+			content +='		<td>Valor Declarado</td>';
+			content +='		<td><div class=""><h3>'+response[i].order_price+'</h3></div></td>';
+			content +='</tr>';
+			content +='<tr>';
+			content +='		<td>Dice Contenedor</td>';
+			content +='		<td><div class="" style="border-right: none;"><h3>'+response[i].title+'</h3></div></td>';
+			content +='</tr>';
+			content +='<tr>';
+			content +='		<td>CANAL</td>';
+			content +='		<td><h3>'+seller_name+'</h3></td>';
+			content +='</tr>';
+			content +='<tr>';
+			content +='<td colspan="2">';
+			content += '<div class="row" style="height: 170px; display: inline-flex; width: 800px; margin-left: 0px;"> <img src="images/logo.png" style="width: 150px; height: 150px; margin-left: 10px;">';
+			content += '<div style="padding-left: 150px; text-align: center; padding-top: 45px;">';
+			content += '<i>Consigue los mejores Productos a un Precio más Bajo</i>';
+			content += '<h2>ingresa a: www.imppera.com</h2>';
+			content += '<h4>320 917 0419</h4>';
+			content += '</div></td>';
+			content +='</tr>';
+			content += '</table>';
+			content += '</div>';
+			content += '</div>';
+		}
+		$('#base_content').empty();
+		$('.loading_gif').hide();
+		$('#base_content').append(content);
+		console.log(response);
+
+			/*
+			content += '<div class="row" style="border-bottom: 2px solid #73879c; margin-left: 20px;" id_order = '+response[i].order+' id ="order_detail_'+response[i].order+'">';
+			content += '<div class="col-md-4 col-sm-4">';
+			content += '<img src="'+response[i].image+'" width="400px">';
+			content += '</div>';
+			content += '<div class="col-md-4 col-sm-4 form-group">';
+			content += '<div class="row">';
+			content += '<div class="col-md-6" style="padding-left: 0;">';
+			content += '<label for="order">#Orden:</label>';
+			content += '<input type="text" name="order" id="order" class="form-control" value="'+response[i].order+'" disable>';
+			content += '</div>';
+			content += '<div class="col-md-6" style="padding-right:0;">';
+			content += '<label for="account">#Cuenta:</label>';
+			content += '<input type="text" name="account" id="account" class="form-control" value="'+seller_name+'" disable>';
+			content += '</div>';
+			content += '</div>';
+			content += '<div class="row">';
+			content += '<label for="title">Título:</label>';
+			content += '<input type="text" name="title" id="title" class="form-control" value="'+response[i].title+'" disable>';
+			content += '</div>';
+			content += '<div class="row">';
+			content += '<label for="aws:price">Precio de compra:</label>';
+			content += '<input type="text" name="aws:price" id="aws:price" class="form-control" value="'+response[i].price_aws+'" disable>';
+			content += '</div>';
+			content += '<div class="row">';
+			content += '<div class="col-md-6" style="padding-left: 0;">';
+			content += '<label for="price">Precio de venta:</label>';
+			content += '<input type="text" name="price" id="price" class="form-control" value="'+response[i].price+'" disable>';
+			content += '</div>';
+			content += '<div class="col-md-6" style="padding-right: 0;">';
+			content += '<label for="quantity">Cantidad:</label>';
+			content += '<input type="text" name="quantity" id="quantity" class="form-control" value="'+response[i].quantity+'" disable>';
+			content += '</div>';
+			content += '</div>';
+			content += '<div class="row">';
+			content += '<label for="note">Nota:</label>';
+			content += '<br>';
+			for(var j in response[i].notes){
+				content += '<b style="font-size:9px; position:relative; left: 333px;">'+response[i].notes[j].date+'</b>';
+				content += '<input type="text" name="note" id="note" class="form-control" value="'+response[i].notes[j].note+'" disable>';
+			}
+			content += '</div>';
+			content += '<div class="row">';
+			content += '<label for="comment">Comentario:</label>';
+			content += '<input type="text" name="comment" id="comment" class="form-control" value="'+response[i].quantity+'" disable>';
+			content += '</div>';
+			content += '</div>';
+			content += '<div class="col-md-3 col-sm-3" style="margin-top: 24px;">';
 			
 				switch (response[i].shipping_mode) {
 					case 'me2':
 						if (response[i].order_status != 'delivered'){
-            				content += '<button type="button" class="form-control mercadoenvio" style="background-color: #51cc60; color: white;" onclick="print_meli_label(\''+response[i].token+'\',\''+response[i].shipping_id+'\',\''+response[i].order+'\')">Mercado Envíos</button>';
+            				content += '<button type="button" class="form-control mercadoenvio_'+response[i].shipping_id+'" style="background-color: #51cc60; color: white;" onclick="print_meli_label(\''+response[i].token+'\',\''+response[i].shipping_id+'\',\''+response[i].order+'\')">Mercado Envíos</button>';
             				$('.send_later').show();
 						}else{
             				content += '<button type="button" class="form-control" style="background-color: #51cc60; color: white;" onclick="">Enviado</button>';}
@@ -1403,60 +1633,84 @@ function search_item(element){
 					content += '<button type="button" class="form-control" style="background-color: #f37171; color: white;" onclick="send_later(\''+response[i].order+'\')">Enviar después</button>';
 					content += '</div>';
 					content += '</div>';
+					
 					content += '<div class="row" style="padding-left: 20%; display:none;" id="'+response[i].order+'">';
 					content += '<div class="body_label">'
-					content += '<div style="text-align: center;">';
-					content += '<i>Guía a Convenir</i>';
-					content += '</div>';
-					content += '<div class="header_label"><h1>Datos del Destinatario</h1></div>';
-					content += '<div class="row base_label" style="margin-left: 0px;">';
-					content += '<div class="titles_label">Ciudad</div>';
-					content += '<div class="col_label s3_label">'+response[i].buyer_city+'</div>';
-					content += '<div class="titles_label">Nombre</div>';
-					content += '<div class="col_label s3_label">'+response[i].buyer_fullname+'</div>';
-					content += '<div class="titles_label">Teléfono</div>';
-					content += '<div class="col_label s3_label" style="border-right: none;">'+response[i].buyer_phone+'</div>';
-					content += '</div>';
-					content += '<div class="row base_label" style="margin-left: 0px;">';
-					content += '<div class="col_label s4_label" style="width:254px; border-right: 1px solid black; padding-left: 50px;"><h3>Dirección</h3></div>';      
-					content += '<div class="col_label s4_label" style="width:545px; text-align: center;"><h2>'+response[i].buyer_address+'</h2></div>';     
-					content += '</div>';
-					content += '<div style="height: 20px; background-color: grey; border-top: 1px solid black; border-bottom: 1px solid black;"></div>';
-					content += '<div class="row" style="height: auto; border-bottom: 1px solid black; text-align: center; padding-bottom: 10px; margin-left: 0px; width: 800px;">';
-					content += '<h1>Datos del Remitente</h1>';
-					content += '<h3>'+seller_name+'</h3>';
-					content += '<h3>NIT.: '+seller_nit+'</h3>';
-					content += '<i>CRA 13 #51 - 25 OFICINA 401</i>';
-					content += '<br>';
-					content += '<i>BOGOTÁ DC</i>';
-					content += '<br>';
-					content += '<i>TELÉFONO: +57 (320) 917 0419</i>';
-					content += '</div>';
-					content += '<div class="row base_label" style="margin-left: 0px;">';
-					content += '<div class="titles_label" style="width: 47px; font-size: 10px;">NOTA DE ENVIO</div>';
-					content += '<div class="col_label s3_label"><h5>'+response[i].order+'</h5></div>';
-					content += '<div class="titles_label" style="width: 47px; font-size: 10px;">Valor Declarado</div>';
-					content += '<div class="col_label s3_label"><h3>'+response[i].order_price+'</h3></div>';
-					content += '<div class="titles_label" style="width: 47px; font-size: 10px;">Dice Contenedor</div>';
-					content += '<div class="col_label s3_label" style="border-right: none;"><p>'+response[i].title+'</p></div>';
-					content += '</div>';
-					content += '<div class="row base_label" style="height: 80px; margin-left: 0px;">';
-					content += '<div class="col_label s4_label" style="width:261px; border-right: 1px solid black;"><h2>CANAL</h2></div>';
-					content += '<div class="col_label s4_label" style="width:533px; text-align: center;"><h3>QUEENBEE</h3></div>';
-					content += '</div>';
-					content += '<div class="row" style="height: 170px; border-top: 1px solid black; display: inline-flex; width: 800px; margin-left: 0px;"> <img src="images/logo.png" style="width: 150px; height: 150px; margin-left: 10px;">';
+					content +='<table width="400px" border="1px" style="color:black">';
+					content +='<tr style="text-align:center">';
+					content +='		<td colspan="2" ><i >Guía a Convenir</i></td>';
+					content +='</tr>';
+					content +='<tr style="text-align:center">';
+					content +='		<td colspan="2"><i>Datos del Destinatario</i></td>';	
+					content +='</tr>';
+					content +='<tr>';
+					content +='		<td>Ciudad</td>';
+					content +='		<td><div class=""><h3>'+response[i].buyer_city+'</h3></div></td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='		<td>Nombre</td>';
+					content +='		<td><div class=""><h3>'+response[i].buyer_fullname+'</h3></div></td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='		<td>Teléfono</td>';
+					content +='		<td><div class=""><h3>'+response[i].buyer_phone+'</h3></div></td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='		<td>Dirección</td>';
+					content +='		<td><div class="" style="width:545px; text-align: center;"><h3>'+response[i].buyer_address+'</h2></div></td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='		<td colspan="2">';
+					content += '		</div>';
+					content += '			<div style="height: 20px; background-color: grey;"></div>';
+					content += '		<div class="row" style="height: auto; text-align: center; padding-bottom: 10px; margin-left: 0px; width: 800px;">';
+					content += '			<h1>Datos del Remitente</h1>';
+					content += '			<h3>'+seller_name+'</h3>';
+					content += '			<h3>NIT.: '+seller_nit+'</h3>';
+					content += '			<i>CRA 13 #51 - 25 OFICINA 401</i>';
+					content += '			<br>';
+					content += '			<i>BOGOTÁ DC</i>';
+					content += '			<br>';
+					content += '			<i>TELÉFONO: +57 (320) 917 0419</i>';
+					content += '		</div>';
+					content +='		</td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='		<td colspan="2"></td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='		<td>NOTA DE ENVIO</td>';
+					content +='		<td><div class=""><h3>'+response[i].order+'</h3></div></td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='		<td>Valor Declarado</td>';
+					content +='		<td><div class=""><h3>'+response[i].order_price+'</h3></div></td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='		<td>Dice Contenedor</td>';
+					content +='		<td><div class="" style="border-right: none;"><h3>'+response[i].title+'</h3></div></td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='		<td>CANAL</td>';
+					content +='		<td><h3>QUEENBEE</h3></td>';
+					content +='</tr>';
+					content +='<tr>';
+					content +='<td colspan="2">';
+					content += '<div class="row" style="height: 170px; display: inline-flex; width: 800px; margin-left: 0px;"> <img src="images/logo.png" style="width: 150px; height: 150px; margin-left: 10px;">';
 					content += '<div style="padding-left: 150px; text-align: center; padding-top: 45px;">';
 					content += '<i>Consigue los mejores Productos a un Precio más Bajo</i>';
 					content += '<h2>ingresa a: www.imppera.com</h2>';
 					content += '<h4>320 917 0419</h4>';
-					content += '</div>';
-					content += '</div>';
+					content += '</div></td>';
+					content +='</tr>';
+					content += '</table>';
 					content += '</div>';
 					content += '</div>';
 				}
 				$('.loading_gif').hide();
 				$('#base_content').append(content);
-				console.log(response);
+				console.log(response);*/
+			
 
 			});
 }
@@ -1470,7 +1724,7 @@ function search_item(element){
 function get_orders_queen_bee() {
 	console.log('getting items queen bee...');
 	var shop_id = 1;
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',{ action : 'get_order', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
+	$.post(url_base+'services/meli_manager.php',{ action : 'get_order', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
 
 	}).done(function(e){
 		var rows = "";
@@ -1482,7 +1736,7 @@ function get_orders_queen_bee() {
 function get_orders_mauxi() {
 	console.log('getting items mauxi...');
 	var shop_id = 2;
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',{ action : 'get_order', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
+	$.post(url_base+'services/meli_manager.php',{ action : 'get_order', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
 
 	}).done(function(e){
 		var rows = "";
@@ -1500,7 +1754,7 @@ function get_orders_mauxi() {
 function get_orders_quee_bee_pending() {
 	console.log('getting pending items mauxi...');
 	var shop_id = 1;
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',{ action : 'get_order_pending', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
+	$.post(url_base+'services/meli_manager.php',{ action : 'get_order_pending', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
 
 	}).done(function(e){
 		var rows = "";
@@ -1560,7 +1814,7 @@ function get_orders_quee_bee_pending() {
 function get_orders_mauxi_pending() {
 	console.log('getting pending items mauxi...');
 	var shop_id = 2;
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',{ action : 'get_order_pending', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
+	$.post(url_base+'services/meli_manager.php',{ action : 'get_order_pending', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
 
 	}).done(function(e){
 		var rows = "";
@@ -1622,7 +1876,7 @@ function get_orders_mauxi_pending() {
 function get_orders_queen_bee_cancel() {
 	console.log('getting canceled items mauxi...');
 	var shop_id = 1;
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',{ action : 'get_order_cancel', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
+	$.post(url_base+'services/meli_manager.php',{ action : 'get_order_cancel', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
 
 	}).done(function(e){
 		var rows = "";
@@ -1673,7 +1927,7 @@ function get_orders_queen_bee_cancel() {
 function get_orders_mauxi_cancel() {
 	console.log('getting canceled items mauxi...');
 	var shop_id = 2;
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',{ action : 'get_order_cancel', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
+	$.post(url_base+'services/meli_manager.php',{ action : 'get_order_cancel', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
 
 	}).done(function(e){
 		var rows = "";
@@ -1730,7 +1984,7 @@ function get_orders_mauxi_cancel() {
 function buyer_manager_queen_bee() {
 	console.log('getting items queen bee...');
 	var shop_id = 1;
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',{ action : 'get_order_aws', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
+	$.post(url_base+'services/meli_manager.php',{ action : 'get_order_aws', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
 
 	}).done(function(e){
 		var rows = "";
@@ -1742,7 +1996,7 @@ function buyer_manager_queen_bee() {
 function buyer_manager_mauxi() {
 	console.log('getting items mauxi...');
 	var shop_id = 2;
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',{ action : 'get_order_aws', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
+	$.post(url_base+'services/meli_manager.php',{ action : 'get_order_aws', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
 
 	}).done(function(e){
 		var rows = "";
@@ -1760,7 +2014,7 @@ function buyer_manager_mauxi() {
 function error_manager_queen_bee() {
 	console.log('getting error items queen bee...');
 	var shop_id = 1;
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',{ action : 'get_order_error', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
+	$.post(url_base+'services/meli_manager.php',{ action : 'get_order_error', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
 
 	}).done(function(e){
 		var rows = "";
@@ -1804,7 +2058,7 @@ function error_manager_queen_bee() {
 function error_manager_mauxi() {
 	console.log('getting error items mauxi...');
 	var shop_id = 2;
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',{ action : 'get_order_error', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
+	$.post(url_base+'services/meli_manager.php',{ action : 'get_order_error', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
 
 	}).done(function(e){
 		var rows = "";
@@ -1853,7 +2107,7 @@ function error_manager_mauxi() {
 //+++++++++++++++++++++++++++++++++++ START WARRANTY MANAGER FUNCTIONS ++++++++++++++++++++++++++++++++++++++++++++
 function get_warranty_items() {
 	console.log('getting items warranties...');
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',{ action : 'get_order_aws_warranty', user_id: sessionStorage.getItem('id')}).fail(function(){
+	$.post(url_base+'services/meli_manager.php',{ action : 'get_order_aws_warranty', user_id: sessionStorage.getItem('id')}).fail(function(){
 
 	}).done(function(e){
 		var rows = "";
@@ -1878,7 +2132,7 @@ function get_warranty_items() {
 }
 //******* START NEW WARRANTIES
 function new_warranty(){
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post(url_base+'services/meli_manager.php',
 	{
 		action : 'new_warranty',
 		create_date : $('#create_date').val(),
@@ -1910,7 +2164,7 @@ function new_warranty(){
 //+++++++++++++++++++++++++++++++++++ START EXTRA ORDERS MANAGER FUNCTIONS ++++++++++++++++++++++++++++++++++++++++++++
 function get_extra_order_items() {
 	console.log('getting items Extra orders...');
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',{ action : 'get_order_aws_extra', user_id: sessionStorage.getItem('id')}).fail(function(){
+	$.post(url_base+'services/meli_manager.php',{ action : 'get_order_aws_extra', user_id: sessionStorage.getItem('id')}).fail(function(){
 
 	}).done(function(e){
 		var rows = "";
@@ -1947,7 +2201,7 @@ function get_extra_order_items() {
 }
 //******* START NEW ORDERS
 function new_order(){
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',
+	$.post(url_base+'services/meli_manager.php',
 	{
 		action : 'new_order',
 		create_date : $('#create_date').val(),
@@ -1980,7 +2234,7 @@ function new_order(){
 //+++++++++++++++++++++++++++++++++++ START WORKFLOW MANAGER FUNCTIONS ++++++++++++++++++++++++++++++++++++++++++++
 //******* START ORDER STATUS MANAGER FUNCTIONS
 function confirm_order(id_order,id_element){
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',{
+	$.post(url_base+'services/meli_manager.php',{
 		action : 'confirm_order',
 		id_order : id_order,
 		user_id: sessionStorage.getItem('id')
@@ -1992,7 +2246,7 @@ function confirm_order(id_order,id_element){
 		});
 }
 function pending_order(id_order,id_element){
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',{
+	$.post(url_base+'services/meli_manager.php',{
 		action : 'pending_order',
 		id_order : id_order,
 		user_id: sessionStorage.getItem('id')
@@ -2028,7 +2282,7 @@ function refuse_order(id_order,id_element,type){
 			break;
 
 		}
-		$.post('https://core.enkargo.com.co/services/meli_manager.php',{
+		$.post(url_base+'services/meli_manager.php',{
 			action : 'refuse_order',
 			id_order : id_order,
 			type: type,
@@ -2045,7 +2299,7 @@ function refuse_order(id_order,id_element,type){
 	}
 
 	function buy_order(id_order,id_element){
-		$.post('https://core.enkargo.com.co/services/meli_manager.php',{
+		$.post(url_base+'services/meli_manager.php',{
 			action : 'buy_order',
 			id_order : id_order,
 			user_id: sessionStorage.getItem('id')
@@ -2067,7 +2321,7 @@ function refuse_order(id_order,id_element,type){
 		var comment;
 		var notes = "";
 		$(".save_comment").attr('id_order',id_order);
-		$.post('https://core.enkargo.com.co/services/meli_manager.php',{
+		$.post(url_base+'services/meli_manager.php',{
 			action : 'get_note',
 			shop_id : shop_id,
 			id_order : id_order,
@@ -2078,13 +2332,14 @@ function refuse_order(id_order,id_element,type){
 				notes += "<b><h5 style='font-size:10px;'>Fecha: "+response[list].date+"</h5></b><q style='margin-left:50px;'>"+response[list].note+"</q><hr>";
 				notes += "<br>";
 			}
+			$(".notes_list").empty();
 			$(".notes_list").append(notes);
 			$(".item_detail_modal").modal("show");
 		});
 	}
 
 	function update_comment(id_order){
-		$.post('https://core.enkargo.com.co/services/meli_manager.php',{
+		$.post(url_base+'services/meli_manager.php',{
 			action : 'update_comment',
 			id_order : $(id_order).attr('id_order'),
 			comment : $('#comment_local').val(),
@@ -2103,7 +2358,7 @@ function refuse_order(id_order,id_element,type){
 	}
 
 	function send_message(id_order){
-		$.post('https://core.enkargo.com.co/services/meli_manager.php',{
+		$.post(url_base+'services/meli_manager.php',{
 			action : 'create_note',
 			id_order : $(id_order).attr('id_order'),
 			text : $('#comment').val()
@@ -2123,7 +2378,7 @@ function refuse_order(id_order,id_element,type){
 
 	function get_meli_items_queen_bee() {
 		console.log('getting items queen bee');
-		$.post('https://core.enkargo.com.co/services/meli_manager.php',{ action : 'get_order', shop_id : 1,user_id: sessionStorage.getItem('id')}).fail(function(){
+		$.post(url_base+'services/meli_manager.php',{ action : 'get_order', shop_id : 1,user_id: sessionStorage.getItem('id')}).fail(function(){
 
 		}).done(function(e){
 			var rows = "";
@@ -2188,7 +2443,7 @@ function aws_file(){
 	data.append('user_id',sessionStorage.getItem('id'));
 	$(".loading").show();
 	$.ajax({
-		url : 'https://core.enkargo.com.co/services/meli_manager.php',
+		url : url_base+'services/meli_manager.php',
 		data: data,
 		cache: false,
 		contentType: false,
@@ -2211,7 +2466,7 @@ function aws_extra_file(){
 	data.append('file',$('input:file')[0].files[0]);  
 	$(".loading").show();
 	$.ajax({
-		url : 'https://core.enkargo.com.co/services/meli_manager.php',
+		url : url_base+'services/meli_manager.php',
 		data: data,
 		cache: false,
 		contentType: false,
@@ -2248,32 +2503,34 @@ function send_later(id_order){
 function print_label(id_order,id_shop){
 	alert('Imprimiendo...');
 	var image;
-	var pdfDoc = new jsPDF('landscape', 'mm', 'a4');
-	var pdfDoc = new jsPDF('landscape', 'mm', 'a4');
+	//var pdfDoc = new jsPDF('landscape', 'px', 'letter');
+	var pdfDoc = new jsPDF('p', 'mm', [297, 210]);
 	var specialElementHandlers = {
 		'.ignoreContent' : function(element, render){return true;}};
 		html2canvas(document.getElementById(id_order), {
 			onrendered: function(canvas) {
 				var imgData = canvas.toDataURL('image/png');
 				console.log(imgData);
-				pdfDoc.addImage(imgData, 'PNG', 0, 0,210, 180);
+				pdfDoc.addImage(imgData, 'PNG', 0, 0,210, 297);
 				pdfDoc.save('orden_'+id_order+'.pdf');
 			}
 		});
 		refuse_order(id_order,null,3);
 	}
 function print_meli_label(access_token, shipping_id, id_order,element){
+	var url="";
 	refuse_order(id_order,null,3);
 	alert('Imprimiendo etiqueta de Mercado Envíos');
-	$('.mercadoenvio').hide();
-	window.open("http://api.mercadolibre.com/shipment_labels?shipment_ids="+shipping_id+"&savePdf=Y&access_token="+access_token);
+	$('.mercadoenvio_'+id_order).hide();
+	alert(url="http://api.mercadolibre.com/shipment_labels?shipment_ids="+shipping_id+"&savePdf=Y&access_token="+access_token);
+	window.open(url);
 }
 //******* END TRACKING FUNCTIONS MANAGER
 
 //******* START ORDERS FUNCTIONS MANAGER
 function ver_item_detail(id){
 	sessionStorage.setItem('id_order',id);
-	$.post('http://185.44.66.53/enkargo/services/meli_manager.php',{
+	$.post(url_base+'services/meli_manager.php',{
 		action:'view_item_detail',
 		id: id,
 		user_id: sessionStorage.getItem('id')
@@ -2298,7 +2555,7 @@ function ver_item_detail(id){
 }
 
 function update_item_detail(){
-	$.post('https://core.enkargo.com.co/services/meli_manager.php',{
+	$.post(url_base+'services/meli_manager.php',{
 		action:'update_item_detail',
 		id : sessionStorage.getItem('id_order'),
 		priceMl: $('#priceMl').val(),

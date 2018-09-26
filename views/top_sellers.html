@@ -93,15 +93,11 @@
             <div class="menu_section">
               <h3>Sites Manager</h3>
               <ul class="nav side-menu">
-                <li onclick="window.location.replace('main_orders.html')"><a data-toggle="tooltip" data-placement="right" title="Ir al men&uacute; de inicio" ><i class="fa fa-home"></i> Inicio <span class=""></span></a>
+                <li onclick="window.location.replace('main_bench.html')"><a data-toggle="tooltip" data-placement="right" title="Ir al men&uacute; de inicio" ><i class="fa fa-home"></i> Inicio <span class=""></span></a>
                 </li>
-                <li onclick="window.location.replace('buyer_manager.html')" style="background-color:#ededed; "><a data-toggle="tooltip" data-placement="right" title="Listar compras" style="color:#2a3f54;"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Compras <span class=""></span></a>
+                <li onclick="window.location.replace('top_sellers.html')" style="background-color:#ededed; "><a data-toggle="tooltip" data-placement="right" title="Ir a lista de Top sellers" style="color:#2a3f54;"><i class="fa fa-shopping-bag" aria-hidden="true"></i> Top Sellers <span class=""></span></a>
                 </li>
-                <li onclick="window.location.replace('error_manager.html')" ><a data-toggle="tooltip" data-placement="right" title="Listar todas las Novedades"><i class="fa fa-exclamation-triangle"></i> Novedades <span class=""></span></a>
-                </li>
-                <li onclick="window.location.replace('warranty_manager.html')"><a data-toggle="tooltip" data-placement="right" title="Listar todas las órdenes pendientes por garantía" ><i class="fa fa-handshake-o"></i> Garantías <span class=""></span></a>
-                </li>
-                <li onclick="window.location.replace('order_manager.html')"><a data-toggle="tooltip" data-placement="right" title="Listar todos los pedidos extra" ><i class="fa fa-upload"></i> Pedidos Extra <span class=""></span></a>
+                <li onclick="window.location.replace('top_sales.html')" ><a data-toggle="tooltip" data-placement="right" title="Listar todas las Novedades"><i class="fa fa-arrow-up"></i> Top Sales <span class=""></span></a>
                 </li>
               </ul>
             </ul>
@@ -130,16 +126,6 @@
     <!-- /top navigation -->
     <!-- page content -->
     <div class="right_col" role="main">
-      <div class="row">
-        <div class="form-group">
-          <label for="fileinput">Subir Archivo AWS</label>
-          <input type="file" name="" id="fileinput'" value="" placeholder="" class="form-control" onchange="" style="">
-          <div class="row" style="text-align: center;">
-            <div class="col-md-6"><button class="btn btn-default" id="loadFile" onclick="aws_file()">Cargar</button></div>
-            <div class="col-md-6"><button class="btn btn-default" id="cancelLoadFile">Cancelar</button></div>
-          </div>
-        </div>
-      </div>
       <!-- top tiles -->
       <div class="row title_count" >
         <!-- /top tiles -->
@@ -148,43 +134,29 @@
            <!-- Queen bee shop items avaliables-->
            <div class="row queen_panel" style="display: none;">
             <div class="x_panel">
-              <div class="x_title collapse-link row" data-toggle="tooltip" data-placement="bottom" title="Ver listado de productos disponibles en Quee Bee">
+              <div class="x_title collapse-link row" data-toggle="tooltip" data-placement="bottom" title="Ver listado Tiendas Oficiales">
                 <div class="title col-md-10 col-sm-10 col-xs-12">
-                  <h2>Órdenes Queen Bee <small></small></h2>
+                  <h2>Monitor de sellers - Tiendas Oficiales<small></small></h2>
                   <div class="clearfix"></div>
                 </div>
                 <div class="col-md-2 col-sm-2 col-xs-12" style="text-align: right;">
-                  <img  class="" src="images/queen_bee.png" style="width: 100px;">
+                  <img  class="" src="" style="width: 100px;">
                 </div>
                 <div class="clearfix"></div>
               </div>
               <div class="x_content" display="none" style="display: block;">
                 <p class="text-muted font-12 m-b-30">
-                  <!--b>Productos Disponibles en Amazon.</b-->
                 </p>
                 <table id="list_queen_bee" class="table table-striped table-bordered" width="100%">
                  <thead>
                   <tr>
-                    <th>ID Orden</th>
-                    <th>Fecha Creacion</th>
-                    <th>SKU</th>
-                    <th>MPID</th>
-                    <th>Precio Base Amazon</th>
-                    <th>Precio Unitario ML</th>
-                    <th>Precio Total ML</th>
-                    <th>Cantidad Vendida</th>
-                    <th>Disponible</th>
-                    <th>URL</th>
-                    <th>Nota</th>
-                    <th>Comentario</th>
-                    <th>Ver detalle</th>
-                    <th>Comprar</th>
-                    <th>fecha compra</th>
-                    <th data-class='hidden'>Cuenta</th>
-                    <th data-class='hidden'>Status ML</th>
-                    <th data-class='hidden'>Status Amazon</th>
-                    <th data-class='hidden'>N Orden Amazon</th>
-                    <th data-class='hidden'>Tracking Amazon</th>
+                    <th>#</th>
+                    <th>Nickname</th>
+                    <th>Puntos Meli</th>
+                    <th>Nivel</th>
+                    <th>Ventas</th>
+                    <th>Stock</th>
+                    <th>Site</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -196,43 +168,29 @@
         </div>
         <div class="row mauxi_panel" style="display: none;">
           <div class="x_panel">
-            <div class="x_title collapse-link row" data-toggle="tooltip" data-placement="bottom" title="Ver listado de productos para compra en Mauxi">
+            <div class="x_title collapse-link row" data-toggle="tooltip" data-placement="bottom" title="Ver listado de Tiendas No Oficiales">
               <div class="title col-md-10 col-sm-10 col-xs-12">
-                <h2>Órdenes Mauxi <small></small></h2>
+                <h2>Monitor de Tiendas -  No Oficiales<small></small></h2>
                 <div class="clearfix"></div>
               </div>
               <div class="col-md-2 col-sm-2 col-xs-12" style="text-align: right;">
-                <img  class="" src="images/mauxi.png" style="width: 100px;">
+                <img  class="" src="" style="width: 100px;">
               </div>
               <div class="clearfix"></div>
             </div>
             <div class="x_content" display="none" style="display: block;">
               <p class="text-muted font-12 m-b-30">
-                <!--b>Productos Disponibles en Amazon.</b-->
               </p>
               <table id="list_mauxi" class="table table-striped table-bordered" width="100%">
                 <thead>
-                  <tr>
-                    <th>ID Orden</th>
-                    <th>Fecha</th>
-                    <th>SKU</th>
-                    <th>MPID</th>
-                    <th>Precio Base Amazon</th>
-                    <th>Precio Unitario ML</th>
-                    <th>Precio Total ML</th>
-                    <th>Cantidad Vendida</th>
-                    <th>Disponible</th>
-                    <th>URL</th>
-                    <th>Nota</th>
-                    <th>Comentario</th>
-                    <th>Ver detalle</th>
-                    <th>Comprar</th>
-                    <th>fecha compra</th>
-                    <th data-class='hidden'>Cuenta</th>
-                    <th data-class='hidden'>Status ML</th>
-                    <th data-class='hidden'>Status Amazon</th>
-                    <th data-class='hidden'>N Orden Amazon</th>
-                    <th data-class='hidden'>Trackin Amazon</th>
+                   <tr>
+                    <th>#</th>
+                    <th>Nickname</th>
+                    <th>Puntos Meli</th>
+                    <th>Nivel</th>
+                    <th>Ventas</th>
+                    <th>Stock</th>
+                    <th>Site</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -422,6 +380,7 @@
 <!--Application functions-->
 <script src="js/config.js?version=0.2"></script>
 <script src="js/meli.js"></script>
+<script src="js/bench.js"></script>
 <script src="js/login.js"></script>
 <script src="vendors/fastclick/lib/fastclick.js"></script>
 <!-- Custom Theme Scripts -->
@@ -430,17 +389,17 @@
   $(document).ready(function(){
     check_user();
     set_menu();
+    get_sellers_details();
     switch (sessionStorage.getItem('user_type')) {
       case '5':
       case '1':
-      buyer_manager_mauxi();
-      buyer_manager_queen_bee();
+    
       break;
       case '4':
-      buyer_manager_queen_bee();
+    
       break;
       case '3':
-      buyer_manager_mauxi();
+    
       break;
     }
     $('[data-toggle="tooltip"]').tooltip();

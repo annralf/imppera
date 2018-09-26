@@ -4,16 +4,16 @@ var dataTable;
 
 function session_check(){
 	if (response.user_type == 1 || response.user_type == 2) {
-    	$(location).attr('href','https://core.enkargo.com.co/views/meli_manager.html');				
+    	$(location).attr('href','http://192.168.0.52/enkargo/views/meli_manager.html');				
 	}
 	if (response.user_type == 3 || response.user_type == 4) {
-		$(location).attr('href','https://core.enkargo.com.co/views/cbt_manager.html');				
+		$(location).attr('href','http://192.168.0.52/enkargo/views/cbt_manager.html');				
 	}		
 	if (response.user_type == 5) {
-		$(location).attr('href','https://core.enkargo.com.co/views/aws_manager.html');	
+		$(location).attr('href','http://192.168.0.52/enkargo/views/aws_manager.html');	
 	}
 	if (response.user_type == 6) {
-		$(location).attr('href','https://core.enkargo.com.co/views/publish_manager.html');				
+		$(location).attr('href','http://192.168.0.52/enkargo/views/publish_manager.html');				
 	}
 	if (response.user_type == null) {
 		$(location).attr('href','index.html');
@@ -224,7 +224,7 @@ function load_items(option){
 	$(".amz_check:checked").each(function() {
 		amz_check.push($(this).val());		
 	});
-	$.post('https://core.enkargo.com.co/core_enkargo/services/loadItemsCbt.php', {
+	$.post('../services/loadItemsCbt.php', {
 		application: option,
 		items :amz_check 
 	}).done(function(e){
@@ -380,7 +380,7 @@ function price_tool(){
 
 function get_ctb_items_mauxi() {
 	console.log('getting items mauxi');
-	$.post('https://core.enkargo.com.co/enkargo/services/getCbt.php',{ application : 2, limit : 5}).fail(function(){
+	$.post('../services/getCbt.php',{ application : 2, limit : 5}).fail(function(){
 
 	}).done(function(e){
 		var rows = "";
@@ -419,7 +419,7 @@ function get_ctb_items_mauxi() {
 function get_ctb_item_detail(type,mlid,application) {	
 	$('.cbt_modal').text(' ');
 	$('.cbt_modal').attr('src',' ');
-	$.post('https://core.enkargo.com.co/core_enkargo/services/getCbtDet.php',{
+	$.post('../services/getCbtDet.php',{
 		mlid : mlid,
 		application: application
 	}).fail(function(){
@@ -455,7 +455,7 @@ function get_ctb_item_detail(type,mlid,application) {
 
 function update_cbt_item_detail(item_mpid, item_title, item_SKU, item_sale_price, item_package_weight, item_quantity, item_specification_english,application){
 	console.log('updating item detail...');
-	$.post('https://core.enkargo.com.co/core_enkargo/services/updateCbt.php',{
+	$.post('../services/updateCbt.php',{
 		application : application,
 		mlid : item_mpid,
 		SKU : item_SKU,

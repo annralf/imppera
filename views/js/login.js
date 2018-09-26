@@ -15,6 +15,7 @@
     $('[menu=ordenes]').show();
     $('[menu=tracking]').show();
     $('[menu=user]').hide();
+    $('[menu=tarea]').show();
     break;
     case '1':
     $('[menu=ordenes]').hide();
@@ -22,6 +23,7 @@
     $('[menu=user]').hide();
     $(".queen_panel").show();
     $(".mauxi_panel").show();
+    $('[menu=tarea]').show();
     break;
     case '2':
     $('[menu=ordenes]').hide();
@@ -29,10 +31,12 @@
     $('[menu=user]').hide();
     $(".queen_panel").show();
     $(".mauxi_panel").show();
+    $('[menu=tarea]').show();
     break;
     case '5':
     $(".queen_panel").show();
     $(".mauxi_panel").show();
+    $('[menu=tarea]').show();
     break;
     case '6':
     $('[menu=compras]').hide();
@@ -40,6 +44,7 @@
     $('[menu=tracking]').hide();
     $('[menu=user]').hide();
     $('[menu=offer]').show();
+    $('[menu=tarea]').show();
     break;
   }
 }
@@ -48,8 +53,10 @@ function check_user(){
   if(sessionStorage.getItem('usuario')){
     $('body').show();
     $('#user_name').text(sessionStorage.getItem('usuario',sessionStorage.getItem('user_name')));
+    $('#user_avatar').attr('src',sessionStorage.getItem('avatar',sessionStorage.getItem('avatar')));
+    $('#nombre_c').text(sessionStorage.getItem('nombre_c',sessionStorage.getItem('nombre_c')));
   }else{
-    $(location).attr('href','https://core.enkargo.com.co/views/');        
+    $(location).attr('href','http://192.168.0.52/enkargo/views/');        
   } }
 
   function logout(){
@@ -58,7 +65,7 @@ function check_user(){
     action: 'logout_user',
     user_id: sessionStorage.getItem('id')
   });
-  $(location).attr('href','https://core.enkargo.com.co/views/');
+  $(location).attr('href','http://192.168.0.52/enkargo/views/');
 }
 
 function user_login(){
@@ -81,7 +88,8 @@ function user_login(){
     sessionStorage.setItem('id',response.id);
     sessionStorage.setItem('usuario',response.user_name);
     sessionStorage.setItem('user_type',response.user_type);
-    $(location).attr('href','https://core.enkargo.com.co/views/main.html');
+    sessionStorage.setItem('nombre_c',response.name+" "+response.last_name);
+    $(location).attr('href','http://192.168.0.52/enkargo/views/main.html');
   }
 });
 }
