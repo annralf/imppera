@@ -21,7 +21,7 @@ if ($_POST['action'] == "publicar_mx") {
 	$id_sku = $result[0]['id'];
 
 	if ($id_sku>0) {
-		$update_var  = new aws_update('AKIAI3H6L6IHLGZ7VXWA','xJi2wZ/sxg3nBvD0dBnvyO5DyTdizPDjRnqXwq3u','Santiespi2000-20');
+		$update_var  = new aws_update('AKIAJIM77WK37THIDD2A','iTSOXDgktw7Kwk3pvDcdcfmt0aePp9TTpAnG0OPg','alexarodri-20');
 		$update = $update_var->execute_update("select id,upper(sku) as sku from aws.items where id =".$id_sku." ;","massive");
 		if($update=="create"){
 			$create = new meliGet();
@@ -77,7 +77,7 @@ if ($_POST['action'] == "publicar_qb") {
 	$id_sku = $result[0]['id'];
 
 	if ($id_sku>0) {
-		$update_var  = new aws_update('AKIAI3H6L6IHLGZ7VXWA','xJi2wZ/sxg3nBvD0dBnvyO5DyTdizPDjRnqXwq3u','Santiespi2000-20');
+		$update_var  = new aws_update('AKIAJIM77WK37THIDD2A','iTSOXDgktw7Kwk3pvDcdcfmt0aePp9TTpAnG0OPg','alexarodri-20');
 		$update = $update_var->execute_update("select id,upper(sku) as sku from aws.items where id =".$id_sku." ;","massive");
 		if($update=="create"){
 			$create = new meliGet();

@@ -59,8 +59,8 @@ class conex_manager {
 
 		$VAR = [
 			'grant_type'    => 'authorization_code',
-			'client_id'     => '38446615168321123775',
-			'client_secret' => '6868b661ba5ca4d20c0e7d8968e9678f',
+			'client_id'     => $client_id,
+			'client_secret' => $client_secret,
 			'code'          => $CODE
 		];
 		$ch = curl_init();
@@ -78,9 +78,9 @@ class conex_manager {
 
 		$sql = "UPDATE cbt.shop  SET access_token='".$opciones['access_token']."', refresh_access_token='".$opciones['refresh_token']."', update_date= '".date("Y-m-d H:i:s")."' WHERE id ='".$this->id_application."';";
 
-
 		try {
 			pg_query($sql);
+			//echo "==".$shop->name."==\n";
 			return 1;
 		} catch (Exception $e) {
 			return 0;
@@ -88,20 +88,19 @@ class conex_manager {
 	}
 }
 $conn       = new Connect();
-$query = pg_query($conn->conn, "SELECT * FROM cbt.shop WHERE id > 2;");
+$query = pg_query($conn->conn, "SELECT * FROM cbt.shop WHERE id >2 ;");
 while ($shop = pg_fetch_object($query)) {
 	$shop_manager     = new conex_manager($shop->id);
 	if (isset($_GET['code'])) {
-		echo $shop_manager->get_token($_GET['code'], $application_id,$secret_key);
+		echo $shop_manager->get_token($_GET['code'], $shop->application_id,$shop->secret_key);
 	}else{
 		$application = $shop_manager->get_application();
-		#echo $shop_manager->refresh_access_token()."\n";
+		$shop_manager->refresh_access_token()."\n";
 		##Para renovar el token se debe descomentar abajo y comentar arriba
 		/**Active just for restart token**/
-		header("Location:https://cbt.mercadolibre.com/merchant/authorization/?client_id=".$shop->application_id."&response_type=code&redirect_uri=https://core.enkargo.com.co/config/cbt_token.php");
-		exit;	
+		//header("Location:https://cbt.mercadolibre.com/merchant/authorization/?client_id=".$shop->application_id."&response_type=code&redirect_uri=https://core.enkargo.com.co/config/cbt_token.php");
+		//exit;	
 
 	}
 }
-
 ?>

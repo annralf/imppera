@@ -1,585 +1,471 @@
 <?php
+include_once '/var/www/html/enkargo/config/pdo_connector.php';
+include_once '/var/www/html/enkargo/config/lib/mp.php';
 
-/**
- * MercadoPago Integration Library
- * Access MercadoPago for payments integration
- *
- * @author hcasatti
- *
- */
-$GLOBALS["LIB_LOCATION"] = "/var/www/html/enkargo/lib";
 
-class MP {
 
-    const version = "0.5.3";
+class MePa {
+    public $access_token;
+    public $user_name;
+    public $source;
+    public $target;
+    public $categories_list = array();
+    public $conn;
+    
 
-    private $client_id;
-    private $client_secret;
-    private $ll_access_token;
-    private $access_data;
-    private $sandbox = FALSE;
-
-    function __construct() {
+    public function __construct() {
         $i = func_num_args();
-
-        if ($i > 2 || $i < 1) {
-            throw new MercadoPagoException("Invalid arguments. Use CLIENT_ID and CLIENT SECRET, or ACCESS_TOKEN");
-        }
-
         if ($i == 1) {
-            $this->ll_access_token = func_get_arg(0);
+            $this->access_token = func_get_arg(0);
         }
-
         if ($i == 2) {
             $this->client_id = func_get_arg(0);
             $this->client_secret = func_get_arg(1);
         }
+        $this->conn         = new DataBase();
+        $this->source       = 'en';
+        $this->target       = 'es';
+        
     }
+    
 
-    public function sandbox_mode($enable = NULL) {
-        if (!is_null($enable)) {
-            $this->sandbox = $enable === TRUE;
+    public function build_query($params) {
+        foreach ($params as $name => $value) {
+            $elements[] = "{$name}=" . urlencode($value);
         }
-
-        return $this->sandbox;
+        return implode("&", $elements);
     }
 
-    /**
-     * Get Access Token for API use
-     */
-    public function get_access_token() {
-        if (isset ($this->ll_access_token) && !is_null($this->ll_access_token)) {
-            return $this->ll_access_token;
-        }
+    public function balanc($id) {
+        $url = "https://api.mercadopago.com/users/".$id."/mercadopago_account/balance?access_token=".$this->access_token;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
 
-        $app_client_values = array(
-            'client_id' => $this->client_id,
-            'client_secret' => $this->client_secret,
-            'grant_type' => 'client_credentials'
+        $validation = json_decode(curl_exec($ch));
+        curl_close($ch);
+
+        return $validation;
+    }
+
+    public function payment() {
+        $url = "https://api.mercadopago.com/v1/payments/search?limit=10&offset=0&access_token=".$this->access_token;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+
+        $validation = json_decode(curl_exec($ch));
+        curl_close($ch);
+
+        return $validation;
+    }
+
+    public function payment1() {
+        $mp = new MP ($this->client_id,$this->client_secret);
+        $filters = array (
+            "status" => "approved"
         );
-
-        $access_data = MPRestClient::post(array(
-            "uri" => "/oauth/token",
-            "data" => $app_client_values,
-            "headers" => array(
-                "content-type" => "application/x-www-form-urlencoded"
-            )
-        ));
-
-        if ($access_data["status"] != 200) {
-            throw new MercadoPagoException ($access_data['response']['message'], $access_data['status']);
-        }
-
-        $this->access_data = $access_data['response'];
-
-        return $this->access_data['access_token'];
+        $search_result = $mp->search_payment ($filters, 0, 10);
+        print_r ($search_result);
     }
 
-    /**
-     * Get information for specific payment
-     * @param int $id
-     * @return array(json)
-     */
-    public function get_payment($id) {
-        $uri_prefix = $this->sandbox ? "/sandbox" : "";
+    public function payment_by_id($id) {
+        $url = "https://api.mercadopago.com/v1/payments/".$id."?access_token=".$this->access_token;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
 
+        $validation = json_decode(curl_exec($ch));
+        curl_close($ch);
+
+        return $validation;
+    }
+
+   
+
+
+    public function report() {
+        $mp = new MP($this->access_token);
         $request = array(
-            "uri" => "/v1/payments/{$id}",
-            "params" => array(
-                "access_token" => $this->get_access_token()
-            )
-        );
-
-        $payment_info = MPRestClient::get($request);
-        return $payment_info;
-    }
-    public function get_payment_info($id) {
-        return $this->get_payment($id);
-    }
-
-    /**
-     * Get information for specific authorized payment
-     * @param id
-     * @return array(json)
-    */
-    public function get_authorized_payment($id) {
-        $request = array(
-            "uri" => "/authorized_payments/{$id}",
-            "params" => array(
-                "access_token" => $this->get_access_token()
-            )
-        );
-
-        $authorized_payment_info = MPRestClient::get($request);
-        return $authorized_payment_info;
-    }
-
-    /**
-     * Refund accredited payment
-     * @param int $id
-     * @return array(json)
-     */
-    public function refund_payment($id) {
-        $request = array(
-            "uri" => "/v1/payments/{$id}/refunds",
-            "params" => array(
-                "access_token" => $this->get_access_token()
-            ),
-            "data" => array(
-            )
-        );
-
-        $response = MPRestClient::post($request);
-        return $response;
-    }
-
-    /**
-     * Cancel pending payment
-     * @param int $id
-     * @return array(json)
-     */
-    public function cancel_payment($id) {
-        $request = array(
-            "uri" => "/v1/payments/{$id}",
-            "params" => array(
-                "access_token" => $this->get_access_token()
-            ),
-            "data" => array(
-                "status" => "cancelled"
-            )
-        );
-
-        $response = MPRestClient::put($request);
-        return $response;
-    }
-
-    /**
-     * Cancel preapproval payment
-     * @param int $id
-     * @return array(json)
-     */
-    public function cancel_preapproval_payment($id) {
-        $request = array(
-            "uri" => "/preapproval/{$id}",
-            "params" => array(
-                "access_token" => $this->get_access_token()
-            ),
-            "data" => array(
-                "status" => "cancelled"
-            )
-        );
-
-        $response = MPRestClient::put($request);
-        return $response;
-    }
-
-    /**
-     * Search payments according to filters, with pagination
-     * @param array $filters
-     * @param int $offset
-     * @param int $limit
-     * @return array(json)
-     */
-    public function search_payment($filters, $offset = 0, $limit = 0) {
-        $filters["offset"] = $offset;
-        $filters["limit"] = $limit;
-
-        $uri_prefix = $this->sandbox ? "/sandbox" : "";
-
-        $request = array(
-            "uri" => "/v1/payments/search",
-            "params" => array_merge ($filters, array(
-                "access_token" => $this->get_access_token()
-            ))
-        );
-
-        $collection_result = MPRestClient::get($request);
-        return $collection_result;
-    }
-
-    /**
-     * Create a checkout preference
-     * @param array $preference
-     * @return array(json)
-     */
-    public function create_preference($preference) {
-        $request = array(
-            "uri" => "/checkout/preferences",
-            "params" => array(
-                "access_token" => $this->get_access_token()
-            ),
-            "data" => $preference
-        );
-
-        $preference_result = MPRestClient::post($request);
-        return $preference_result;
-    }
-
-    /**
-     * Update a checkout preference
-     * @param string $id
-     * @param array $preference
-     * @return array(json)
-     */
-    public function update_preference($id, $preference) {
-        $request = array(
-            "uri" => "/checkout/preferences/{$id}",
-            "params" => array(
-                "access_token" => $this->get_access_token()
-            ),
-            "data" => $preference
-        );
-
-        $preference_result = MPRestClient::put($request);
-        return $preference_result;
-    }
-
-    /**
-     * Get a checkout preference
-     * @param string $id
-     * @return array(json)
-     */
-    public function get_preference($id) {
-        $request = array(
-            "uri" => "/checkout/preferences/{$id}",
-            "params" => array(
-                "access_token" => $this->get_access_token()
-            )
-        );
-
-        $preference_result = MPRestClient::get($request);
-        return $preference_result;
-    }
-
-    /**
-     * Create a preapproval payment
-     * @param array $preapproval_payment
-     * @return array(json)
-     */
-    public function create_preapproval_payment($preapproval_payment) {
-        $request = array(
-            "uri" => "/preapproval",
-            "params" => array(
-                "access_token" => $this->get_access_token()
-            ),
-            "data" => $preapproval_payment
-        );
-
-        $preapproval_payment_result = MPRestClient::post($request);
-        return $preapproval_payment_result;
-    }
-
-    /**
-     * Get a preapproval payment
-     * @param string $id
-     * @return array(json)
-     */
-    public function get_preapproval_payment($id) {
-        $request = array(
-            "uri" => "/preapproval/{$id}",
-            "params" => array(
-                "access_token" => $this->get_access_token()
-            )
-        );
-
-        $preapproval_payment_result = MPRestClient::get($request);
-        return $preapproval_payment_result;
-    }
-
-    /**
-     * Update a preapproval payment
-     * @param string $preapproval_payment, $id
-     * @return array(json)
-     */
-
-    public function update_preapproval_payment($id, $preapproval_payment) {
-        $request = array(
-            "uri" => "/preapproval/{$id}",
-            "params" => array(
-                "access_token" => $this->get_access_token()
-            ),
-            "data" => $preapproval_payment
-        );
-
-        $preapproval_payment_result = MPRestClient::put($request);
-        return $preapproval_payment_result;
-    }
-
-    /* Generic resource call methods */
-
-    /**
-    * Generic resource get
-    * @param request
-    * @param params (deprecated)
-    * @param authenticate = true (deprecated)
-    */
-    public function get($request, $params = null, $authenticate = true) {
-        if (is_string ($request)) {
-            $request = array(
-                "uri" => $request,
-                "params" => $params,
-                "authenticate" => $authenticate
+                "uri" => "/v1/account/bank_report",
+                "data" => array(
+                    "begin_date" => "2018-05-01T00:00:00Z",
+                    "end_date" => "2018-09-17T00:00:00Z"
+                )
             );
-        }
-
-        $request["params"] = isset ($request["params"]) && is_array ($request["params"]) ? $request["params"] : array();
-
-        if (!isset ($request["authenticate"]) || $request["authenticate"] !== false) {
-            $request["params"]["access_token"] = $this->get_access_token();
-        }
-
-        $result = MPRestClient::get($request);
-        return $result;
+        return $mp->post($request);
     }
 
-    /**
-    * Generic resource post
-    * @param request
-    * @param data (deprecated)
-    * @param params (deprecated)
-    */
-    public function post($request, $data = null, $params = null) {
-        if (is_string ($request)) {
-            $request = array(
-                "uri" => $request,
-                "data" => $data,
-                "params" => $params
-            );
-        }
-
-        $request["params"] = isset ($request["params"]) && is_array ($request["params"]) ? $request["params"] : array();
-
-        if (!isset ($request["authenticate"]) || $request["authenticate"] !== false) {
-            $request["params"]["access_token"] = $this->get_access_token();
-        }
-
-        $result = MPRestClient::post($request);
-        return $result;
+    public function ver_report() {
+        $mp = new MP($this->access_token);
+        $request = array("uri" => "/v1/account/bank_report/list");
+        return $mp->get($request);
     }
 
-    /**
-    * Generic resource put
-    * @param request
-    * @param data (deprecated)
-    * @param params (deprecated)
-    */
-    public function put($request, $data = null, $params = null) {
-        if (is_string ($request)) {
-            $request = array(
-                "uri" => $request,
-                "data" => $data,
-                "params" => $params
-            );
-        }
-
-        $request["params"] = isset ($request["params"]) && is_array ($request["params"]) ? $request["params"] : array();
-
-        if (!isset ($request["authenticate"]) || $request["authenticate"] !== false) {
-            $request["params"]["access_token"] = $this->get_access_token();
-        }
-
-        $result = MPRestClient::put($request);
-        return $result;
+    public function ver_report1() {
+        $mp = new MP($this->access_token);
+        $request = array("uri" => "/v1/account/bank_report/list");
+        return $mp->get($request);
     }
 
-    /**
-    * Generic resource delete
-    * @param request
-    * @param data (deprecated)
-    * @param params (deprecated)
-    */
-    public function delete($request, $params = null) {
-        if (is_string ($request)) {
-            $request = array(
-                "uri" => $request,
-                "params" => $params
-            );
-        }
-
-        $request["params"] = isset ($request["params"]) && is_array ($request["params"]) ? $request["params"] : array();
-
-        if (!isset ($request["authenticate"]) || $request["authenticate"] !== false) {
-            $request["params"]["access_token"] = $this->get_access_token();
-        }
-
-        $result = MPRestClient::delete($request);
-        return $result;
+    public function get_url_print($file_name) {
+        $show_url = "https://api.mercadopago.com/v1/account/bank_report/".$file_name."?access_token=".$this->access_token;
+        return $show_url;
     }
 
-    /* **************************************************************************************** */
 
-}
 
-/**
- * MercadoPago cURL RestClient
- */
-class MPRestClient {
-    const API_BASE_URL = "https://api.mercadopago.com";
 
-    private static function build_request($request) {
-        if (!extension_loaded ("curl")) {
-            throw new MercadoPagoException("cURL extension not found. You need to enable cURL in your php.ini or another configuration you have.");
-        }
 
-        if (!isset($request["method"])) {
-            throw new MercadoPagoException("No HTTP METHOD specified");
-        }
 
-        if (!isset($request["uri"])) {
-            throw new MercadoPagoException("No URI specified");
-        }
 
-        // Set headers
-        $headers = array("accept: application/json");
-        $json_content = true;
-        $form_content = false;
-        $default_content_type = true;
 
-        if (isset($request["headers"]) && is_array($request["headers"])) {
-            foreach ($request["headers"] as $h => $v) {
-                $h = strtolower($h);
-                $v = strtolower($v);
 
-                if ($h == "content-type") {
-                    $default_content_type = false;
-                    $json_content = $v == "application/json";
-                    $form_content = $v == "application/x-www-form-urlencoded";
-                }
 
-                array_push ($headers, $h.": ".$v);
-            }
-        }
-        if ($default_content_type) {
-            array_push($headers, "content-type: application/json");
-        }
 
-        array_push($headers, "x-product-id: BC32A7VTRPP001U8NHK0");
 
-        // Build $connect
-        $connect = curl_init();
 
-        curl_setopt($connect, CURLOPT_USERAGENT, "MercadoPago PHP SDK /v" . MP::version);
-        curl_setopt($connect, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($connect, CURLOPT_SSL_VERIFYPEER, true);
-        curl_setopt($connect, CURLOPT_CAINFO, $GLOBALS["LIB_LOCATION"] . "/cacert.pem");
-        curl_setopt($connect, CURLOPT_CUSTOMREQUEST, $request["method"]);
-        curl_setopt($connect, CURLOPT_HTTPHEADER, $headers);
 
-        // Set parameters and url
-        if (isset ($request["params"]) && is_array($request["params"]) && count($request["params"]) > 0) {
-            $request["uri"] .= (strpos($request["uri"], "?") === false) ? "?" : "&";
-            $request["uri"] .= self::build_query($request["params"]);
-        }
-        curl_setopt($connect, CURLOPT_URL, self::API_BASE_URL . $request["uri"]);
 
-        // Set data
-        if (isset($request["data"])) {
-            if ($json_content) {
-                if (gettype($request["data"]) == "string") {
-                    json_decode($request["data"], true);
-                } else {
-                    $request["data"] = json_encode($request["data"]);
-                }
 
-                if(function_exists('json_last_error')) {
-                    $json_error = json_last_error();
-                    if ($json_error != JSON_ERROR_NONE) {
-                        throw new MercadoPagoException("JSON Error [{$json_error}] - Data: ".$request["data"]);
-                    }
-                }
-            } else if ($form_content) {
-                $request["data"] = self::build_query($request["data"]);
-            }
 
-            curl_setopt($connect, CURLOPT_POSTFIELDS, $request["data"]);
-        }
 
-        return $connect;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function validate($item) {
+        $validation_url = "https://api.mercadolibre.com/items/validate?access_token=".$this->access_token;
+        $ch             = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $validation_url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($item));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+
+        $validation = json_decode(curl_exec($ch));
+        curl_close($ch);
+        return $validation;
+    }
+    public function banner($item_id, $item) {
+        $update_url = "https://api.mercadolibre.com/items/".$item_id."/description?access_token=".$this->access_token;
+        $ch         = curl_init();
+        $item       = json_encode($item);
+        curl_setopt($ch, CURLOPT_URL, $update_url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $item);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+        $update = json_decode(curl_exec($ch));
+        curl_close($ch);
+        return $update;
     }
 
-    private static function exec($request) {
-    // private static function exec($method, $uri, $data, $content_type) {
+    public function update($item_id, $item) {
+        $update_url = "https://api.mercadolibre.com/items/".$item_id."?access_token=".$this->access_token;
+        $ch         = curl_init();
+        $item       = json_encode($item);
+        curl_setopt($ch, CURLOPT_URL, $update_url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $item);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+        $update = json_decode(curl_exec($ch));
+        curl_close($ch);
+        return $update;
+    }
 
-        $connect = self::build_request($request);
+    public function relist($item_id, $item) {
+        $update_url = "https://api.mercadolibre.com/items/".$item_id."/relist?access_token=".$this->access_token;
+        $ch         = curl_init();
+        $item       = json_encode($item);
+        curl_setopt($ch, CURLOPT_URL, $update_url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $item);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+        $update = json_decode(curl_exec($ch));
+        curl_close($ch);
+        return $update;
+    }
+    public function create($item) {
+        $show_url = "https://api.mercadolibre.com/items?access_token=".$this->access_token;
+        $ch       = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $show_url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($item));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $show = json_decode(curl_exec($ch));
+        curl_close($ch);
+        return $show;
+    }
 
-        $api_result = curl_exec($connect);
-        $api_http_code = curl_getinfo($connect, CURLINFO_HTTP_CODE);
+    public function show($item) {
+        $show_url = "https://api.mercadolibre.com/items?ids=".$item."?access_token=".$this->access_token;
+        $ch       = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $show_url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+        $show = json_decode(curl_exec($ch));
+        curl_close($ch);
+        return $show;
+    }
 
-        if ($api_result === FALSE) {
-            throw new MercadoPagoException (curl_error ($connect));
+
+    public function visits($item,$star_time) {
+
+
+        $show_url = "https://api.mercadolibre.com/items/".$item."/visits?date_from=".$star_time."T23:59:59Z&date_to=".date('Y-m-d',time())."T00:00:00.000Z";
+        $ch       = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $show_url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+        $show = json_decode(curl_exec($ch));
+        curl_close($ch);
+        return $show;
+    }
+
+    public function show_by_sku($item, $shop) {
+        $show_url = "https://api.mercadolibre.com/users/".$shop."/items/search?sku=".$item."&access_token=".$this->access_token;
+        $ch       = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $show_url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+        $show = json_decode(curl_exec($ch));
+        curl_close($ch);
+        return $show;
+    }
+
+
+    public function order_recent($shop) {
+        $show_url = "https://api.mercadolibre.com/orders/search/recent?seller=".$shop."&sort=date_desc&access_token=".$this->access_token;
+        $ch       = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $show_url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+        $show = json_decode(curl_exec($ch));
+        curl_close($ch);
+        return $show;
+    }
+
+    public function order_by_id($shop,$id) {
+        $show_url = "https://api.mercadolibre.com/orders/search?seller=".$shop."&q=".$id."&access_token=".$this->access_token;
+        $ch       = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $show_url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+        $show = json_decode(curl_exec($ch));
+        curl_close($ch);
+        return $show;
+    }
+
+    public function label_by_ship($id) {
+        $show_url = "https://api.mercadolibre.com/shipment_labels?shipment_ids=".$id."&savePdf=Y&access_token=".$this->access_token;
+        return $show_url;
+    }
+
+    public function send_message($status, $shop, $order, $access_token, $name, $user_name){
+        $message = "Gracias por su compra";
+        $date = date('Y-m-d H:i:s');
+        $subject = $name;
+        #Validación del tipo de mensasje según es tipo de estatus de la orden
+        switch ($status) {
+            case 1:
+            $message ="Hola 😄, muy buen día, espero te encuentres muy bien, mi nombre es Sebastian y voy a acompañarte en todo el proceso de tu compra. 😎 \n
+            Primero que todo, gracias por preferirnos, te comentamos que ya está acreditado tu pago 💰 y el numero de compra es el  ,a partir de hoy realizaremos la orden de importación de tu producto, recuerda que el tiempo de entrega es de ✈ 4 a 10 días hábiles (como máximo) ✈ , esto se debe a que trabajamos directamente con la marca en Estados Unidos. 😄\n
+            Por favor ten en cuenta que MercadoLibre maneja una fecha de entrega estimada diferente a la nuestra, por lo tanto te llegaran diferentes correos de MercadoLibre preguntándote como va el proceso de tu compra, estos correos solo debes omitirlos, yo te estaré informando todo el tiempo el estado de tu pedido, si tienes alguna duda, pregunta, queja o reclamo, no dudes primero en comunicarte conmigo por este medio o si gustas puedes comunicarte vía teléfono al PBX 7535495 Opción 1 📞 donde te atenderé personalmente para responder todas tus inquietudes. 😄\n
+            Gracias nuevamente por tu compra y que tengas un día increíble. 😄";
+            break;
+            case 2:
+            $message ="Hola, muy buenos días, te informamos que tu producto ya esta ingresando a Colombia exitosamente, esperamos poder realizarte el envío del producto lo mas antes posible, es un placer para nosotros poder servirte, por favor has caso omiso a los correo de Mercado Libre con respecto a los tiempos de entrega o \"envio demorado\", esto sucede ya que ellos no saben sobre nuestros tiempos de entrega,recuerda que es de 4 a 10 dias habiles como maximo, muchas gracias por tu comprension y paciencia, espero tengas un excelente día.";
+            break;
+            case 3:
+            $message ="Muy buen día, me alegra informarte que tu producto esta en proceso de nacionalización y estamos a la espera de que llegue a nuestra oficina para hacerte el despacho, nosotros te notificamos cuando esto pase para que estés atento a recibirlo";
+            break;
+            case 4:
+            $message ="Muy buen día,Es un gusto saludarte, te cuento tu producto ya esta en Colombia esta en revisión aduanera pasando los respectivos controles colombianos esperamos que este llegando lo más pronto posible a tu hogar. Gracias por tu paciencia te deseamos un Feliz día.";
+            break;
+            case 5:
+            $message ="Buen día, espero estés muy bien, ya tenemos tu producto listo para ser enviado en nuestras oficinas, lo entregaremos hoy al transportador para que te entreguen en la dirección que nos confirmaste a través de la plataforma, te agradecemos nuevamente por tu compra, y esperamos tenga sun muy buen día.";
+            break;
+            default:
+            $message = "Gracias por su compra";
+            break;
         }
 
-        $response = array(
-            "status" => $api_http_code,
-            "response" => json_decode($api_result, true)
-        );
-
-        if ($response['status'] >= 400) {
-            $message = $response['response']['message'];
-            if (isset ($response['response']['cause'])) {
-                if (isset ($response['response']['cause']['code']) && isset ($response['response']['cause']['description'])) {
-                    $message .= " - ".$response['response']['cause']['code'].': '.$response['response']['cause']['description'];
-                } else if (is_array ($response['response']['cause'])) {
-                    foreach ($response['response']['cause'] as $causes) {
-                          if(is_array($causes)) {
-                            foreach ($causes as $cause) {
-                              $message .= " - ".$cause['code'].': '.$cause['description'];
-                            }
-                          } else {
-                            $message .= " - ".$causes['code'].': '.$causes['description'];
-                          }
-                      }
+        $payer_id =$this->conn->prepare("select o.id_payer,p.first_name, p.last_name from system.orders as o join system.payer as p on p.id_payer = o.id_payer where o.id_order= '$order'");
+        $payer_id->execute();
+        $payer_id = $payer_id->fetch();
+        if($payer_id){
+            $order_message = $this->conn->prepare("select * from system.orders_messages where order_id = '$order' and status = '$status';");
+            $order_message->execute();
+            $order_message = $order_message->fetch();
+            if ($order_message['id']) {
+                return "Not sent message duplicated";
+            }else{
+                $url = "https://api.mercadolibre.com/messages?access_token=$access_token";
+                $messages_structure = array(
+                    'from'=>array(
+                        'user_id'=> $user_name
+                    ),
+                    'to' =>array(array(
+                        'user_id'=> $payer_id['id_payer'],
+                        'resource' => 'orders',
+                        'resource_id' => $order,
+                        'site_id' => 'MCO'
+                    )),
+                    'subject' => $subject,
+                    'text' =>array(
+                        'plain' => $message
+                    )
+                );
+                $ch             = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($messages_structure));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+                $validation = json_decode(curl_exec($ch));
+                curl_close($ch);
+                $message_id = $validation[0]->message_id;
+                if(!isset($validation->error)){
+                    $resource = $this->conn->exec("insert into system.orders_messages (order_id, message_id, send_date,status) values ('$order','$message_id','$date','$status');");
+                    return "Success stored message Id:"+$message_id;
+                }else{
+                    $resource = $this->conn->exec("insert into system.orders_messages (order_id, message_id, send_date) values ('$order','UNABLE SENT','$date','$status');");       
+                    return "Error at send message";
                 }
             }
-
-            throw new MercadoPagoException ($message, $response['status']);
+        }else{
+            return "Not sent";
         }
-
-        curl_close($connect);
-
-        return $response;
     }
 
-    private static function build_query($params) {
-        if (function_exists("http_build_query")) {
-            return http_build_query($params, "", "&");
+    public function search_item($params) {
+
+    }
+
+    public function paused_item($status, $mpid, $type) {
+        $temp = array();
+        if ($status != "closed") {
+            $result = $this->update($mpid, array('status' => 'paused'));
+        }
+        return 1;
+    }
+
+    public function delete_item($status, $mpid, $type) {
+        $temp = array();
+        if ($type == "delete_item") {
+            $this->update($mpid, array('deleted' => 'true'));
+            $this->conn->exec("DELETE from meli.items where mpid ='".$mpid."';");
+
         } else {
-            foreach ($params as $name => $value) {
-                $elements[] = "{$name}=" . urlencode($value);
+            if ($status != "closed") {
+                $result = $this->update($mpid, array('status' => 'closed'));
             }
-
-            return implode("&", $elements);
         }
+        return 1;
     }
 
-    public static function get($request) {
-        $request["method"] = "GET";
 
-        return self::exec($request);
-    }
-
-    public static function post($request) {
-        $request["method"] = "POST";
-
-        return self::exec($request);
-    }
-
-    public static function put($request) {
-        $request["method"] = "PUT";
-
-        return self::exec($request);
-    }
-
-    public static function delete($request) {
-        $request["method"] = "DELETE";
-
-        return self::exec($request);
+    public function replace_amazon($string) {
+        $to_replace = array("Amazon", "amazon", "Prime", "prime","LIFETIME WARRANTY","100% SATISFACTION GUARANTEED","your money back.", "LIFETIME WARRANTY - 100% SATISFACTION GUARANTEED or your money back.");
+        $string     = str_replace($to_replace, ' ', $string);
+        return $string;
     }
 }
+#$test = new MP(1234);
+#print_r($test->liquidador());
 
-class MercadoPagoException extends Exception {
-    public function __construct($message, $code = 500, Exception $previous = null) {
-        // Default code 500
-        parent::__construct($message, $code, $previous);
-    }
+function eliminar_simbolos($string) {
+
+    $string = trim($string);
+
+    $string = str_replace(
+        array('á', 'à', 'ä', 'â', 'ª', 'Á', 'À', 'Â', 'Ä'),
+        array('a', 'a', 'a', 'a', 'a', 'A', 'A', 'A', 'A'),
+        $string
+    );
+
+    $string = str_replace(
+        array('é', 'è', 'ë', 'ê', 'É', 'È', 'Ê', 'Ë'),
+        array('e', 'e', 'e', 'e', 'E', 'E', 'E', 'E'),
+        $string
+    );
+
+    $string = str_replace(
+        array('í', 'ì', 'ï', 'î', 'Í', 'Ì', 'Ï', 'Î'),
+        array('i', 'i', 'i', 'i', 'I', 'I', 'I', 'I'),
+        $string
+    );
+
+    $string = str_replace(
+        array('ó', 'ò', 'ö', 'ô', 'Ó', 'Ò', 'Ö', 'Ô'),
+        array('o', 'o', 'o', 'o', 'O', 'O', 'O', 'O'),
+        $string
+    );
+
+    $string = str_replace(
+        array('ú', 'ù', 'ü', 'û', 'Ú', 'Ù', 'Û', 'Ü'),
+        array('u', 'u', 'u', 'u', 'U', 'U', 'U', 'U'),
+        $string
+    );
+
+    $string = str_replace(
+        array('ñ', 'Ñ', 'ç', 'Ç'),
+        array('n', 'N', 'c', 'C', ),
+        $string
+    );
+
+    $string = str_replace(
+        array("\\", "¨", "º", "~",
+            "#", "@", "|", "!", "\"",
+            "·", "$", "%", "/",
+            "?", "'", "¡", "(", ")",
+            "¿", "[", "^", "<code>", "]",
+            "+", "}", "{", "¨", "´",
+            ">", "< ", ";",
+            " "),
+        ' ',
+        $string
+    );
+    return $string;
 }

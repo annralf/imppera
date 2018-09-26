@@ -238,7 +238,7 @@ class MeliUpdate
 					$this->conn->exec("UPDATE meli.items set bolborrado=".$index." WHERE mpid = '".$alias."' and shop_id='".$this->shop[0]['id']."';");
 				}
 
-				$sql ="SELECT a.id, a.sku, a.image_url,a.quantity, a.active, round(cast((a.package_height/0.393701) as numeric),2) as package_height, round(cast((a.item_width/0.393701) as numeric),2) as item_width, round(cast((a.package_length/0.393701) as numeric),2) as package_length, round(cast((a.item_height/0.393701) as numeric),2) as item_height, round(cast((a.item_length/0.393701) as numeric),2) as item_length, a.product_title_english, a.specification_english , a.brand, round(cast(a.package_weight/100 as numeric),2) as package_weight, a.sale_price, a.bolborrado as aws_bolborrado, a.brand, a.model, a.weight_unit,m.id as id_meli, m.mpid, m.bolborrado as meli_bolborrado, a.is_prime as prime, a.clothingsize, a.color, a.avaliable, a.title_spanish, a.specification_spanish,a.flag	from aws.items as a join meli.items as m on a.id=m.aws_id where m.shop_id =  '".$this->shop[0]['id']."' and a.id = '".$meli_item[0]['aws_id']."' and m.mpid = '".$alias."';";
+				$sql ="SELECT a.id, a.sku, a.image_url,a.quantity, a.active, round(cast((a.package_height/0.393701) as numeric),2) as package_height, round(cast((a.item_width/0.393701) as numeric),2) as item_width, round(cast((a.package_length/0.393701) as numeric),2) as package_length, round(cast((a.item_height/0.393701) as numeric),2) as item_height, round(cast((a.item_length/0.393701) as numeric),2) as item_length, a.product_title_english, a.specification_english , a.brand, cast(a.package_weight/100 as numeric) as package_weight, a.sale_price, a.bolborrado as aws_bolborrado, a.brand, a.model, a.weight_unit,m.id as id_meli, m.mpid, m.bolborrado as meli_bolborrado, a.is_prime as prime, a.clothingsize, a.color, a.avaliable, a.title_spanish, a.specification_spanish,a.flag	from aws.items as a join meli.items as m on a.id=m.aws_id where m.shop_id =  '".$this->shop[0]['id']."' and a.id = '".$meli_item[0]['aws_id']."' and m.mpid = '".$alias."';";
 				
 				$item = $this->conn->prepare($sql);
 				$item->execute();
@@ -281,7 +281,7 @@ class MeliUpdate
 		#update array
 		$update_array = array();
 		unset($update_array);
-		#$update_array['available_quantity'] = 8;
+		$update_array['available_quantity'] = 3;
 
 		#$update_array['shipping']        = array('mode' => 'me2', 'local_pick_up' => false, 'free_shipping' => true);
 		
@@ -486,7 +486,7 @@ class MeliUpdate
 										case "inactive":
 											$update_array['status'] 			= "active";
 											$update_array['listing_type_id']	= "gold_special";
-											$update_array['quantity'] = 8;
+											$update_array['quantity'] = 3;
 											$update = $this->meli->relist($mpid, $update_array);
 											if (isset($update->id)) {
 												
@@ -504,18 +504,18 @@ class MeliUpdate
 											}
 											unset($update_array['status']);
 											unset($update_array['listing_type_id']);
-											unset($update_array['quantity']);
+											//unset($update_array['quantity']);
 											break;
 										case 'paused':
 											#$update_array['status'] = "active";
-											$update_array['available_quantity'] = 8;
+											$update_array['available_quantity'] = 3;
 											if (isset($detail_items[0]->variations[0]->id)){
 												#$update_array = array();
 												unset($update_array['price']);
 												unset($update_array['pictures']);
 												unset($update_array['available_quantity']);
 												$value['id'] 					= $detail_items[0]->variations[0]->id;
-												$value['available_quantity'] 	= 8;
+												$value['available_quantity'] 	= 3;
 												$update_array['variations']		= array($value);
 											}
 											$update = $this->meli->update($mpid, $update_array);
@@ -527,7 +527,7 @@ class MeliUpdate
 												return "error_active";
 											}
 
-											unset($update_array['available_quantity']);
+											//unset($update_array['available_quantity']);
 											break;
 										case 'active':
 											if (isset($items['title_spanish'])){

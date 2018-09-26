@@ -21,9 +21,7 @@ class MeliOrders
 		$this->shop = $application->fetchAll();
 		$this->meli = new items($this->shop[0]['access_token'],$this->shop[0]['user_name']);
 	}
-
 	function orders(){
-		
 		echo "BEGIN - ORDERS **************************************\n";
 		switch ($this->shop[0]['id']) {
 			case '1':
@@ -35,8 +33,8 @@ class MeliOrders
 		}
 		$n=1;
 		$mpid_lis="";
-		foreach ($order->results as $ord) {
-		#print_r($ord);die();
+		#print_r($order);die();
+		foreach ($order->results as $ord){
 			$precio_esp		=0;
 			$zip_code		='';
 			$street_num		='';
@@ -51,10 +49,8 @@ class MeliOrders
 			$item 			=$order_items[0]->item;
 			$sku			=$item->seller_custom_field;
 			$buyer_id		=$ord->buyer->id;
-
 			$mercado_l 		= $this->meli->show($item->id);
 			$permalink 		= $mercado_l[0]->permalink;
-
 			$sql = "SELECT id_order FROM system.orders WHERE id_order='".$id."' and shop_id='".$this->shop[0]['id']."';";
 			$order_exist = $this->conn->prepare($sql);
 			$order_exist->execute();
@@ -63,7 +59,7 @@ class MeliOrders
 				if($sku == null){
 					$sku="STOCK_INTERNO";
 				}
-				$itm_sku		=$this->aws->search_item($sku); #extraido de aws
+				#$itm_sku		=$this->aws->search_item($sku); #extraido de aws
 				$mpid			=$item->id;
 				$mpid_lis 		.="'".$item->id."',";
 				$quantity 		=$order_items[0]->quantity;
@@ -83,7 +79,7 @@ class MeliOrders
 				$create_date	=substr(str_replace("T"," ",$ord->date_created), 0, 19);
 				$avaliable='t';
 				$package_weight	="0";
-				if ($itm_sku == null){
+				/*if ($itm_sku == null){
 					while ($itm_sku == null ) {
 						$itm_sku	=$this->aws->search_item($sku); #extraido de aws						
 					}
@@ -136,15 +132,20 @@ class MeliOrders
 						$package_weight	=($itm_sku[0]['package_weight']/100);	
 						$precio_esp =  $this->meli->liquidador_pro($sale_price, $package_weight, $is_prime,$this->shop[0]['id']);
 						echo $n."\t- new order created-".$sku." - ".$id."---- ok show_aws 2 \n";
-						
 					}
-				}
-				$sql_o	="INSERT INTO system.orders(id_order, shop_id, sku, url, package_weight, sale_price, quantity, unit_price, total_paid, status, id_payments, id_payer, create_date, mpid, avaliable, autorice, shipping_id, shipping_mode, zip_code, street_number, street_name, country_name, state_name, city_name, address_line,precio_esp,permalink) VALUES ('".$id."',".$this->shop[0]['id'].",'".$sku."','".$url_aws."','".$package_weight."','".$sale_price."',".$quantity.",'".$unit_price."','".$total_amount."','".$status."','".$id_payments."','".$buyer_id."','".$create_date."','".$mpid."','".$avaliable."','G','".$shipping_id."','".$shipping_mode."','".$zip_code."','".$street_num."','".$street_name."','".$country."','".$state."','".$city."','".$address_line ."',".$precio_esp.",'".$permalink."');";
+				}*/
+				$sale_price		=0;
+				$url_aws		="";
+				$package_weight	=0;
+				$is_prime       =0;
+				echo $n."\t- new order created-".$sku." - ".$id."---- notavaliable provivional\n";
+
+				$sql_o	="INSERT INTO system.orders(id_order, shop_id, sku, url, package_weight, sale_price, quantity, unit_price, total_paid, status, id_payments, id_payer, create_date, mpid, avaliable, autorice, shipping_id, shipping_mode, zip_code, street_number, street_name, country_name, state_name, city_name, address_line,precio_esp,permalink,is_prime) VALUES ('".$id."',".$this->shop[0]['id'].",'".$sku."','".$url_aws."','".$package_weight."','".$sale_price."',".$quantity.",'".$unit_price."','".$total_amount."','".$status."','".$id_payments."','".$buyer_id."','".$create_date."','".$mpid."','".$avaliable."','G','".$shipping_id."','".$shipping_mode."','".$zip_code."','".$street_num."','".$street_name."','".$country."','".$state."','".$city."','".$address_line ."',".$precio_esp.",'".$permalink."','".$is_prime."');";
 				$this->conn->exec($sql_o);
 			}else{
 				echo $n."\t- order exist-".$sku." - ".$id."\n";
 			}
-			$sql2 = "select id_payer from system.payer where id_payer='".$buyer_id."';";
+			/*$sql2 = "select id_payer from system.payer where id_payer='".$buyer_id."';";
 			$buyer_exist = $this->conn->prepare($sql2);
 			$buyer_exist->execute();
 			$buyer_exist = $buyer_exist->fetchObject();
@@ -162,21 +163,21 @@ class MeliOrders
 				$phone_a 		=$code_phone_a.$phone_a;
 				$sql_p		=	"INSERT INTO system.payer(id_payer, nickname, first_name, last_name, phone, alternative_phone, doc_type, doc_number) VALUES ('".$buyer_id."','".$buyer_nick."','".$buyer_f_name."','".$buyer_l_name."','".$phone."','".$phone_a."','".$buyer_type_doc."',".$buyer_num_doc.");";
 				$this->conn->exec($sql_p);
-			}
+			}*/
 			$n++;
 			sleep(1);
 		}
 		$mpid_lis = substr($mpid_lis, 0, -1);
-
-
 		$sql_u="UPDATE system.orders o SET aws_id=m.aws_id,meli_id=m.id from meli.items m where o.mpid=m.mpid and m.mpid in (".$mpid_lis.");";
 		$this->conn->exec($sql_u);
+		echo $sql_u2="UPDATE system.orders o SET is_prime=a.is_prime,sku=a.sku,url=a.url,sale_price=a.sale_price,package_weight=a.package_weight from aws.items a where o.aws_id=a.id and o.mpid in (".$mpid_lis.");";
+		$this->conn->exec($sql_u2);
+
 		echo "END - ORDERS **************************************\n";
 		$this->conn->close_con();
 	}
 
 	function orders_id_or($id){
-		
 		echo "BEGIN - ORDERS **************************************\n";
 		switch ($this->shop[0]['id']) {
 			case '1':
@@ -187,11 +188,8 @@ class MeliOrders
 			break;
 		}
 		print_r($order);
-
 	}
-
 	function print_label($id){
-		
 		echo "BEGIN - label **************************************\n";
 		switch ($this->shop[0]['id']) {
 			case '1':
@@ -202,9 +200,7 @@ class MeliOrders
 			break;
 		}
 		print_r($order);
-
 	}
-
 	function orders_update(){
 		
 		echo "BEGIN - UPDATE ORDERS **************************************\n";
@@ -248,11 +244,6 @@ class MeliOrders
 			}
 		}
 	}
-			
-
-
-
-
 }
 #Test section
 #$test = new MeliOrders(1);

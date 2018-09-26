@@ -12,6 +12,366 @@ include "/var/www/html/enkargo/services/aws_update.php";
 #echo ini_get('upload_max_filesize')."\n";
 
 ####################rafael
+
+if ($_POST['action'] == 'loadFile_t') {
+     $id_t = $_POST['id_t'];
+     $file = $_FILES['file']['name'];
+     $file_tmp = $_FILES['file']['tmp_name'];
+     $target_file   = "../docs/".basename($file);
+     $conn = new Connect();
+     move_uploaded_file($_FILES['file']['tmp_name'], $target_file);
+     $query="update system.tarea set file = '".$target_file."' where id = '".$id_t."';";
+     $result = pg_query($query);
+     if ($result > 0) {
+          echo json_encode(array('response'=>1));
+     }else{
+          echo json_encode(array('response'=>0));      
+     }
+}
+
+if ($_POST['action'] == 'update_comment_t') {
+     $id_t = $_POST['id_t'];
+     $comment = $_POST['comment'];
+     $conn = new Connect();
+     $result = pg_query("update system.tarea set comentary = '".$comment."' where id = '".$id_t."';");
+     if ($result > 0) {
+          echo json_encode(array('response'=>1));
+     }else{
+          echo json_encode(array('response'=>0));      
+     }
+}
+
+if ($_POST['action'] == 'add_avance') {
+     $id_t = $_POST['id_t'];
+     $valor = $_POST['valor'];
+     $conn = new Connect();
+     $result = pg_query("update system.tarea set avance = '".$valor."' where id = '".$id_t."';");
+     if ($result > 0) {
+          echo json_encode(array('response'=>1));
+     }else{
+          echo json_encode(array('response'=>0));      
+     }
+}
+
+if ($_POST['action'] == 'update_file_t') {
+     $id_t = $_POST['id_t'];
+     $comment = $_POST['comment'];
+     $conn = new Connect();
+     $result = pg_query("update system.tarea set file = '".$comment."' where id = '".$id_t."';");
+     if ($result > 0) {
+          echo json_encode(array('response'=>1));
+     }else{
+          echo json_encode(array('response'=>0));      
+     }
+}
+
+if ($_POST['action'] == 'end_tarea') {
+     $id_t = $_POST['id_t'];
+     $conn = new Connect();
+     $result = pg_query("update system.tarea set status = 'T' where id = '".$id_t."';");
+     if ($result > 0) {
+          echo json_encode(array('response'=>1));
+     }else{
+          echo json_encode(array('response'=>0));      
+     }
+}
+
+if ($_POST['action'] == 'delete_tarea') {
+     $id_t = $_POST['id_t'];
+     $conn = new Connect();
+     $result = pg_query("delete from system.tarea where id = '".$id_t."';");
+     if ($result > 0) {
+          echo json_encode(array('response'=>1));
+     }else{
+          echo json_encode(array('response'=>0));      
+     }
+}
+
+if ($_POST['action'] == 'good_tarea') {
+     $id_t = $_POST['id_t'];
+     $conn = new Connect();
+     $result = pg_query("update system.tarea set status = 'G' where id = '".$id_t."';");
+     if ($result > 0) {
+          echo json_encode(array('response'=>1));
+     }else{
+          echo json_encode(array('response'=>0));      
+     }
+}
+if ($_POST['action'] == 'bad_tarea') {
+     $id_t = $_POST['id_t'];
+     $conn = new Connect();
+     $result = pg_query("update system.tarea set status = 'B' where id = '".$id_t."';");
+     if ($result > 0) {
+          echo json_encode(array('response'=>1));
+     }else{
+          echo json_encode(array('response'=>0));      
+     }
+}
+
+if ($_POST['action'] == 'check_tarea') {
+     $user_id = $_POST['user_id'];
+     $conn = new Connect();
+     $date = date("Y-m-d H:i:s");
+     $sql="update system.tarea set status = 'NT' where asig_date < '$date' and status = 'C' and user_asig = '".$user_id."';";
+     $result = pg_query($sql);
+     if ($result > 0) {
+          echo json_encode(array('response'=>1));
+     }else{
+          echo json_encode(array('response'=>0));      
+     }
+}
+
+if ($_POST['action'] == 'armar_e') {
+     $user   = $_POST['user'];
+     $type   = $_POST['type'];
+     $orders = array();
+     $conn = new Connect();
+     if($type==1){
+          $status="t.status ='T'";
+     }if($type==3){
+          $status="t.status ='C'";
+     }if($type==2){
+          $status="t.status in ('NT','B')";
+     }
+     $sql = "select t.user_asig, u.name, u.last_name, u.avatar, u.user_name from system.tarea t join system.users u on t.user_asig=u.id where $status and t.user_id = $user group by t.user_asig,u.id order by u.name;";
+     $result = pg_query($sql);
+     while ($item = pg_fetch_array($result)) {
+     //$sql = "select * from system.tarea where status = 'T';";
+     $orders2 = array();
+     $concat = array();
+         $sql2 = "select t.* from system.tarea t where $status and t.user_id = $user and t.user_asig=".$item['user_asig']." order by t.id;";
+          $result2 = pg_query($sql2);
+          while ($item2 = pg_fetch_array($result2)) {
+               array_push($orders2, $item2);
+          }
+          $concat = array_merge($item,array('tareas'=>$orders2));
+
+          array_push($orders, $concat);
+     }
+     if (isset($orders[0][0])) {
+          echo json_encode($orders);
+     }else{
+          echo json_encode(array('response'=>0));      
+     }
+}
+
+if ($_POST['action'] == 'llenar_e') {
+     $user   = $_POST['user'];
+     $orders = array();
+     $conn = new Connect();
+     $sql = "select * from system.tarea where status = 'T';";
+     $result = pg_query($sql);
+     while ($item = pg_fetch_array($result)) {
+          array_push($orders, $item);        
+     }
+     if (isset($orders[0][0])) {
+          echo json_encode($orders);
+     }else{
+          echo json_encode(array('response'=>0));      
+     }
+}
+
+
+if ($_POST['action'] == 'list_porcent') {
+     $user   = $_POST['user'];
+     $orders = array();
+     $conn = new Connect();
+     $sql = "select count(*) as total,status from system.tarea where user_asig='$user' group by status;";
+     $result = pg_query($sql);
+     while ($item = pg_fetch_array($result)) {
+          array_push($orders, $item);        
+     }
+     if (isset($orders[0][0])) {
+          echo json_encode($orders);
+     }else{
+          echo json_encode(array('response'=>0));      
+     }
+}
+
+
+
+if ($_POST['action'] == 'list_all_porcent') {
+     $user =$_POST['user'];
+     $orders = array();
+     $conn = new Connect();
+     $sql = "select * from system.users where jerarquia not in (1);";
+     $result = pg_query($sql);
+     while ($item = pg_fetch_array($result)) {
+     //$sql = "select * from system.tarea where status = 'T';";
+     $orders2 = array();
+     $concat = array();
+          $sql2 = $sql = " select count(t.*) as total,t.status,t.user_id,u.jerarquia from system.tarea t join system.users u on u.id=t.user_id  where t.user_asig='".$item['id']."' group by t.status,t.user_id,u.jerarquia;";
+          $result2 = pg_query($sql2);
+          while ($item2 = pg_fetch_array($result2)) {
+               array_push($orders2, $item2);
+          }
+          $concat = array_merge($item,array('tareas'=>$orders2));
+
+          array_push($orders, $concat);
+     }
+     if (isset($orders[0][0])) {
+          echo json_encode($orders);
+     }else{
+          echo json_encode(array('response'=>0));      
+     }
+}
+
+
+if ($_POST['action'] == 'add_proyect') {
+     $name   = $_POST['name'];
+     $color  = $_POST['color'];
+     $user   = $_POST['user'];
+     $orders = array();
+     $conn   = new Connect();
+     print_r("entro aca");
+     $query  = "INSERT INTO system.proyecto (name,color,proprietary) VALUES ('$name', '$color', '$user');";
+     $result = pg_query($query);
+     if ($result > 0) {
+          echo json_encode(array('response'=>1));
+     }else{
+          echo json_encode(array('response'=>0));      
+     }
+}
+
+if ($_POST['action'] == 'add_tarea') {
+     $name     = $_POST['name'];
+     $description     = $_POST['description'];
+     $priority = $_POST['priority'];
+     $user_a   = $_POST['user_asig'];
+     $proyect_a  = $_POST['proyect_asig'];
+     $user   = $_POST['user'];
+     $color   = $_POST['color_asig'];
+     $date = date("Y-m-d H:i:s");
+     $fecha = new DateTime('now');
+     if($priority==1){
+          $fecha->modify('last day of this month');
+          $date_asig=$fecha->format('Y-m-d')." 23:00:00";
+     }
+     if($priority==2){
+          $fecha->modify('+7 day');
+          $date_asig=$fecha->format('Y-m-d')." 23:00:00";
+     }
+     if($priority==3){
+          if (date("H:i:s")>'17:00:00'){
+               $fecha->modify('+1 day');
+          }
+          $date_asig=$fecha->format('Y-m-d')." 23:00:00";
+     }
+     $orders = array();
+     $conn   = new Connect();
+     $query  = "INSERT INTO system.tarea (tarea,user_id,create_date,status,priority,id_proyecto,user_asig,color,asig_date,description) VALUES ('$name', '$user', '$date','C','$priority',$proyect_a,$user_a,'$color','$date_asig','$description');";
+     $result = pg_query($query);
+     if ($result > 0) {
+          echo json_encode(array('response'=>1));
+     }else{
+          echo json_encode(array('response'=>0));      
+     }
+}
+
+if ($_POST['action'] == 'list_proyect') {
+     $user   = $_POST['user'];
+     $orders = array();
+     $conn = new Connect();
+     $sql = "select p.*,u.name as name_u,u.last_name as last_name_u from system.proyecto p join system.users u on u.id=p.proprietary where p.proprietary = '".$user."';";
+     $result = pg_query($sql);
+     while ($item = pg_fetch_array($result)) {
+          array_push($orders, $item);        
+     }
+     if (!isset($orders[0]['id'])) {
+          echo json_encode(array('response'=>0));      
+     }else{
+          echo json_encode($orders);
+     }
+}
+
+if ($_POST['action'] == 'list_tarea') {
+     $user   = $_POST['user'];
+     $orders = array();
+     $conn = new Connect();
+     $sql = "select * from system.tarea where user_asig = '".$user."' and status='C' order by id;";
+     $result = pg_query($sql);
+     while ($item = pg_fetch_array($result)) {
+          array_push($orders, $item);        
+     }
+     if (!isset($orders[0]['id'])) {
+          echo json_encode(array('response'=>0));      
+     }else{
+          echo json_encode($orders);
+     }
+}
+
+if ($_POST['action'] == 'list_tarea_by_id') {
+     $id   = $_POST['id_t'];
+     $orders = array();
+     $conn = new Connect();
+     $sql = "select t.*,u.name,u.last_name from system.tarea t join system.users u on u.id=t.user_asig where t.id = '".$id."' order by t.id;";
+     $result = pg_query($sql);
+     while ($item = pg_fetch_array($result)) {
+          array_push($orders, $item);        
+     }
+     if (!isset($orders[0]['id'])) {
+          echo json_encode(array('response'=>0));      
+     }else{
+          echo json_encode($orders);
+     }
+}
+
+if ($_POST['action'] == 'list_tarea_by_proyect') {
+     $user   = $_POST['user'];
+     $id_p   = $_POST['id_proyecto'];
+     $orders = array();
+     $conn = new Connect();
+     $sql = "select * from system.tarea where user_id = '".$user."' and id_proyecto='".$id_p."';";
+     $result = pg_query($sql);
+     while ($item = pg_fetch_array($result)) {
+          array_push($orders, $item);        
+     }
+     if (!isset($orders[0]['id'])) {
+          echo json_encode(array('response'=>0));      
+     }else{
+          echo json_encode($orders);
+     }
+}
+
+if ($_POST['action'] == 'list_user_tarea') {
+     $user   = $_POST['user'];
+     $sub   = $_POST['sub'];
+     $orders = array();
+     $conn = new Connect();
+     if($sub==0){
+          $sql = "select * from system.users where jerarquia not in (1) order by name;";
+     }else if($sub==5){
+          $sql = "select * from system.users where jerarquia not in (1) and user_type not in (11) order by name;";
+     }else{
+          $sql = "select * from system.users where jerarquia not in (1) and user_type = $sub order by name;";
+     }
+     $result = pg_query($sql);
+     while ($item = pg_fetch_array($result)) {
+          array_push($orders, $item);        
+     }
+     if (!isset($orders[0]['id'])) {
+          echo json_encode(array('response'=>0));      
+     }else{
+          echo json_encode($orders);
+     }
+}
+
+if ($_POST['action'] == 'chech_menu') {
+     $user   = $_POST['user'];
+     $orders = array();
+     $conn = new Connect();
+     $sql = "select * from system.users where id='$user';";
+     $result = pg_query($sql);
+     while ($item = pg_fetch_array($result)) {
+          array_push($orders, $item);        
+     }
+     if (!isset($orders[0]['id'])) {
+          echo json_encode(array('response'=>0));      
+     }else{
+          echo json_encode($orders);
+     }
+}
+
 if ($_POST['action'] == 'search_sku_mx') {
      $resulta="";
      $shop_id  = $_POST['shop_id'];
@@ -192,7 +552,7 @@ if ($_POST['action'] == 'combo_talla') {
      	$query = pg_query($sql_order);
      	while($result_order = pg_fetch_object($query)){
      		$info = order_by_id($result_order->user_name,$result_order->id_order, $result_order->access_token);	
-		#creating PDF label for print
+     		#creating PDF label for print
      		$image = explode("~^~", $result_order->image_url);
      		$notes = getNote($result_order->id_order,$result_order->access_token);	
      		$notes_list = array();
@@ -255,19 +615,26 @@ if ($_POST['action'] == 'combo_talla') {
      	$query = pg_query($sql_order);
      	while($result_order = pg_fetch_object($query)){
      		$info = order_by_id($result_order->user_name,$result_order->id_order, $result_order->access_token);	
+     		#print_r($info);
+               #die();
 		#creating PDF label for print
      		$image = explode("~^~", $result_order->image_url);
                
 
                
-     		$notes = getNote($result_order->id_order,$result_order->access_token);	
+     		$notes = getNote($result_order->id_order,$result_order->access_token);
      		$notes_list = array();
-     		foreach ($notes[0]->results as $key) {
-     			array_push($notes_list,array(
-     				'note' => $key->note,
-     				'date' => date_format(date_create($key->date_created),"Y-m-d H:i:s")
-     			));
-     		}
+     		if(isset($notes->error)){
+                    $notes_list="";
+               }else{
+                    foreach ($notes[0]->results as $key) {
+                         array_push($notes_list,array(
+                              'note' => $key->note,
+                              'date' => date_format(date_create($key->date_created),"Y-m-d H:i:s")
+                         ));
+                    }
+               }
+
      		$result_shipping = array(
      			"image" => $image[0],
      			"order" => $result_order->id_order,
@@ -278,12 +645,12 @@ if ($_POST['action'] == 'combo_talla') {
      			"quantity" => $result_order->quantity,
      			"notes" => $notes_list,
      			"comment" => $result_order->comentary,
-     			"shipping_mode" => $info->shipping->shipping_mode,
-     			"shipping_id" => $info->shipping->id,
-     			"buyer_city" => $info->shipping->receiver_address->city->name,
-     			"buyer_address" => $info->shipping->receiver_address->address_line,
+     			"shipping_mode" => $result_order->shipping_mode,
+     			"shipping_id" => $result_order->shipping_id,
+     			"buyer_city" => $info->shipping->receiver_address->state->name." Ciudad: ".$info->shipping->receiver_address->city->name,
+     			"buyer_address" => $info->shipping->receiver_address->address_line." Info. adicional - ".$info->shipping->receiver_address->comment,
      			"buyer_fullname" => $info->buyer->first_name." ".$info->buyer->last_name,
-     			"buyer_phone" => $info->buyer->phone->number,
+     			"buyer_phone" => $info->buyer->phone->area_code." ".$info->buyer->phone->number,
      			"seller_id" => $result_order->id,
      			"seller_name" => $result_order->user_name,
      			"order_price" => $info->total_amount,
@@ -610,7 +977,7 @@ if ($_POST['action'] == 'combo_talla') {
      	$shop_id = $_POST['shop_id'];
      	$orders = array();
      	$conn = new Connect();
-     	$sql = "select * from system.view_orders where (autorice = 'C' or autorice = 'B') and shop_id = '".$shop_id."'";
+     	$sql = "select * from system.view_orders where (autorice = 'C' or autorice = 'B' or autorice = 'SD') and shop_id = '".$shop_id."'";
      	$result = pg_query($sql);
 	$rows ="";
      	while ($item = pg_fetch_object($result)) {
@@ -622,12 +989,16 @@ if ($_POST['action'] == 'combo_talla') {
      		$alert_color = "white";
      		if ($item->quantity > 1) {
      		    $header = "<tr style='background-color:#c0ff91'>";
-		    $alert_color = "#c0ff91";					
+		        $alert_color = "#c0ff91";					
      		}
      		if ($item->unit_price < $item->precio_esp) {
      		    $header = "<tr style='background-color:#f9dbdb'>"; 
-		    $alert_color = "#f9dbdb";					
+		        $alert_color = "#f9dbdb";					
      		}
+               if ($item->autorice=='SD') {
+                   $header = "<tr style='background-color:#add7ff'>"; 
+                  $alert_color = "#add7ff";                      
+               }
      		$rows .= $header; 
      		$rows .= "<td style='width: 90px; word-wrap: break-word;'>".$item->id_order."</td>";
      		$rows .= "<td style='width: 90px; word-wrap: break-word;'>".$item->create_date."</td>";
@@ -666,7 +1037,7 @@ if ($_POST['action'] == 'combo_talla') {
      		$rows .= "<i class='fa fa-edit'></i>";
      		$rows .= "</a></td>";
      		if ($comentary) {
-     			$rows .= "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Ver comentario' onclick='ver_comentario(\"".$item->id_order."\",\"".$comentary."\")'><i class='fa fa-comments-o' style='color:red; font-size:20px;'></i></a></td>";	
+     			$rows .= "<td style='width: 40px; word-wrap: break-word;'><p hidden>".$comentary."</p><a class='btn' title='Ver comentario' onclick='ver_comentario(\"".$item->id_order."\",\"".$comentary."\")'><i class='fa fa-comments-o' style='color:red; font-size:20px;'></i></a></td>";	
      		}else{
      			$rows .= "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Ver comentario' onclick='ver_comentario(\"".$item->id_order."\",\"".$comentary."\")'><i class='fa fa-comments-o' style='font-size:20px;'></i></a></td>";	
      		}
@@ -674,18 +1045,27 @@ if ($_POST['action'] == 'combo_talla') {
      		switch ($item->autorice) {
      			case 'B':
      			if($item->tracking_aws){
-     				$rows .= "<td style='width: 350px; word-wrap: break-word;color: ".$alert_color.";' id='res_".$item->id_order."'>".$item->autorice." <a class='btn ".$item->id."' title='Comprada orden' style='background-color:  green; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>COMPRADO</a></td>";
+     				$rows .= "<td style='width: 350px; word-wrap: break-word;color: ".$alert_color.";' id='res_".$item->id_order."'><a class='btn ".$item->id."' title='Orden Comprada' style='background-color:  green; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>COMPRADO</a></td>";
      			}else{
-     				$rows .= "<td style='width: 350px; word-wrap: break-word;color: ".$alert_color.";' id='res_".$item->id_order."'>".$item->autorice." <a class='btn ".$item->id."' title='Comprada orden sin Información de Tracking' style='background-color:  green; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>COMPRADO S/T</a></td>";					
+     				$rows .= "<td style='width: 350px; word-wrap: break-word;color: ".$alert_color.";' id='res_".$item->id_order."'><a class='btn ".$item->id."' title='Orden Comprada sin Información de Tracking' style='background-color:  green; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>COMPRADO S/T</a></td>";					
      			}
      			break;
      			case 'N':
-     			$rows .= "<td style='width: 350px; word-wrap: break-word;color:".$alert_color.";' id='res_".$item->id_order."'>".$item->autorice." <a class='btn ".$item->id."' title='Novedad en item' style='background-color:  red;width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>NOVEDAD</a></td>";
+     			$rows .= "<td style='width: 350px; word-wrap: break-word;color:".$alert_color.";' id='res_".$item->id_order."'><a class='btn ".$item->id."' title='Novedad en item' style='background-color:  red;width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>NOVEDAD</a></td>";
      			break;
+                    case 'SD':
+                    $rows .= "<td style='width: 350px; word-wrap: break-word;color:".$alert_color.";' id='res_".$item->id_order."'><a class='btn ".$item->id."' title='Orden Enviada' style='background-color:  #0085ff; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>ENVIADO</a></td>";
+                    break;
      			default:
-     			$rows .= "<td style='width: 350px; word-wrap: break-word;color: ".$alert_color.";' id='res_".$item->id_order."'>".$item->autorice."<a style='padding-left: 0px; border-left-width: 2px; padding-right: 0px; border-right-width: 2px;' class='btn ".$item->id."' title='Comprar orden' onclick='buy_order(\"".$item->id."\",\"".$item->id_order."\")'><i class='fa fa-check-square'style='font-size:20px; color:green;'></i></a><a style='padding-left: 0px; border-left-width: 2px; padding-right: 0px; border-right-width: 2px;' class='btn ".$item->id."' title='Cancelar y enviar a órdenes' onclick='refuse_order(\"".$item->id_order."\",\"".$item->id_order."\",4)'><i class='fa fa-window-close'style='font-size:20px; color:red;'></i></a><a style='padding-left: 0px; border-left-width: 2px; padding-right: 0px; border-right-width: 2px;' class='btn ".$item->id."' title='Cancelar orden por novedad' onclick='refuse_order(\"".$item->id_order."\",\"".$item->id_order."\",1)'><i class='fa fa-bell-o'style='font-size:20px; color:#f57b13;'></i></a></td>";
+     			$rows .= "<td style='width: 350px; word-wrap: break-word;color: ".$alert_color.";' id='res_".$item->id_order."'><a style='padding-left: 0px; border-left-width: 2px; padding-right: 0px; border-right-width: 2px;' class='btn ".$item->id."' title='Comprar orden' onclick='buy_order(\"".$item->id."\",\"".$item->id_order."\")'><i class='fa fa-check-square'style='font-size:20px; color:green;'></i></a><a style='padding-left: 0px; border-left-width: 2px; padding-right: 0px; border-right-width: 2px;' class='btn ".$item->id."' title='Cancelar y enviar a órdenes' onclick='refuse_order(\"".$item->id_order."\",\"".$item->id_order."\",4)'><i class='fa fa-window-close'style='font-size:20px; color:red;'></i></a><a style='padding-left: 0px; border-left-width: 2px; padding-right: 0px; border-right-width: 2px;' class='btn ".$item->id."' title='Cancelar orden por novedad' onclick='refuse_order(\"".$item->id_order."\",\"".$item->id_order."\",1)'><i class='fa fa-bell-o'style='font-size:20px; color:#f57b13;'></i></a></td>";
      			break;
      		}
+               $rows .= "<td style='width: 90px; word-wrap: break-word;'>".$item->create_date_buy."</td>";
+               $rows .= "<td >".$item->cuenta."</td>";
+               $rows .= "<td >".$item->status."</td>";
+               $rows .= "<td >".$item->track_status."</td>";
+               $rows .= "<td >".$item->id_order_aws."</td>";
+               $rows .= "<td >".$item->tracking_aws."</td>";
      		$rows .= "</tr>";				
      	}
 	#----------------- USER LOG -----------------
@@ -763,7 +1143,12 @@ if ($_POST['action'] == 'combo_talla') {
      	$data = [];
      	$target_file   = "/var/www/html/enkargo/docs/".basename($file);
      	$conn = new Connect();
-     	move_uploaded_file($_FILES['file']['tmp_name'], $target_file);
+     	$arch= move_uploaded_file($_FILES['file']['tmp_name'], $target_file);
+          if($arch){
+               echo "Successfully uploaded";         
+          } else {
+               echo "Not uploaded";
+          }
      	$fila = 1;
      	if (($gestor = fopen($target_file, "r")) !== FALSE) {
      		while (($datos = fgetcsv($gestor, 0, ";")) !== FALSE) {
@@ -782,25 +1167,25 @@ if ($_POST['action'] == 'combo_talla') {
      		$matches = array();
      		$aws_order_date = $data[$i][0];		
      		$aws_order = $data[$i][1];		
-     		$aws_quantity = $data[$i][13];
-     		$email_account = $data[$i][17];
-     		$aws_shipping_date = $data[$i][18];
-                if(empty($aws_shipping_date)){
+     		#$aws_quantity = $data[$i][13];
+     		$email_account = $data[$i][3];
+     		#$aws_shipping_date = $data[$i][18];
+                /*if(empty($aws_shipping_date)){
                     $aws_shipping_date='01/00/00';
-               }    		
-     		$aws_order_status = $data[$i][25];
-     		preg_match_all($regex, $data[$i][26], $matches);
+                } */  		
+     		$aws_order_status = $data[$i][4];
+     		preg_match_all($regex, $data[$i][5], $matches);
      		$tracking_number = $matches[1][0];
-     		$aws_subtotal = (float) str_replace("$","",$data[$i][27]);
-     		$aws_subtotal_tax = (float) str_replace("$","",$data[$i][28]);
-     		$aws_total = (float) str_replace("$","",$data[$i][29]);
-     		$aws_buyer_name = $data[$i][33];
-     		$sku = $data[$i][4];
-     		$sql = "UPDATE system.orders SET track_status='".$aws_order_status."', date_arrival='".$aws_shipping_date."', update_date ='".date("Y-m-d H:i:s")."' WHERE sku = '".$sku."' AND autorice = 'B' AND id_order_aws = '".$aws_order."';";
+     		#$aws_subtotal = (float) str_replace("$","",$data[$i][27]);
+     		#$aws_subtotal_tax = (float) str_replace("$","",$data[$i][28]);
+     		#$aws_total = (float) str_replace("$","",$data[$i][29]);
+     		#$aws_buyer_name = $data[$i][33];
+     		$sku = $data[$i][2];
+     		$sql = "UPDATE system.orders SET track_status='".$aws_order_status."', update_date ='".date("Y-m-d H:i:s")."' WHERE sku = '".$sku."' AND autorice = 'B' AND id_order_aws = '".$aws_order."';";
      		$result = pg_query($sql);
      		if ($result > 0) {
 			#Set tracking number only if item was buy and has the same SKU
-     			$sql = "UPDATE system.orders SET  create_date_buy= '".$aws_order_date."', tracking_aws ='".$tracking_number."', track_status='".$aws_order_status."', date_arrival='".$aws_shipping_date."', cuenta='".$email_account."', aws_subtotal='".$aws_subtotal."', aws_total_price='".$aws_total."',aws_buyer_name ='".$aws_buyer_name."', aws_quantity='".$aws_quantity."', aws_subtotal_tax = '".$aws_subtotal_tax."', update_date ='".date("Y-m-d H:i:s")."' WHERE sku = '".$sku."' AND autorice = 'B' AND id_order_aws = '".$aws_order."';";
+     			$sql = "UPDATE system.orders SET  create_date_buy= '".$aws_order_date."', tracking_aws ='".$tracking_number."', track_status='".$aws_order_status."', cuenta='".$email_account."', update_date ='".date("Y-m-d H:i:s")."' WHERE sku = '".$sku."' AND autorice = 'B' AND id_order_aws = '".$aws_order."';";
      			$result = pg_query($sql);
      		}
      	}

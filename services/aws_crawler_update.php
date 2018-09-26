@@ -25,8 +25,9 @@ while ($hora_actual < $hora_limite) {
 	$k = 0;
 	#Start Crawler funcion
 	$crawler = new Amazon();
-	#print_r($crawler->crawler("https://www.amazon.com/dp/B0066BE13Y", "B077NPGNR8", "23456"));
-	#die();
+	
+	print_r($crawler->crawler("https://www.amazon.com/dp/B00IA5LSH6", "B00IA5LSH6", "23456"));
+	die();
 
 	echo "Inicio traductor\n";
 

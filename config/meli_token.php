@@ -3,10 +3,10 @@ include "meli.php";
 include "conex_manager.php";
 
 $conn       = new Connect();
-$shop_query = pg_query("SELECT * FROM meli.shop where id <> 3;");
+$shop_query = pg_query("SELECT * FROM meli.shop where id <> 5;");
 
 while ($shop = pg_fetch_object($shop_query)) {
-	echo $shop->id."\n";
+	echo "---".$shop->name."---\n";
 	$params = array(
 		'grant_type'    => 'refresh_token',
 		'client_id'     => $shop->application_id,
@@ -25,6 +25,5 @@ while ($shop = pg_fetch_object($shop_query)) {
 	if ($response->access_token != NULL || $response->refresh_token != NULL) {
 		$sql    = "UPDATE meli.shop  SET access_token='".$response->access_token."', refresh_access_token='".$response->refresh_token."', update_date= '".date('Y-m-d H:i:s')."' WHERE id ='".$shop->id."';";
 		$update = pg_query($sql);
-		echo $update;
 	}
 }

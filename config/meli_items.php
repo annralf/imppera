@@ -286,56 +286,77 @@ class items {
 	}
 
 	public function liquidador_pro($price, $package_weight, $prime,$shop) {
-		$price         = ceil($price);
-		$weight          = ceil($package_weight);
+		$pricel         = ceil($price);
+		$weight        = $package_weight;
 		$mer_env =0;
 		$env_int =0;
 
+
+
 		#echo $weight."-------------------"; 
-	#minima de venta 3$ 
+		#minima de venta 3$ 
 		if ($weight <  1){	$weight =1;	}
 		if ($weight == 0){	$weight =1;	}
-		if ($price <  3){	$price =3;	}
-		if ($price == 0){	$price =3;	}
+		if ($pricel <  3){	$pricel =3;	}
+		if ($pricel == 0){	$pricel =3;	}
 		$dollar          = 0;
 		#$weight_price    = 15000;
-	#se asugna el precio del $
-		if ($price >= 100) 	{	$dollar = 4800;	}
-		if ($price <= 99) 	{	$dollar = 4900;	}
-		if ($price <= 50) 	{	$dollar = 5000;	}
-		if ($price <= 30) 	{	$dollar = 5200;	}
-		if ($price <= 20) 	{	$dollar = 5400;	}
-		if ($price <= 11) 	{	$dollar = 5600;	}
-		if ($price <= 7) 	{	$dollar = 6800;	}
+		#se asugna el precio del $
+		if ($pricel >= 100) 	{	$dollar = 4800;	}
+		if ($pricel <= 99) 	{	$dollar = 4900;	}
+		if ($pricel <= 50) 	{	$dollar = 5000;	}
+		if ($pricel <= 30) 	{	$dollar = 5200;	}
+		if ($pricel <= 20) 	{	$dollar = 5400;	}
+		if ($pricel <= 11) 	{	$dollar = 5600;	}
+		if ($pricel <= 7) 	{	$dollar = 6800;	}
 
-	#se le suma el shippind de amazon
+		#se le suma el shippind de amazon
 		if($prime == 0){
-			if ($price >= 51) {	$shipp = 40000;	}
-			if ($price <= 50) {	$shipp = 24000;	}
+			if ($pricel >= 51) {	$shipp = 40000;	}
+			if ($pricel <= 50) {	$shipp = 24000;	}
 		}else{
 			$shipp=0;
 		}
-	#se asigna el precio de envio nacional
-		if($weight <= 2){
+		#se asigna el precio de envio nacional
+		if($weight < 2){
 			$mer_env=3000;
 		}else{
-			if($weight  > 88){	$mer_env=23000;	}
+			if($weight  > 110){	$mer_env=30000;	}
+			if($weight <= 110){	$mer_env=23000;	}
 			if($weight <= 88){	$mer_env=15000;	}
 			if($weight <= 66){	$mer_env=14000;	}
 			if($weight <= 44){	$mer_env=11000;	}
-			if($weight <= 22){	$mer_env=7500;	}
-			if($weight <= 11){	$mer_env=5000;	}
-			$env_int = ($weight-2)*6000;
+			if($weight <= 22){	$mer_env=7300;	}
+			if($weight <= 11){	$mer_env=4300;	}
 		}
+		$env_int = ($weight)*5000;
 
-		$final_price = ($price*$dollar)+$mer_env+$env_int+$shipp+500;
-	#echo $final_price."\n".$price."\n".$weight."\n".$env_int."\n";
+		$final_price = ($pricel*$dollar)+$mer_env+$env_int+$shipp;
+		//echo "Precio final: ".$final_price."\nPrecio en $: ".$price."\nPeso libras: ".$weight."\nEnvio Int: ".$env_int."\nEnvio Nac: ".$mer_env."\nInversa: ".$inversa;
 		$mod         = $final_price%1000;
 		if ($shop==1){
-			$final_price = ($final_price-$mod)+599;
+			$final_price = ($final_price-$mod)+1599;
 		}
 		if ($shop==2){
-			$final_price = ($final_price-$mod)+533;
+			$final_price = ($final_price-$mod)+1533;
+		}
+		
+
+		if($shop==3){
+			$pricem 	= $price;
+			$peso 	= 0;
+			if ($pricem > 100) 	{	$dollar = 139;	}
+			if ($pricem <= 100) {	$dollar = 124;	}
+			if ($pricem <= 70) 	{	$dollar = 74;	}
+			if ($pricem <= 50) 	{	$dollar = 52;	}
+			if ($pricem <= 19) 	{	$dollar = 38;	}
+			if ($pricem <= 10) 	{	$dollar = 32;	}
+			if ($pricem <= 7) 	{	$dollar = 30;	}
+
+			if($weight>1){
+				$peso=$weight*7;
+			}
+			$final_price = ($pricem+$dollar+$peso)*21.48;	
 		}
 		
 		return (int) $final_price;

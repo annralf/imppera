@@ -152,6 +152,7 @@ class amazonManager {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
 		$response = curl_exec($ch);
+		#print_r($response);
 		curl_close($ch);
 		$xml = simplexml_load_string($response);
 		$result = array();

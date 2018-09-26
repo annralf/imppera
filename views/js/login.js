@@ -69,7 +69,6 @@ function user_login(){
   password : password,
   user_id: sessionStorage.getItem('id')
 }).done(function (data) {
-<<<<<<< HEAD
   if (data == 2) {
     alert('El usuario/contraseña no coinciden');
     location.reload();
