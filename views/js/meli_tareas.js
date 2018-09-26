@@ -299,6 +299,22 @@ function update_file(id_t){
 
 	});
 }
+
+function uppriority(id_t,porc){
+	$.post('../services/meli_manager.php',{
+		action : 'add_avance',
+		id_t : id_t,
+		valor : porc,
+	}).done(function(e){
+		var response = JSON.parse(e);
+		if (response.response == 1) {
+			list_tarea();
+		}else{
+			alert("Ha ocurrido un error al procesar la información");
+		}
+	});
+
+}
 //######################tareas#######################
 
 function show_panel_proyecto(){
@@ -727,31 +743,49 @@ function list_tarea(){
 				if(response[i].priority== 3 ){
 					tokenr=1;
 					rowsr += "<tr style='background-color:"+response[i].color+";'>";
-					rowsr += "<td style='width: 85%; '><i class='fa fa-navicon' style='font-size:18px;color:#292929' onclick='ver_descrip(\""+response[i].id+"\")'></i><span style='color:#292929;margin-left:10px;font-weight: bold;font-size:15px'>"+response[i].tarea+"</span></td>";
+					rowsr += "<td style='width: 85%; '><i class='fa fa-navicon' style='font-size:18px;color:#292929' onclick='ver_descrip(\""+response[i].id+"\")'></i><span style='color:#292929;margin-left:10px;font-weight: bold;font-size:15px'>"+response[i].tarea+"</span><span style='float:right'>"+response[i].avance+"%</span></td>";
 					rowsr += "<td style='width: 15%; '>";
-						rowsr += "<a class='btn' title='Ver comentario' onclick='ver_comentario(\""+response[i].id+"\")'>	<i class='fa fa-comments-o' 	style='font-size:15px;color:"+colorc+";'></i></a>";	
+						rowsr += "<div class='dropdown'> <a class='btn' title='Ver comentario' onclick='ver_comentario(\""+response[i].id+"\")'>	<i class='fa fa-comments-o' 	style='font-size:15px;color:"+colorc+";'></i></a>";	
 					 	rowsr += "<a class='btn' title='Adjuntar Archivo' onclick='ver_file(\""+response[i].id+"\",\""+response[i].file+"\")'>			<i class='fa fa-folder-open-o' 	style='font-size:15px;color:"+colorf+";'></i></a>";
 					 	rowsr += "<a class='btn' title='Terminar Tarea' onclick='end_tarea(\""+response[i].id+"\")'>									<i class='fa fa-check-square-o' style='font-size:15px;color:#292929;'></i></a>";
+					 	rowsr += "<a class='dropdown-toggle btn' data-toggle='dropdown' title='Porcentaje de avance' ><i class='fa fa-line-chart' style='font-size:15px;color:#292929;'></i></a>  ";
+                        rowsr += "    <ul class='dropdown-menu pull-right' role='menu' aria-labelledby='dLabel' style='width: 70px;'>";
+                        rowsr += "      <li style='font-size: 20px;background: #fff'>";
+                        rowsr += "      <input type='range' min='0' max='100' step='0' onchange='uppriority(\""+response[i].id+"\",this.value)'>";
+                        rowsr += "      </li>";
+                        rowsr += "    </ul></div> ";
 					rowsr += "</td>";	
 					rowsr += "</tr>";
 				}if(response[i].priority== 2 ){
 					tokena=1;
 					rowsa += "<tr style='background-color:"+response[i].color+";'>";
-					rowsa += "<td style='width: 85%;'><i class='fa fa-navicon' style='font-size:18px;color:#292929' onclick='ver_descrip(\""+response[i].id+"\")'></i><span style='color:#292929;margin-left:10px;font-weight: bold;font-size:15px'>"+response[i].tarea+"</span></td>";
+					rowsa += "<td style='width: 85%;'><i class='fa fa-navicon' style='font-size:18px;color:#292929' onclick='ver_descrip(\""+response[i].id+"\")'></i><span style='color:#292929;margin-left:10px;font-weight: bold;font-size:15px'>"+response[i].tarea+"</span><span style='float:right'>"+response[i].avance+"%</span></td>";
 					rowsa += "<td style='width: 15%;'>";
-						rowsa += "<a class='btn' title='Ver comentario' onclick='ver_comentario(\""+response[i].id+"\")'>	<i class='fa fa-comments-o' 	style='font-size:15px;color:"+colorc+";'></i></a>";	
+						rowsa += "<div class='dropdown'> <a class='btn' title='Ver comentario' onclick='ver_comentario(\""+response[i].id+"\")'>	<i class='fa fa-comments-o' 	style='font-size:15px;color:"+colorc+";'></i></a>";	
 					 	rowsa += "<a class='btn' title='Adjuntar Archivo' onclick='ver_file(\""+response[i].id+"\",\""+response[i].file+"\")'>			<i class='fa fa-folder-open-o' 	style='font-size:15px;color:"+colorf+";'></i></a>";
 					 	rowsa += "<a class='btn' title='Terminar Tarea' onclick='end_tarea(\""+response[i].id+"\")'>									<i class='fa fa-check-square-o' style='font-size:15px;color:#292929;'></i></a>";
+						rowsa += "<a class='dropdown-toggle btn' data-toggle='dropdown' title='Porcentaje de avance' ><i class='fa fa-line-chart' style='font-size:15px;color:#292929;'></i></a>  ";
+                        rowsa += "    <ul class='dropdown-menu pull-right' role='menu' aria-labelledby='dLabel' style='width: 70px;'>";
+                        rowsa += "      <li style='font-size: 20px;background: #fff'>";
+                        rowsa += "      <input type='range' min='0' max='100' step='0' onchange='uppriority(\""+response[i].id+"\",this.value)'>";
+                        rowsa += "      </li>";
+                        rowsa += "    </ul></div> ";
 					rowsa += "</td>";
 					rowsa += "</tr>";
 				}if(response[i].priority== 1 ){
 					tokenv=1;
 					rowsv += "<tr style='background-color:"+response[i].color+";'>";
-					rowsv += "<td style='width: 85%;'><i class='fa fa-navicon' style='font-size:18px;color:#292929' onclick='ver_descrip(\""+response[i].id+"\")'></i><span style='color:#292929;margin-left:10px;font-weight: bold;font-size:15px'>"+response[i].tarea+"</span></td>";
+					rowsv += "<td style='width: 85%;'><i class='fa fa-navicon' style='font-size:18px;color:#292929' onclick='ver_descrip(\""+response[i].id+"\")'></i><span style='color:#292929;margin-left:10px;font-weight: bold;font-size:15px'>"+response[i].tarea+"</span><span style='float:right'>"+response[i].avance+"%</span></td>";
 					rowsv += "<td style='width: 15%;'>";
-						rowsv += "<a class='btn' title='Ver comentario' onclick='ver_comentario(\""+response[i].id+"\")'>	<i class='fa fa-comments-o' 	style='font-size:15px;color:"+colorc+";'></i></a>";	
+						rowsv += "<div class='dropdown'> <a class='btn' title='Ver comentario' onclick='ver_comentario(\""+response[i].id+"\")'>	<i class='fa fa-comments-o' 	style='font-size:15px;color:"+colorc+";'></i></a>";	
 					 	rowsv += "<a class='btn' title='Adjuntar Archivo' onclick='ver_file(\""+response[i].id+"\",\""+response[i].file+"\")'>			<i class='fa fa-folder-open-o' 	style='font-size:15px;color:"+colorf+";'></i></a>";
 					 	rowsv += "<a class='btn' title='Terminar Tarea' onclick='end_tarea(\""+response[i].id+"\")'>									<i class='fa fa-check-square-o' style='font-size:15px;color:#292929;'></i></a>";
+						rowsv += "<a class='dropdown-toggle btn' data-toggle='dropdown' title='Porcentaje de avance' ><i class='fa fa-line-chart' style='font-size:15px;color:#292929;'></i></a>  ";
+                        rowsv += "    <ul class='dropdown-menu pull-right' role='menu' aria-labelledby='dLabel' style='width: 70px;'>";
+                        rowsv += "      <li style='font-size: 20px;background: #fff'>";
+                        rowsv += "      <input type='range' min='0' max='100' step='0' onchange='uppriority(\""+response[i].id+"\",this.value)'>";
+                        rowsv += "      </li>";
+                        rowsv += "    </ul></div> ";
 					rowsv += "</td>";
 					rowsv += "</tr>";
 				}		
@@ -875,11 +909,8 @@ function armar_estrucctura(type){
 				$('#asigtareas').empty();
 				$('#asigtareas').append(row);
 			}
-
 		}	
-
 	});
-
 }
 
 function reprogramar_tarea(id_t){
@@ -905,7 +936,6 @@ function reprogramar_tarea(id_t){
 			$('#priority_asig').val(response[0].priority);
 			$('#user_asig').val(response[0].user_asig);
 			$('#color_asig').val(response[0].color);
-			
         }
 	});
 }
@@ -968,9 +998,6 @@ function list_tarea_no_cumplidas(){
 function list_tarea_asig(){
 	armar_estrucctura(3);
 }
-
-
-
 
 function tareas_proyecto(id_p,name_p){
 	$('#tablero_today').hide();
