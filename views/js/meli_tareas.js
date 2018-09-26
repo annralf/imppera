@@ -129,11 +129,40 @@ function archivo(evt) {
 	    reader.readAsDataURL(f);
 	  }
 }
-function ver_comentario(id_t,commentary) {	
-	$('#comment_local').val(commentary);
-	$(".item_comentary_modal").modal("show");
-	$(".save_comment").attr('id_t',id_t);	
+
+function ver_comentario(id_t) {	
+	var id_t=id_t;
+	$.post('../services/meli_manager.php',{
+		action 	: 'list_tarea_by_id',
+		id_t 	: id_t,
+	}).done(function(e){
+		var response = JSON.parse(e);
+		if (response.response == 0) {
+			alert("Ha ocurrido un error al procesar la información");
+		}else{
+			$('#comment_local').text(response[0].comentary);
+			$(".item_comentary_modal").modal("show");
+			$(".save_comment").attr('id_t',id_t);	
+		}
+	});
 }
+
+function ver_descrip(id_t) {	
+	var id_t=id_t;
+	$.post('../services/meli_manager.php',{
+		action 	: 'list_tarea_by_id',
+		id_t 	: id_t,
+	}).done(function(e){
+		var response = JSON.parse(e);
+		if (response.response == 0) {
+			alert("Ha ocurrido un error al procesar la información");
+		}else{
+			$('#descrip_local').text(response[0].description);
+			$(".item_descrip_modal").modal("show");
+		}
+	});
+}
+
 function ver_file(id_t,file) {	
 	//$('#input-b1').val(file);
 	var thumb = ""; 
@@ -181,8 +210,8 @@ function check_tarea(){
 		action : 'check_tarea',
 		user_id: sessionStorage.getItem('id')
 	}).done(function(e){
+		var response = JSON.parse(e);
 		if (response.response == 1) {
-			alert(response);
 		}else{
 			alert("Ha ocurrido un error actualizando");
 		}
@@ -698,9 +727,9 @@ function list_tarea(){
 				if(response[i].priority== 3 ){
 					tokenr=1;
 					rowsr += "<tr style='background-color:"+response[i].color+";'>";
-					rowsr += "<td style='width: 85%; '><i class='fa fa-hand-o-right' style='font-size:18px;color:#292929'></i><span style='color:#292929;margin-left:10px;font-weight: bold;font-size:15px'>"+response[i].tarea+"</span></td>";
+					rowsr += "<td style='width: 85%; '><i class='fa fa-navicon' style='font-size:18px;color:#292929' onclick='ver_descrip(\""+response[i].id+"\")'></i><span style='color:#292929;margin-left:10px;font-weight: bold;font-size:15px'>"+response[i].tarea+"</span></td>";
 					rowsr += "<td style='width: 15%; '>";
-						rowsr += "<a class='btn' title='Ver comentario' onclick='ver_comentario(\""+response[i].id+"\",\""+response[i].comentary+"\")'>	<i class='fa fa-comments-o' 	style='font-size:15px;color:"+colorc+";'></i></a>";	
+						rowsr += "<a class='btn' title='Ver comentario' onclick='ver_comentario(\""+response[i].id+"\")'>	<i class='fa fa-comments-o' 	style='font-size:15px;color:"+colorc+";'></i></a>";	
 					 	rowsr += "<a class='btn' title='Adjuntar Archivo' onclick='ver_file(\""+response[i].id+"\",\""+response[i].file+"\")'>			<i class='fa fa-folder-open-o' 	style='font-size:15px;color:"+colorf+";'></i></a>";
 					 	rowsr += "<a class='btn' title='Terminar Tarea' onclick='end_tarea(\""+response[i].id+"\")'>									<i class='fa fa-check-square-o' style='font-size:15px;color:#292929;'></i></a>";
 					rowsr += "</td>";	
@@ -708,9 +737,9 @@ function list_tarea(){
 				}if(response[i].priority== 2 ){
 					tokena=1;
 					rowsa += "<tr style='background-color:"+response[i].color+";'>";
-					rowsa += "<td style='width: 85%;'><i class='fa fa-hand-o-right' style='font-size:18px;color:#292929'></i><span style='color:#292929;margin-left:10px;font-weight: bold;font-size:15px'>"+response[i].tarea+"</span></td>";
+					rowsa += "<td style='width: 85%;'><i class='fa fa-navicon' style='font-size:18px;color:#292929' onclick='ver_descrip(\""+response[i].id+"\")'></i><span style='color:#292929;margin-left:10px;font-weight: bold;font-size:15px'>"+response[i].tarea+"</span></td>";
 					rowsa += "<td style='width: 15%;'>";
-						rowsa += "<a class='btn' title='Ver comentario' onclick='ver_comentario(\""+response[i].id+"\",\""+response[i].comentary+"\")'>	<i class='fa fa-comments-o' 	style='font-size:15px;color:"+colorc+";'></i></a>";	
+						rowsa += "<a class='btn' title='Ver comentario' onclick='ver_comentario(\""+response[i].id+"\")'>	<i class='fa fa-comments-o' 	style='font-size:15px;color:"+colorc+";'></i></a>";	
 					 	rowsa += "<a class='btn' title='Adjuntar Archivo' onclick='ver_file(\""+response[i].id+"\",\""+response[i].file+"\")'>			<i class='fa fa-folder-open-o' 	style='font-size:15px;color:"+colorf+";'></i></a>";
 					 	rowsa += "<a class='btn' title='Terminar Tarea' onclick='end_tarea(\""+response[i].id+"\")'>									<i class='fa fa-check-square-o' style='font-size:15px;color:#292929;'></i></a>";
 					rowsa += "</td>";
@@ -718,9 +747,9 @@ function list_tarea(){
 				}if(response[i].priority== 1 ){
 					tokenv=1;
 					rowsv += "<tr style='background-color:"+response[i].color+";'>";
-					rowsv += "<td style='width: 85%;'><i class='fa fa-hand-o-right' style='font-size:18px;color:#292929'></i><span style='color:#292929;margin-left:10px;font-weight: bold;font-size:15px'>"+response[i].tarea+"</span></td>";
+					rowsv += "<td style='width: 85%;'><i class='fa fa-navicon' style='font-size:18px;color:#292929' onclick='ver_descrip(\""+response[i].id+"\")'></i><span style='color:#292929;margin-left:10px;font-weight: bold;font-size:15px'>"+response[i].tarea+"</span></td>";
 					rowsv += "<td style='width: 15%;'>";
-						rowsv += "<a class='btn' title='Ver comentario' onclick='ver_comentario(\""+response[i].id+"\",\""+response[i].comentary+"\")'>	<i class='fa fa-comments-o' 	style='font-size:15px;color:"+colorc+";'></i></a>";	
+						rowsv += "<a class='btn' title='Ver comentario' onclick='ver_comentario(\""+response[i].id+"\")'>	<i class='fa fa-comments-o' 	style='font-size:15px;color:"+colorc+";'></i></a>";	
 					 	rowsv += "<a class='btn' title='Adjuntar Archivo' onclick='ver_file(\""+response[i].id+"\",\""+response[i].file+"\")'>			<i class='fa fa-folder-open-o' 	style='font-size:15px;color:"+colorf+";'></i></a>";
 					 	rowsv += "<a class='btn' title='Terminar Tarea' onclick='end_tarea(\""+response[i].id+"\")'>									<i class='fa fa-check-square-o' style='font-size:15px;color:#292929;'></i></a>";
 					rowsv += "</td>";
@@ -806,21 +835,22 @@ function armar_estrucctura(type){
 					if (response[i].tareas[y].status== 'B') {	dato="Rechazada";	}
 					if (response[i].tareas[y].status== 'NT') {	dato="Expirada";	}
 					row += "<tr style='background-color:"+response[i].tareas[y].color+";'>";
-					row += "<td style='width: 80%; ' title='"+dato+"'><i class='fa fa-hand-o-right' style='font-size:18px;color:#292929'></i><span style='color:#292929;margin-left:10px;font-weight: bold;font-size:15px'>"+response[i].tareas[y].tarea+"</span><span style='margin-right:10px;float: right'>"+dato+"</span></td>";
+					row += "<td style='width: 80%; ' title='"+dato+"'><i class='fa fa-navicon' style='font-size:18px;color:#292929' onclick='ver_descrip(\""+response[i].tareas[y].id+"\")'></i><span style='color:#292929;margin-left:10px;font-weight: bold;font-size:15px'>"+response[i].tareas[y].tarea+"</span><span style='margin-right:10px;float: right'>"+dato+"</span></td>";
 					row += "<td style='width: 20%; '>";
-						row += "<a class='btn' title='Ver comentario' onclick='ver_comentario(\""+response[i].tareas[y].id+"\",\""+response[i].tareas[y].comentary+"\")'>	<i class='fa fa-comments-o' 	style='font-size:15px;color:"+colorc+";'></i></a>";	
+						row += "<a class='btn' title='Ver comentario' onclick='ver_comentario(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-comments-o' 	style='font-size:15px;color:"+colorc+";'></i></a>";	
 					 	row += "<a class='btn' title='Adjuntar Archivo' onclick='ver_file_preview(\""+response[i].tareas[y].id+"\",\""+response[i].tareas[y].file+"\")'>			<i class='fa fa-eye' 	style='font-size:15px;color:"+colorf+";'></i></a>";
 					 	if(type==1){
 						 	row += "<a class='btn' title='Cumplida' onclick='good_tarea(\""+response[i].tareas[y].id+"\")'>									<i class='fa fa-thumbs-o-up' style='font-size:15px;color:#292929;'></i></a>";
 						 	row += "<a class='btn' title='Rechazada' onclick='bad_tarea(\""+response[i].tareas[y].id+"\")'>									<i class='fa fa-thumbs-o-down' style='font-size:15px;color:#292929;'></i></a>";
+						 	row += "<a class='btn' title='eliminar' onclick='eliminar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-times' style='font-size:15px;color:#292929;'></i></a>";
 						}
 						if(type==2){
 							row += "<a class='btn' title='Reprogramar' onclick='reprogramar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-clock-o' style='font-size:15px;color:#292929;'></i></a>";
-							row += "<a class='btn' title='Reprogramar' onclick='reprogramar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-clock-o' style='font-size:15px;color:#292929;'></i></a>";
+							row += "<a class='btn' title='eliminar' onclick='reprogramar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-clock-o' style='font-size:15px;color:#292929;'></i></a>";
 						}
 						if(type==3){
 							row += "<a class='btn' title='Reprogramar' onclick='reprogramar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-clock-o' style='font-size:15px;color:#292929;'></i></a>";
-							row += "<a class='btn' title='Reprogramar' onclick='eliminar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-times' style='font-size:15px;color:#292929;'></i></a>";
+							row += "<a class='btn' title='eliminar' onclick='eliminar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-times' style='font-size:15px;color:#292929;'></i></a>";
 						}
 					row += "</td>";	
 					row += "</tr>";
@@ -916,7 +946,7 @@ function llenar_estrucctura(){
 				rows += "<tr style='background-color:"+response[i].color+";'>";
 				rows += "<td style='width: 80%; '><i class='fa fa-circle-o' style='font-size:18px;color:black'></i><span style='color:black;margin-left:10px;font-weight: bold;font-size:15px'>"+response[i].tarea+"</span></td>";
 				rows += "<td style='width: 20%; '>";
-					rows += "<a class='btn' title='Ver comentario' onclick='ver_comentario(\""+response[i].id+"\",\""+response[i].comentary+"\")'>	<i class='fa fa-comments-o' 	style='font-size:15px;color:"+colorc+";'></i></a>";	
+					rows += "<a class='btn' title='Ver comentario' onclick='ver_comentario(\""+response[i].id+"\")'>	<i class='fa fa-comments-o' 	style='font-size:15px;color:"+colorc+";'></i></a>";	
 				 	rows += "<a class='btn' title='Adjuntar Archivo' onclick='ver_file(\""+response[i].id+"\",\""+response[i].file+"\")'>			<i class='fa fa-folder-open-o' 	style='font-size:15px;color:"+colorf+";'></i></a>";
 				 	rows += "<a class='btn' title='Terminar Tarea' onclick='end_tarea(\""+response[i].id+"\")'>									<i class='fa fa-check-square-o' style='font-size:15px;color:green;'></i></a>";
 				rows += "</td>";	
