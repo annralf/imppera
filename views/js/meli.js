@@ -1,6 +1,6 @@
 //+++++++++++++++++++++++++++++++++++ START RAFAEL FUNCTIONS
 //++++++++++++++++++++++++++++++++++++++++++++
-var url_base='http://192.168.0.52/enkargo/';
+var url_base='https://core.enkargo.com.co/';
 
 function combo_p() {
 	$.post(url_base+'services/meli_manager.php',

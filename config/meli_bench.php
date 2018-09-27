@@ -12,9 +12,10 @@ class Benchmark
 	}
 
 	function get_aws_search($title){
-		$title = urlencode($this->translate($title));
+		$title = $this->translate($title);
+		#$title = urlencode($this->translate($title));
 		$url = "https://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=$title&rh=i%3Aaps%2Ck%3$title";
-		echo $url;
+		echo "$title\n";
 	}
 
 	function translate($text){
@@ -143,17 +144,19 @@ class Benchmark
 		$i = 1;
 		$site_id = "MCO";
 		$offset = 0;
+		$seller_counter = 1;
 		while ($seller = pg_fetch_object($sql_query)) {
 			$final_result  = array();
 			$info = $this->get_seller_items($site_id,$seller->id, 0);
 			$info2 = $this->get_seller_items($site_id,$seller->id, 50);
 			array_push($final_result, $info->results);
 			array_push($final_result, $info2->results);
+			$j = 1;
 			foreach ($final_result as $key) {
-			    $j = 1;
-			    echo "$j - seller $seller->id";
 			    foreach ($key as $val) {
-				$search = pg_fetch_object(pg_query("SELECT mpid FROM meli.bench_shops_items WHERE mpid = '$val->id';"));
+				echo "Total $i: ";
+				echo "Seller $seller_counter : $j - $seller->id ";
+				$search = pg_fetch_object(pg_query("SELECT mpid FROM meli.bench_shops_items WHERE mpid = '$val->id' AND shop = '$seller->id';"));
 				$date = date("Y-m-d H:i:m");
 				if (!isset($search->mpid)) {
 					$title = pg_escape_string(utf8_encode($val->title));
@@ -161,17 +164,18 @@ class Benchmark
 					VALUES ('$val->id', '$title', '$val->price', '$val->sold_quantity', '$val->permalink', 'false', '$seller->id');";
 					$result = pg_query($sql);
 					if ($result > 0) {
-						echo "$i - Seller $seller->id Insert Ok  - $date\n";
+						echo "MPID $val->id Insert Ok  - $date\n";
 					}else{
-						echo "$i - Seller $seller->id NO Insert  - $date\n";	    
+						echo "MPID $val->id NO Insert  - $date\n";	    
 					}
 				}else{
-					echo "$i - Seller $search->mpid Inserted   - $date\n";
+					echo "MPID $search->mpid Inserted   - $date\n";
 				}
 				$i++;
 				$j++;
-			    }die();
+			    }
 			}
+		    $seller_counter++;
 		}
 	}
 
@@ -180,7 +184,7 @@ class Benchmark
 		$i = 1;
 		$site_id = "MCO";
 		while ($seller = pg_fetch_object($sql_query)) {
-			$info = get_seller_items($site_id,$seller->id, $offset);
+			$info = $this->get_seller_items($site_id,$seller->id, 0);
 			$total = $info->paging->total;
 			$sql = "UPDATE meli.bench_sellers SET total_stock = $total WHERE id = '$seller->id'";
 			$date = date("Y-m-d H:i:m");
@@ -303,7 +307,49 @@ class Benchmark
 	  	curl_close($ch);
 	  	return $show;
 	  }
+	  public function search_item($title) {
+		$endpoint          = "webservices.amazon.com";
+		$uri               = "/onca/xml";
+		$service           = "AWSECommerceService";
+		$params = array(
+			"Service" => "AWSECommerceService",
+			"Operation" => "ItemSearch",
+			"AWSAccessKeyId" => "AKIAJIM77WK37THIDD2A",
+			"AssociateTag" => "alexarodri-20",
+			"SearchIndex" => "All",
+			"Keywords" => $title,
+			"ResponseGroup" => "Images,ItemAttributes,Offers"
+		);
+		if (!isset($params["Timestamp"])) {
+			$params["Timestamp"] = gmdate("Y-m-d\TH:i:s\Z");
+		}
+		ksort($params);
+		$pairs = array();
+		foreach ($params as $key => $value) {
+			array_push($pairs, rawurlencode($key)."=".rawurlencode($value));
+		}
+		$canonical_query_string = join("&", $pairs);
+		$string_to_sign         = "GET\n".$endpoint."\n".$uri."\n".$canonical_query_string;
+		$signature              = base64_encode(hash_hmac("sha256", $string_to_sign, $aws_secret_key, true));
+		$request_url            = 'http://'.$endpoint.$uri.'?'.$canonical_query_string.'&Signature='.rawurlencode($signature);
+		$url                    = "http://webservices.amazon.com/onca/xml";
+
+		#Accediendo al url encoding xml
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $request_url);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+		$response = curl_exec($ch);
+		curl_close($ch);
+		$xml = simplexml_load_string($response);
+		$result = array();
+		#echo "<pre>";
+		#print_r($xml);
+		#print_r($xml->Items->Request->ItemLookupRequest->ItemId);
+		#die();
+    }
 	}
 
 	$t = new Benchmark(2);
-	$t->set_top_items();
+	$t->get_aws_search("Allied Telesis 16 Puertos Gigabit Websmart");

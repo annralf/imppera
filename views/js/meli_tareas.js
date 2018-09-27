@@ -437,8 +437,10 @@ function add_tarea(){
 		$('#content_a').show();
 		$('#content_r').show();
 		$('#new_tarea').val('');
+		$('#des_tarea').val('');
 		$('#name_user').empty();
 		$('#form_tarea').hide();
+		list_user_tarea();
 		list_tarea();	
 	}
 }
@@ -499,7 +501,9 @@ function list_porcent(){
 		var response = JSON.parse(e); 
 		if (response.response == 0){
 			rows += "0%";
+			color='#cd5832';
         	$('#porcent').append(rows);
+        	$('#medal').css("background",color)
 		}else{
 	        for(var i in response){
 	        	total = total+parseFloat(response[i].total);
@@ -1081,9 +1085,31 @@ function list_proyect_tarea(){
 }
 
 function list_user_tarea(){
+	var user="";
+	var sub="";
+	user= sessionStorage.getItem('user_type');
+	if(user==5){
+		sub=5;
+	}else
+	if(user==3){
+		sub=8;
+	}else
+	if(user==4){
+		sub=9;
+	} else
+	if(user==1){
+		sub=2;
+	}else
+	if(user==7){
+		sub=10;
+	}else{
+		sub=0;
+	}
+
 	$.post('../services/meli_manager.php',
 		{ 	action  : 'list_user_tarea', 
 			user  	: sessionStorage.getItem('id'),
+			sub 	: sub,
 		}).fail(function(){ alert('error list user tarea');
 	}).done(function(e){
 		var rows="";
@@ -1106,6 +1132,7 @@ function list_user_tarea(){
 	        	//"<i class='fa fa-circle' style='font-size:15px;padding-left: 10px;color:green'></i><span style='cursor:pointer;padding-left:10px;' onclick='select_user("+response[i].id+",\""+response[i].name+" "+response[i].last_name+"\")'>"+response[i].name+" "+response[i].last_name+"</span></li>";
 	        }
 	        rows += "</div></li>";
+	        $('#list_user_tarea').empty();
         	$('#list_user_tarea').append(rows);
         }
 	});
