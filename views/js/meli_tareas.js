@@ -577,49 +577,100 @@ function list_all_porcent(){
 			rows += "0$";
         	alert(rows);
 		}else{
+
+			var jefe1=0;
+			var jefe2=0;
 	        for(var i in response){
+	        	var porcent=0;
+	        	var porcent1=0;
+	        	var porcent2=0;
 				var total=0;
-				var total_c=0;
-				var recha=0;
+				var total1=0;
+				var totala1=0;
+				var totals1=0;
+				var totalc1=0;
+				var totalr1=0;
+				var total2=0;
+				var totala2=0;
+				var totals2=0;
+				var totalc2=0;
+				var totalr2=0;
 				var rowsm="";
 				var rowsa="";
 				var rowsr="";
 				var rowsc="";
 				var rowss="";
 				var color="#E57200";
-	        	for(var y in response[i].tareas){
-		        	total = total+parseFloat(response[i].tareas[y].total);
 
-		        	if (response[i].tareas[y].status=="C"){
-		        		rowsa ="Asignadas: "+response[i].tareas[y].total;
+	        	for(var y in response[i].tareas){
+		        	if(response[i].tareas[y].jerarquia==1){
+		        		jefe1=1;
+		        		total1=total1+parseFloat(response[i].tareas[y].total);
+		        		if (response[i].tareas[y].status=="C"){
+		        			totala1 =totala1+parseFloat(response[i].tareas[y].total);
+			        	}
+			        	if (response[i].tareas[y].status=="T"){
+			        		totals1 =totals1+parseFloat(response[i].tareas[y].total);
+			        	}
+			        	if (response[i].tareas[y].status=="G"){
+			        		totalc1 =totalc1+parseFloat(response[i].tareas[y].total);
+			        	}
+			        	if (response[i].tareas[y].status=="B"){
+			        		totalr1=totalr1+parseFloat(response[i].tareas[y].total);
+			        	}
+			        	if (response[i].tareas[y].status=="NT"){
+			        		totalr1=totalr1+parseFloat(response[i].tareas[y].total);
+			        	}
 		        	}
-		        	if (response[i].tareas[y].status=="T"){
-		        		rowss ="Sin calificar: "+response[i].tareas[y].total;
-		        	}
-		        	if (response[i].tareas[y].status=="G"){
-		        		total_c=parseFloat(response[i].tareas[y].total);
-		        		rowsc ="Cumplidas: "+total_c;
-		        	}
-		        	if (response[i].tareas[y].status=="B"){
-		        		recha=recha+parseFloat(response[i].tareas[y].total);
-		        		rowsr ="Rechazadas: "+recha;
-		        	}
-		        	if (response[i].tareas[y].status=="NT"){
-		        		recha=recha+parseFloat(response[i].tareas[y].total);
-		        		rowsr ="Rechazadas: "+recha;
+		        	if(response[i].tareas[y].jerarquia==2){
+		        		jefe2=1;
+		        		total2=total2+parseFloat(response[i].tareas[y].total);	
+		        		if (response[i].tareas[y].status=="C"){
+		        			totala2 =totala2+parseFloat(response[i].tareas[y].total);
+			        	}
+			        	if (response[i].tareas[y].status=="T"){
+			        		totals2 =totals2+parseFloat(response[i].tareas[y].total);
+			        	}
+			        	if (response[i].tareas[y].status=="G"){
+			        		totalc2 =totalc2+parseFloat(response[i].tareas[y].total);
+			        	}
+			        	if (response[i].tareas[y].status=="B"){
+			        		totalr2=totalr2+parseFloat(response[i].tareas[y].total);
+			        	}
+			        	if (response[i].tareas[y].status=="NT"){
+			        		totalr2=totalr2+parseFloat(response[i].tareas[y].total);
+			        	}
 		        	}
 	        	}
 
-	        	rowsm ="tareas en el mes: "+total;
+	        	total = parseFloat(total1+total2);
+	        	rowsm ="tareas en el mes: "+parseFloat(total);
+        		rowsa ="Asignadas: "+parseFloat(totala1+totala2);
+        		rowsc ="Cumplidas: "+parseFloat(totalc1+totalc2);
+        		rowsr ="Rechazadas: "+parseFloat(totalr1+totalr2);
+        		rowss ="Sin calificar: "+parseFloat(totals1+totals2);
 		        
 		        if(total==0){
 		        	rowsp ="0%";
 		        	porcent=0;
 		        }else{
-		        	porcent = (total_c / total )*100;
-		        	rowsp =Math.round(porcent)+"%";
+		        	if(jefe1==0 && jefe2==1){
+		        		porcent = (totalc2 / total )*100;
+		        		rowsp =Math.round(porcent)+"%";
+		        	}else 
+		        	if(jefe1==1 && jefe2==0){
+		        		porcent = (totalc1 / total )*100;
+		        		rowsp =Math.round(porcent)+"%";
+		        	}else 
+		        	if(jefe1==1 && jefe2==1){
+		        		porcent1 = (totalc1 / total1 )*70;
+		        		porcent2 = (totalc2 / total2 )*30;
+		        		porcent=porcent1+porcent2;
+		        		rowsp =Math.round(porcent)+"%";
+		        	}
 		    	}
-		    	if(porcent==100){
+
+		    	if(porcent>=85){
 		    		color='#b9b8b5';
 		    	}
 		    	if(porcent<85){
@@ -628,6 +679,7 @@ function list_all_porcent(){
 		    	if(porcent<75){
 		    		color='#cd5832';
 		    	}
+
 		    	rows += "<div style='float:left; padding:10px;background:#e7e7e7; border-radius:40px;margin-left:20px;margin-top:20px;'>";
 	        	rows += "<table  width='300px'>";
 		        rows += " <tbody>";
@@ -665,6 +717,8 @@ function list_all_porcent(){
 		        rows += "  </tbody>";
 		        rows += "</table>"; 
 		        rows += "</div>"; 
+		        var jefe1=0;
+				var jefe2=0;
 		    }
 		    $('#panel_user').append(rows);
         }
@@ -1105,7 +1159,6 @@ function list_user_tarea(){
 	}else{
 		sub=0;
 	}
-
 	$.post('../services/meli_manager.php',
 		{ 	action  : 'list_user_tarea', 
 			user  	: sessionStorage.getItem('id'),

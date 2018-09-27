@@ -15,7 +15,7 @@ class Benchmark
 		$title = $this->translate($title);
 		#$title = urlencode($this->translate($title));
 		$url = "https://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=$title&rh=i%3Aaps%2Ck%3$title";
-		echo "$title\n";
+		$this->search_item($title);
 	}
 
 	function translate($text){
@@ -307,10 +307,12 @@ class Benchmark
 	  	curl_close($ch);
 	  	return $show;
 	  }
-	  public function search_item($title) {
-		$endpoint          = "webservices.amazon.com";
-		$uri               = "/onca/xml";
-		$service           = "AWSECommerceService";
+	  
+	  function search_item($title) {
+		$endpoint = "webservices.amazon.com";
+		$uri = "/onca/xml";
+		$access_key_id = "AKIAJIM77WK37THIDD2A";
+		$secret_key = "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";
 		$params = array(
 			"Service" => "AWSECommerceService",
 			"Operation" => "ItemSearch",
@@ -330,7 +332,7 @@ class Benchmark
 		}
 		$canonical_query_string = join("&", $pairs);
 		$string_to_sign         = "GET\n".$endpoint."\n".$uri."\n".$canonical_query_string;
-		$signature              = base64_encode(hash_hmac("sha256", $string_to_sign, $aws_secret_key, true));
+		$signature              = base64_encode(hash_hmac("sha256", $string_to_sign, $secret_key, true));
 		$request_url            = 'http://'.$endpoint.$uri.'?'.$canonical_query_string.'&Signature='.rawurlencode($signature);
 		$url                    = "http://webservices.amazon.com/onca/xml";
 
@@ -342,10 +344,10 @@ class Benchmark
 		curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
 		$response = curl_exec($ch);
 		curl_close($ch);
-		$xml = simplexml_load_string($response);
+		#$xml = simplexml_load_string($response);
 		$result = array();
-		#echo "<pre>";
-		#print_r($xml);
+		echo "<pre>";
+		echo $response;
 		#print_r($xml->Items->Request->ItemLookupRequest->ItemId);
 		#die();
     }
