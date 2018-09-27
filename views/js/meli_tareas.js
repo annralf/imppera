@@ -166,22 +166,36 @@ function ver_descrip(id_t) {
 function ver_file(id_t,file) {	
 	//$('#input-b1').val(file);
 	var thumb = ""; 
+	var extension="";																																																																
 	$("#list").empty();
 	if (file == "null"){
 	}else{
-		thumb="<img class='thumb' src='"+file+"'' title='Vista_previa'/>";
+		extension = file.split('.').pop();
+		if (extension=='jpg' || extension=='jpeg' || extension=='png' || extension=='gif' ){
+			thumb="<img class='thumb' src='"+file+"'' title='Vista_previa'/>";
+		}else{
+			thumb="<a href='"+file+"' title='Vista_previa'>"+file+"</a>";
+		}
 		$("#list").append(thumb);
 	}
 	$(".item_file_modal").modal("show");
 	$(".save_file").attr('id_t',id_t);	
 }
+
 function ver_file_preview(id_t,file) {	
 	//$('#input-b1').val(file);
 	var thumb = ""; 
+	var extension="";
 	$("#list2").empty();
 	if (file == "null"){
 	}else{
-		thumb="<img class='thumb' src='"+file+"'' title='Vista_previa'/>";
+		extension = file.split('.').pop();
+		if (extension=='jpg' || extension=='jpeg' || extension=='png' || extension=='gif' ){
+			thumb="<img class='thumb' src='"+file+"'' title='Vista_previa'/>";
+		}else{
+			thumb="<a href='"+file+"' title='Vista_previa'>"+file+"</a>";
+		}
+
 		$("#list2").append(thumb);
 	}
 	$(".item_file_preview").modal("show");
@@ -465,12 +479,12 @@ function list_proyect(){
 
 
 function list_porcent(){
-
 	$.post('../services/meli_manager.php',
 		{ 	action  : 'list_porcent', 
 			user  	: sessionStorage.getItem('id'),
 		}).fail(function(){ alert('error list proyect');
 	}).done(function(e){
+		var rows="";
 		var color="";
 		var rowsp="";
 		var rowsm="";
@@ -484,7 +498,7 @@ function list_porcent(){
 		var recha =0;
 		var response = JSON.parse(e); 
 		if (response.response == 0){
-			rows += "0$";
+			rows += "0%";
         	$('#porcent').append(rows);
 		}else{
 	        for(var i in response){
@@ -512,11 +526,13 @@ function list_porcent(){
 	        rowsm ="tareas en el mes: "+total;
 	        if(total==0){
 	        	rowsp ="0%";
+	        	porcent=0;
 	        }else{
 	        	porcent = (total_c / total )*100;
 	        	rowsp =Math.round(porcent)+"%";
 	    	}
-	    	if(porcent==100){
+
+	    	if(porcent>=85){
 	    		color='#b9b8b5';
 	    	}
 	    	if(porcent<85){
@@ -675,11 +691,11 @@ function chech_menu(){
 	        	$('#menu_week').hide();
 			}
 			if (response[0].jerarquia==3){
-				alert('aca');
 				$('#menu_asig').css('visibility','hidden');
 				$('#menu_tareaok').hide();
 				$('#menu_tareanook').hide();
 				$('#menu_panel').hide();
+	        	$('#menu_tareaasig').hide();
 			}	       
         }
 	});
@@ -880,7 +896,7 @@ function armar_estrucctura(type){
 						}
 						if(type==2){
 							row += "<a class='btn' title='Reprogramar' onclick='reprogramar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-clock-o' style='font-size:15px;color:#292929;'></i></a>";
-							row += "<a class='btn' title='eliminar' onclick='reprogramar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-clock-o' style='font-size:15px;color:#292929;'></i></a>";
+							row += "<a class='btn' title='eliminar' onclick='reprogramar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-times' style='font-size:15px;color:#292929;'></i></a>";
 						}
 						if(type==3){
 							row += "<a class='btn' title='Reprogramar' onclick='reprogramar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-clock-o' style='font-size:15px;color:#292929;'></i></a>";

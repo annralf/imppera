@@ -142,27 +142,35 @@ class Benchmark
 		$sql_query = pg_query("SELECT id FROM meli.bench_sellers;");
 		$i = 1;
 		$site_id = "MCO";
+		$offset = 0;
 		while ($seller = pg_fetch_object($sql_query)) {
-			$info = get_seller_items($site_id,$seller->id);
-			foreach ($info->results as $key) {
-				$search = pg_fetch_object(pg_query("SELECT mpid FROM meli.bench_shops_items WHERE mpid = '$key->id';"));
+			$final_result  = array();
+			$info = $this->get_seller_items($site_id,$seller->id, 0);
+			$info2 = $this->get_seller_items($site_id,$seller->id, 50);
+			array_push($final_result, $info->results);
+			array_push($final_result, $info2->results);
+			foreach ($final_result as $key) {
+			    $j = 1;
+			    echo "$j - seller $seller->id";
+			    foreach ($key as $val) {
+				$search = pg_fetch_object(pg_query("SELECT mpid FROM meli.bench_shops_items WHERE mpid = '$val->id';"));
 				$date = date("Y-m-d H:i:m");
 				if (!isset($search->mpid)) {
-					$title = pg_escape_string(utf8_encode($key->title));
+					$title = pg_escape_string(utf8_encode($val->title));
 					$sql = "INSERT INTO meli.bench_shops_items(mpid, title, price, sale_amount, permalink, is_local, shop)
-					VALUES ('$key->id', '$key->title', '$key->price', '$key->sold_quantity', '$key->permalink', 'false', '$seller->id');";
+					VALUES ('$val->id', '$title', '$val->price', '$val->sold_quantity', '$val->permalink', 'false', '$seller->id');";
 					$result = pg_query($sql);
 					if ($result > 0) {
 						echo "$i - Seller $seller->id Insert Ok  - $date\n";
 					}else{
 						echo "$i - Seller $seller->id NO Insert  - $date\n";	    
 					}
-					$i++;
 				}else{
 					echo "$i - Seller $search->mpid Inserted   - $date\n";
-					$i++;		    
 				}
-
+				$i++;
+				$j++;
+			    }die();
 			}
 		}
 	}
@@ -172,7 +180,7 @@ class Benchmark
 		$i = 1;
 		$site_id = "MCO";
 		while ($seller = pg_fetch_object($sql_query)) {
-			$info = get_seller_items($site_id,$seller->id);
+			$info = get_seller_items($site_id,$seller->id, $offset);
 			$total = $info->paging->total;
 			$sql = "UPDATE meli.bench_sellers SET total_stock = $total WHERE id = '$seller->id'";
 			$date = date("Y-m-d H:i:m");
@@ -186,8 +194,8 @@ class Benchmark
 		}
 	}
 
-	function get_seller_items($site_id, $seller_id){
-		$url = "https://api.mercadolibre.com/sites/$site_id/search?seller_id=$seller_id&sort=relevance";
+	function get_seller_items($site_id, $seller_id, $offset){
+		$url = "https://api.mercadolibre.com/sites/$site_id/search?seller_id=$seller_id&sort=relevance&offset=$offset";
 		$ch       = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -298,4 +306,4 @@ class Benchmark
 	}
 
 	$t = new Benchmark(2);
-	$t->get_aws_search("pantalla LED");
+	$t->set_top_items();

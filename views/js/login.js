@@ -15,6 +15,7 @@
     $('[menu=ordenes]').show();
     $('[menu=tracking]').show();
     $('[menu=user]').hide();
+    $('[menu=bechmark]').hide();
     $('[menu=tarea]').show();
     break;
     case '1':
@@ -23,7 +24,9 @@
     $('[menu=user]').hide();
     $(".queen_panel").show();
     $(".mauxi_panel").show();
+    $('[menu=offer]').hide();
     $('[menu=tarea]').show();
+    $('[menu=bechmark]').hide();
     break;
     case '2':
     $('[menu=ordenes]').hide();
@@ -32,6 +35,8 @@
     $(".queen_panel").show();
     $(".mauxi_panel").show();
     $('[menu=tarea]').show();
+    $('[menu=offer]').hide();
+    $('[menu=bechmark]').hide();
     break;
     case '5':
     $(".queen_panel").show();
@@ -43,8 +48,58 @@
     $('[menu=ordenes]').hide();
     $('[menu=tracking]').hide();
     $('[menu=user]').hide();
+    $('[menu=offer]').hide();
+    $('[menu=tarea]').show();
+    $('[menu=bechmark]').hide();
+    break;
+    case '7':
+    $('[menu=compras]').hide();
+    $('[menu=ordenes]').hide();
+    $('[menu=tracking]').hide();
+    $('[menu=user]').hide();
+    $('[menu=offer]').hide();
+    $('[menu=tarea]').show();
+    $('[menu=bechmark]').hide();
+    break;
+    case '8':
+    $('[menu=compras]').hide();
+    $('[menu=ordenes]').hide();
+    $('[menu=tracking]').hide();
+    $('[menu=user]').hide();
+    $(".mauxi_panel").show();
+    $(".queen_panel").hide();
     $('[menu=offer]').show();
     $('[menu=tarea]').show();
+    $('[menu=bechmark]').hide();
+    break;
+    case '9':
+    $('[menu=compras]').hide();
+    $('[menu=ordenes]').hide();
+    $('[menu=tracking]').hide();
+    $('[menu=user]').hide();
+    $(".queen_panel").show();
+    $(".mauxi_panel").hide();
+    $('[menu=offer]').show();
+    $('[menu=tarea]').show();
+    $('[menu=bechmark]').hide();
+    break;
+    case '10':
+    $('[menu=compras]').hide();
+    $('[menu=ordenes]').hide();
+    $('[menu=tracking]').hide();
+    $('[menu=user]').hide();
+    $('[menu=offer]').hide();
+    $('[menu=tarea]').show();
+    $('[menu=bechmark]').hide();
+    break;
+    case '11':
+    $('[menu=compras]').hide();
+    $('[menu=ordenes]').hide();
+    $('[menu=tracking]').hide();
+    $('[menu=user]').hide();
+    $('[menu=offer]').hide();
+    $('[menu=tarea]').show();
+    $('[menu=bechmark]').hide();
     break;
   }
 }
