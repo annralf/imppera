@@ -11,6 +11,7 @@ function show_asig_tareas(){
 	$("#tablero_no_check").hide();
 	$("#tablero_panel").hide();
 	$("#tablero_asig").hide();
+	$("#tablero_cumpli").hide();
 }
 
 function show_today(){
@@ -22,6 +23,7 @@ function show_today(){
 	$("#tablero_no_check").hide();
 	$("#tablero_panel").hide();
 	$("#tablero_asig").hide();
+	$("#tablero_cumpli").hide();
 	list_tarea();
 	list_porcent();
 }
@@ -34,6 +36,7 @@ function show_week(){
 	$("#tablero_no_check").hide();
 	$("#tablero_panel").hide();
 	$("#tablero_asig").hide();
+	$("#tablero_cumpli").hide();
 	list_tarea();
 	list_porcent();
 }
@@ -46,8 +49,20 @@ function show_check(){
 	$("#tablero_no_check").hide();
 	$("#tablero_panel").hide();
 	$("#tablero_asig").hide();
+	$("#tablero_cumpli").hide();
+	list_tarea_term();
+}
+function show_cumpl(){
+	$("#tablero_asignar").hide();
+	$("#tablero_today").hide();
+	$("#tablero_today").hide();
+	$("#tablero_week").hide();
+	$("#tablero_cumpli").show();
+	$("#tablero_check").hide();
+	$("#tablero_no_check").hide();
+	$("#tablero_panel").hide();
+	$("#tablero_asig").hide();
 	list_tarea_cumplidas();
-
 }
 function show_asig(){
 	$("#tablero_asignar").hide();
@@ -58,6 +73,7 @@ function show_asig(){
 	$("#tablero_check").hide();
 	$("#tablero_no_check").hide();
 	$("#tablero_panel").hide();
+	$("#tablero_cumpli").hide();
 	list_tarea_asig();
 }
 function show_no_check(){
@@ -69,6 +85,7 @@ function show_no_check(){
 	$("#tablero_no_check").show();
 	$("#tablero_panel").hide();
 	$("#tablero_asig").hide();
+	$("#tablero_cumpli").hide();
 	list_tarea_no_cumplidas();
 }
 function show_panel(){
@@ -80,6 +97,7 @@ function show_panel(){
 	$("#tablero_no_check").hide();
 	$("#tablero_panel").show();
 	$("#tablero_asig").hide();
+	$("#tablero_cumpli").hide();
 }
 function tarea_file(id_t){
 	var e = new FormData();
@@ -283,7 +301,7 @@ function bad_tarea(id_t){
 			var response = JSON.parse(e);
 			if (response.response == 1) {
 				alert("Tarea reprobada");
-				list_tarea_cumplidas();
+				list_tarea_no_cumplidas();
 			}else{
 				alert("Ha ocurrido un error al procesar la información");
 			}
@@ -392,6 +410,7 @@ function eliminar_tarea(id_t){
 			list_tarea();
 			list_tarea_no_cumplidas();
 			list_tarea_cumplidas();
+			list_tarea_term();
 			list_tarea_asig();
 		}else{
 			alert('no se pudo eliminar la tarea');
@@ -536,10 +555,10 @@ function list_porcent(){
 	        	rowsp =Math.round(porcent)+"%";
 	    	}
 
-	    	if(porcent>=85){
+	    	if(porcent>85){
 	    		color='#b9b8b5';
 	    	}
-	    	if(porcent<85){
+	    	if(porcent<=85){
 	    		color='#FFD700 ';
 	    	}
 	    	if(porcent<75){
@@ -565,11 +584,12 @@ function list_porcent(){
 	});
 }
 
-function list_all_porcent(){
+function list_all_porcent(mes){
 	var rows="";
 	$.post('../services/meli_manager.php',
 		{ 	action  : 'list_all_porcent',
 			user  	: sessionStorage.getItem('id'), 
+			mes 	: mes,
 		}).fail(function(){ alert('error all list proyect');
 	}).done(function(e){
 		var response = JSON.parse(e); 
@@ -680,7 +700,7 @@ function list_all_porcent(){
 		    		color='#cd5832';
 		    	}
 
-		    	rows += "<div style='float:left; padding:10px;background:#e7e7e7; border-radius:40px;margin-left:20px;margin-top:20px;'>";
+		    	rows += "<div class='ficha_u'>";
 	        	rows += "<table  width='300px'>";
 		        rows += " <tbody>";
 		        rows += "    <tr>";
@@ -720,6 +740,7 @@ function list_all_porcent(){
 		        var jefe1=0;
 				var jefe2=0;
 		    }
+		    $('#panel_user').empty();
 		    $('#panel_user').append(rows);
         }
 	});
@@ -752,6 +773,7 @@ function chech_menu(){
 				$('#menu_asig').css('visibility','hidden');
 				$('#menu_tareaok').hide();
 				$('#menu_tareanook').hide();
+				$('#menu_tareacump').hide();
 				$('#menu_panel').hide();
 	        	$('#menu_tareaasig').hide();
 			}	       
@@ -794,6 +816,8 @@ function list_tarea(){
  			$('#info_t').empty();
  			$('#job').hide();
  			$('#job1').hide();
+ 			var count_a=0;
+ 			var count_r=0;
 
  			rowsv += "<tr ><td>Tareas del mes</td><td>Acciones</td></tr>";
  			rowsa += "<tr ><td>Tareas de la semana</td><td>Acciones</td></tr>";
@@ -802,6 +826,8 @@ function list_tarea(){
 				var colorc=""
 				var colorf="";
 				var thumb="";
+				var conteor="";
+				var conteov="";
 
 				if (response[i].comentary) {
 						colorc="blue";
@@ -816,6 +842,7 @@ function list_tarea(){
 
 				if(response[i].priority== 3 ){
 					tokenr=1;
+					count_r=count_r+1;
 					rowsr += "<tr style='background-color:"+response[i].color+";'>";
 					rowsr += "<td style='width: 85%; '><i class='fa fa-navicon' style='font-size:18px;color:#292929' onclick='ver_descrip(\""+response[i].id+"\")'></i><span style='color:#292929;margin-left:10px;font-weight: bold;font-size:15px'>"+response[i].tarea+"</span><span style='float:right'>"+response[i].avance+"%</span></td>";
 					rowsr += "<td style='width: 15%; '>";
@@ -832,6 +859,7 @@ function list_tarea(){
 					rowsr += "</tr>";
 				}if(response[i].priority== 2 ){
 					tokena=1;
+					count_a=count_a+1;
 					rowsa += "<tr style='background-color:"+response[i].color+";'>";
 					rowsa += "<td style='width: 85%;'><i class='fa fa-navicon' style='font-size:18px;color:#292929' onclick='ver_descrip(\""+response[i].id+"\")'></i><span style='color:#292929;margin-left:10px;font-weight: bold;font-size:15px'>"+response[i].tarea+"</span><span style='float:right'>"+response[i].avance+"%</span></td>";
 					rowsa += "<td style='width: 15%;'>";
@@ -848,6 +876,7 @@ function list_tarea(){
 					rowsa += "</tr>";
 				}if(response[i].priority== 1 ){
 					tokenv=1;
+					count_a=count_a+1;
 					rowsv += "<tr style='background-color:"+response[i].color+";'>";
 					rowsv += "<td style='width: 85%;'><i class='fa fa-navicon' style='font-size:18px;color:#292929' onclick='ver_descrip(\""+response[i].id+"\")'></i><span style='color:#292929;margin-left:10px;font-weight: bold;font-size:15px'>"+response[i].tarea+"</span><span style='float:right'>"+response[i].avance+"%</span></td>";
 					rowsv += "<td style='width: 15%;'>";
@@ -864,19 +893,29 @@ function list_tarea(){
 					rowsv += "</tr>";
 				}		
 			}
+
 			if(tokenr==1){
+				conteor=count_r;
 				$('#bell').show();
+				$('#count_r').empty();
+				$('#count_r').append(conteor);
 				$('#content_r').show();
 				$('#list_tarea_r > tbody').empty();
 				$('#list_tarea_r > tbody').append(rowsr);
 
 			}
 			if(tokena==1){
+				conteov=count_a;
+				$('#count_m').empty();
+				$('#count_m').append(conteov);
 				$('#content_a').show();
 				$('#list_tarea_a > tbody').empty();
 				$('#list_tarea_a > tbody').append(rowsa);
 			}
 			if(tokenv==1){
+				conteov=count_a;
+				$('#count_m').empty();
+				$('#count_m').append(conteov);
 				$('#content_v').show();
 			    $('#list_tarea_v > tbody').empty();
 				$('#list_tarea_v > tbody').append(rowsv);
@@ -910,13 +949,21 @@ function armar_estrucctura(type){
 				$('#asigtareas').empty();
 				$('#asigtareas').append(row);
 			}
+			if(type==4){
+				$('#cumplitareas').empty();
+				$('#cumplitareas').append(row);
+			}
 		}else{
+			var count_t=0;
+			var count_c=0;
+			var count_n=0;
+			var count_a=0;
 			for(var i in response){
-				row +="<div class='row "+response[i].user_name+"' style='padding:10px;background:#e7e7e7;margin-top:10px;border-radius:25px'>";
+				row +="<div class='row "+response[i].user_name+" tabl_t'>";
 	            row +="    <div class='x_panel'>";
 	            row +="      <div class='x_title collapse-link row' data-toggle='tooltip' data-placement='bottom' title='Ver listado de tareas de '>";
 	            row +="        <div class=''>";
-	            row +="           <img  class='' src='"+response[i].avatar+"' style='width: 100px;border-radius: 60px;margin-left:20px'><span style='color:black;margin-left:20px;font-size:24px'> Tareas de "+response[i].name+" "+response[i].last_name+"</span >";
+	            row +="           <img  class='foto' src='"+response[i].avatar+"' style='width: 100px;border-radius: 60px;margin-left:20px'><span class='title_t'> Tareas de "+response[i].name+" "+response[i].last_name+"</span >";
 	            row +="          <div class='clearfix'></div>";
 	            row +="        </div>";
 	            row +="        <div class='clearfix'></div>";
@@ -925,13 +972,16 @@ function armar_estrucctura(type){
 	            row +="        <table id='list_"+response[i].user_asig+"' class='table table-striped table-bordered' width='100%'>";
 	            row +="          <tbody>";
 	            if(type==1){
-	            	row +="				<tr ><td>Tareas Cumplidas</td><td>Acciones</td></tr>";
+	            	row +="				<tr ><td>Tareas Terminadas</td><td>Acciones</td></tr>";
 				}
 				if(type==2){
 	            	row +="				<tr ><td>Tareas No Cumplidas</td><td>Acciones</td></tr>";
 				}
 				if(type==3){
 	            	row +="				<tr ><td>Tareas Asignadas</td><td>Acciones</td></tr>";
+				}
+				if(type==4){
+	            	row +="				<tr ><td>Tareas Cumplidas</td><td>Acciones</td></tr>";
 				}
 	            for(var y in response[i].tareas){
 	            	var colorc=""
@@ -940,25 +990,32 @@ function armar_estrucctura(type){
 					var dato="";
 					if (response[i].tareas[y].comentary) {	colorc="blue";	}else{	colorc="#292929"	}
 					if (response[i].tareas[y].file) {		colorf="blue";	}else{	colorf="#292929";	}
-					if (response[i].tareas[y].status== 'B') {	dato="Rechazada";	}
-					if (response[i].tareas[y].status== 'NT') {	dato="Expirada";	}
+					if (response[i].tareas[y].status== 'C')		{ 	dato=response[i].tareas[y].avance+"%";}
+					if (response[i].tareas[y].status== 'B') 	{	dato="Rechazada";	}
+					if (response[i].tareas[y].status== 'NT') 	{	dato="Expirada";	}
 					row += "<tr style='background-color:"+response[i].tareas[y].color+";'>";
 					row += "<td style='width: 80%; ' title='"+dato+"'><i class='fa fa-navicon' style='font-size:18px;color:#292929' onclick='ver_descrip(\""+response[i].tareas[y].id+"\")'></i><span style='color:#292929;margin-left:10px;font-weight: bold;font-size:15px'>"+response[i].tareas[y].tarea+"</span><span style='margin-right:10px;float: right'>"+dato+"</span></td>";
 					row += "<td style='width: 20%; '>";
 						row += "<a class='btn' title='Ver comentario' onclick='ver_comentario(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-comments-o' 	style='font-size:15px;color:"+colorc+";'></i></a>";	
 					 	row += "<a class='btn' title='Adjuntar Archivo' onclick='ver_file_preview(\""+response[i].tareas[y].id+"\",\""+response[i].tareas[y].file+"\")'>			<i class='fa fa-eye' 	style='font-size:15px;color:"+colorf+";'></i></a>";
 					 	if(type==1){
+					 		count_t=count_t+1;
 						 	row += "<a class='btn' title='Cumplida' onclick='good_tarea(\""+response[i].tareas[y].id+"\")'>									<i class='fa fa-thumbs-o-up' style='font-size:15px;color:#292929;'></i></a>";
 						 	row += "<a class='btn' title='Rechazada' onclick='bad_tarea(\""+response[i].tareas[y].id+"\")'>									<i class='fa fa-thumbs-o-down' style='font-size:15px;color:#292929;'></i></a>";
 						 	row += "<a class='btn' title='eliminar' onclick='eliminar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-times' style='font-size:15px;color:#292929;'></i></a>";
 						}
 						if(type==2){
-							row += "<a class='btn' title='Reprogramar' onclick='reprogramar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-clock-o' style='font-size:15px;color:#292929;'></i></a>";
-							row += "<a class='btn' title='eliminar' onclick='reprogramar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-times' style='font-size:15px;color:#292929;'></i></a>";
-						}
-						if(type==3){
+							count_n=count_n+1;
 							row += "<a class='btn' title='Reprogramar' onclick='reprogramar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-clock-o' style='font-size:15px;color:#292929;'></i></a>";
 							row += "<a class='btn' title='eliminar' onclick='eliminar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-times' style='font-size:15px;color:#292929;'></i></a>";
+						}
+						if(type==3){
+							count_a=count_a+1;
+							row += "<a class='btn' title='Reprogramar' onclick='reprogramar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-clock-o' style='font-size:15px;color:#292929;'></i></a>";
+							row += "<a class='btn' title='eliminar' onclick='eliminar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-times' style='font-size:15px;color:#292929;'></i></a>";
+						}
+						if(type==4){
+							count_c=count_c+1;
 						}
 					row += "</td>";	
 					row += "</tr>";
@@ -972,16 +1029,28 @@ function armar_estrucctura(type){
 	            row +="</div>";
 			}
 			if(type==1){
+				$('#count_t').empty();
+				$('#count_t').append(count_t);
 				$('#endtareas').empty();
 				$('#endtareas').append(row);
 			}
 			if(type==2){
+				$('#count_n').empty();
+				$('#count_n').append(count_n);
 				$('#endtareasbad').empty();
 				$('#endtareasbad').append(row);
 			}
 			if(type==3){
+				$('#count_a').empty();
+				$('#count_a').append(count_a);
 				$('#asigtareas').empty();
 				$('#asigtareas').append(row);
+			}
+			if(type==4){
+				$('#count_c').empty();
+				$('#count_c').append(count_c);
+				$('#cumplitareas').empty();
+				$('#cumplitareas').append(row);
 			}
 		}	
 	});
@@ -1063,7 +1132,7 @@ function llenar_estrucctura(){
 	});
 }
 
-function list_tarea_cumplidas(){
+function list_tarea_term(){
 	armar_estrucctura(1);
 }
 function list_tarea_no_cumplidas(){
@@ -1071,6 +1140,9 @@ function list_tarea_no_cumplidas(){
 }
 function list_tarea_asig(){
 	armar_estrucctura(3);
+}
+function list_tarea_cumplidas(){
+	armar_estrucctura(4);
 }
 
 function tareas_proyecto(id_p,name_p){

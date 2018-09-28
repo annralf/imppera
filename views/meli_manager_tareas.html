@@ -34,6 +34,107 @@
     <link rel="stylesheet" href="js/colorpicker/jquery.simplecolorpicker-glyphicons.css">
     <link rel="stylesheet" href="js/colorpicker/jquery.simplecolorpicker-fontawesome.css">
     <style type="text/css" media="screen">
+      @media only screen and (max-width: 500px) {
+        .nav-sm .container.body .col-md-3.left_col{
+        width: 15% !important;
+        }
+        .nav-sm .main_container .top_nav{
+        margin-left: 15% !important;
+        }
+        .nav-sm .container.body .right_col{
+        margin-left: 15% !important;
+        }
+        .nav-sm .nav.side-menu li a{
+        font-size: 10px;
+        }
+        .nav-sm .nav.side-menu li a i{
+        font-size: 25px !important;
+        }
+        #left_menu {
+         width:100% !important;
+        }
+        #content {
+         width: 100% !important; 
+         float:left;
+         padding: 1px !important;
+         margin-left:0px !important;
+         border-right:0px !important;
+        }
+        #form_tarea table{
+          width: 100%;
+        }
+        #form_tarea table tr td i{
+          font-size: 10px;
+        }
+        #tablero_panel{
+         width: 100% !important; 
+        }
+        .ficha_u table{
+          width: 100%;
+        }
+        .ficha_u{
+          width: 100% !important;
+          float:left;
+          padding:0px !important;
+          background:#e7e7e7;
+          border-radius:20px !important;
+          margin-left:0px !important;
+          margin-top:10px !important;
+        }
+        .x_panel {
+          padding: 0px !important;
+          border:0px !important;
+          background: none;
+          width: 100% !important;
+        }
+        .title_t{
+          color:black !important;
+          margin-left:5px !important;
+          font-size:12px !important;
+        }
+        .tabl_t{
+           padding:0px !important;
+           background:#e7e7e7;
+           margin-top:5px !important;
+           border-radius:20px !important;
+           margin-left: 0px !important;
+           margin-right: 0px !important;
+        } 
+        .foto{
+          width: 60px !important;
+          margin-left:5px !important;
+          margin-top:5px !important;
+        }
+        .x_content table tr td span{
+          font-size: 12px;
+        }
+        .modal-dialog{
+          margin-right: 0px !important;
+          margin-left: 15% !important;
+        }
+ 
+      }
+     .tabl_t{
+       padding:10px;
+       background:#e7e7e7;
+       margin-top:10px;
+       border-radius:25px
+     } 
+
+    .ficha_u{
+      float:left;
+      padding:10px;
+      background:#e7e7e7;
+      border-radius:40px;
+      margin-left:20px;
+      margin-top:20px;
+    }  
+    .title_t{
+      color:black;
+      margin-left:20px;
+      font-size:24px
+    }
+
     .x_title {
     border-bottom: 0px;
     padding: 1px 5px 6px;
@@ -65,7 +166,7 @@
     color: #1A4E95;
     }
     .nav-sm .container.body .col-md-3.left_col{
-    width: 100px !important;
+    width: 100px;
     }
     .nav-sm .main_container .top_nav{
     margin-left: 100px;
@@ -77,7 +178,7 @@
     font-size: 12px;
     }
     .nav-sm .nav.side-menu li a i{
-    font-size: 50px !important;
+    font-size: 50px ;
     }
     .btn {
       padding: 3px;
@@ -215,10 +316,7 @@
     <div class="main_container">
       <div class="col-md-3 left_col">
         <div class="left_col scroll-view">
-          <div class="navbar nav_title" style="border: 0;">
-            <a href="index_1.html" class="site_title"></a>
-          </div>
-          <div class="clearfix"></div>
+          
           <!-- menu profile quick info -->
           <div class="profile clearfix">
             <div class="profile_info">
@@ -326,7 +424,7 @@
                           <div style="position: absolute; top:285px; margin-left: 3px;"><p id="today_hoy"></p></div>
                       </span>
                       <span class="item_content">
-                        <span class="item_name"  onclick="show_today()">Hoy  <i class="fa fa-bell" id='bell' style="font-size:24px;color:red;display: none"></i></span>
+                        <span class="item_name"  onclick="show_today()">Hoy  <i class="fa fa-bell" id='bell' style="font-size:24px;color:red;display: none"></i><label id='count_r' style="font-size:14px;color:red;">0</label></span>
                       </span>
                     </li>
                     <li class="filter" id="menu_week" data-track="navigation|next_7_days">
@@ -334,7 +432,7 @@
                         <i class="fa fa-calendar" style="font-size:24px"></i>
                       </span>
                       <span class="item_content">
-                        <span class="item_name"  onclick="show_week()">Para el mes</span>
+                        <span class="item_name"  onclick="show_week()">Para el mes <label id='count_m' style="font-size:14px;color:red;">0</label></span>
                       </span>
                     </li>
                     <li class="filter" id="menu_tareaasig" data-track="navigation|next_7_days">
@@ -342,7 +440,7 @@
                         <i class="fa fa-pencil-square-o" style="font-size:24px"></i>
                       </span>
                       <span class="item_content">
-                        <span class="item_name"  onclick="show_asig()">Tareas Asignadas</span>
+                        <span class="item_name"  onclick="show_asig()">Tareas Asignadas <label id='count_a' style="font-size:14px;color:red;">0</label></span>
                       </span>
                     </li>
                     <li class="filter" id="menu_tareaok" data-track="navigation|next_7_days">
@@ -350,7 +448,15 @@
                         <i class="fa fa-child" style="font-size:24px"></i>
                       </span>
                       <span class="item_content">
-                        <span class="item_name"  onclick="show_check()">Tareas Cumplidas</span>
+                        <span class="item_name"  onclick="show_check()">Tareas Terminadas <label id='count_t' style="font-size:14px;color:red;">0</label></span>
+                      </span>
+                    </li>
+                    <li class="filter" id="menu_tareacump" data-track="navigation|next_7_days">
+                      <span class="item_icon">
+                        <i class="fa fa-smile-o" style="font-size:24px"></i>
+                      </span>
+                      <span class="item_content">
+                        <span class="item_name"  onclick="show_cumpl()">Tareas Cumplidas <label id='count_c' style="font-size:14px;color:red;">0</label></span>
                       </span>
                     </li>
                     <li class="filter" id="menu_tareanook" data-track="navigation|next_7_days">
@@ -358,7 +464,7 @@
                         <i class="fa fa-frown-o" style="font-size:24px"></i>
                       </span>
                       <span class="item_content">
-                        <span class="item_name"  onclick="show_no_check()">Tareas No Cumplidas</span>
+                        <span class="item_name"  onclick="show_no_check()">Tareas No Cumplidas <label id='count_n' style="font-size:14px;color:red;">0</label></span>
                       </span>
                     </li>
                     <li class="filter" id="menu_panel" data-track="navigation|next_7_days">
@@ -474,6 +580,7 @@
                     </tr>
                     <tr>
                       <td width="80%">
+                        <br>
                         <button type="button"  onclick="add_tarea()" title="Añadir tarea">Añadir tarea</button>
                         <span class="item_name" onclick="hidde_panel_tarea()">Cancelar</span>
                       </td>
@@ -485,6 +592,7 @@
                               <i class="fa fa-flag" style='color:#50ca44;padding-left:10px;cursor:pointer;' onclick="select_priority(1,'#50ca44')" title='Para el Mes'></i>
                               <i class="fa fa-flag" style='color:#FFC300;padding-left:10px;cursor:pointer;' onclick="select_priority(2,'#FFC300')" title='Para la Semana'></i>
                               <i class="fa fa-flag" style='color:#ff3b3b;padding-left:10px;cursor:pointer;' onclick="select_priority(3,'#ff3b3b')" title='Para Hoy'></i>
+                              <!--<i class="fa fa-clock-o" style='color:#ff3b3b;padding-left:10px;cursor:pointer;' title='Para Hoy'><input type="date" name="fecha"></i>-->
                               </li>
                             </ul>
                          </div>                       
@@ -603,12 +711,27 @@
           </div>
         </div>
         <!------------------------------------------------------------------------------------------------------------------------------>
+        <div id="tablero_cumpli" style="display: none">
+          <div class="project_editor_instance current_editor" data-project-id="2192843080">
+            <div class="list_editor">
+              <h2 class="project_header section_header">
+                <a href="#" class="project_link">
+                  Tareas Cumplidas <p style="font-size: 12px;color: #918080;" id="today_tablero"></p>
+                </a>
+              </h2>
+            </div>
+            <div id="cumplitareas">
+
+            </div>
+          </div>
+        </div>
+        <!------------------------------------------------------------------------------------------------------------------------------>
         <div id="tablero_check" style="display: none">
           <div class="project_editor_instance current_editor" data-project-id="2192843080">
             <div class="list_editor">
               <h2 class="project_header section_header">
                 <a href="#" class="project_link">
-                  Tareas terminadas <p style="font-size: 12px;color: #918080;" id="today_tablero"></p>
+                  Tareas Terminadas <p style="font-size: 12px;color: #918080;" id="today_tablero"></p>
                 </a>
               </h2>
             </div>
@@ -623,7 +746,7 @@
             <div class="list_editor">
               <h2 class="project_header section_header">
                 <a href="#" class="project_link">
-                  Tareas No terminadas <p style="font-size: 12px;color: #918080;" id="today_tablero"></p>
+                  Tareas No Cumplidas <p style="font-size: 12px;color: #918080;" id="today_tablero"></p>
                 </a>
               </h2>
             </div>
@@ -740,6 +863,24 @@
                 </a>
               </h2>
             </div>
+            <br>
+            <label>Seleccione un mes:</label>
+            <select id="mes" onchange="list_all_porcent(this.value)">
+              <option value="">--seleccione--</option>
+              <option value="01">Enero</option>
+              <option value="02">Febrero</option>
+              <option value="03">Marzo</option>
+              <option value="04">Abril</option>
+              <option value="05">Mayo</option>
+              <option value="06">Junio</option>
+              <option value="07">Julio</option>
+              <option value="08">Agosto</option>
+              <option value="09">Septiembre</option>
+              <option value="10">Octubre</option>
+              <option value="11">Noviembre</option>
+              <option value="12">Diciembre</option>
+            </select>
+
             <div class="controller actions pe_controller">
               <div id='info_t' name='info_t'></div>
               <!------------------------>
@@ -1127,10 +1268,11 @@ $(document).ready(function () {
   check_user();
   set_menu();
   list_tarea_cumplidas();
+  list_tarea_term();
   list_tarea_no_cumplidas();
   list_tarea_asig();
   list_porcent();
-  list_all_porcent();
+  //list_all_porcent();
   chech_menu();
 
   setInterval(list_tarea, 60000);

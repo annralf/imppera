@@ -130,6 +130,8 @@ if ($_POST['action'] == 'armar_e') {
           $status="t.status ='T'";
      }if($type==3){
           $status="t.status ='C'";
+     }if($type==4){
+          $status="t.status ='G'";
      }if($type==2){
           $status="t.status in ('NT','B')";
      }
@@ -192,6 +194,7 @@ if ($_POST['action'] == 'list_porcent') {
 
 if ($_POST['action'] == 'list_all_porcent') {
      $user =$_POST['user'];
+     $mes =$_POST['mes'];
      $orders = array();
      $conn = new Connect();
      $sql = "select * from system.users where jerarquia not in (1);";
@@ -200,7 +203,7 @@ if ($_POST['action'] == 'list_all_porcent') {
      //$sql = "select * from system.tarea where status = 'T';";
      $orders2 = array();
      $concat = array();
-          $sql2 = $sql = " select count(t.*) as total,t.status,t.user_id,u.jerarquia from system.tarea t join system.users u on u.id=t.user_id  where t.user_asig='".$item['id']."' group by t.status,t.user_id,u.jerarquia;";
+          $sql2 = $sql = " select count(t.*) as total,t.status,t.user_id,u.jerarquia from system.tarea t join system.users u on u.id=t.user_id  where t.user_asig='".$item['id']."' and  to_char(asig_date,'mm')='$mes' group by t.status,t.user_id,u.jerarquia;";
           $result2 = pg_query($sql2);
           while ($item2 = pg_fetch_array($result2)) {
                array_push($orders2, $item2);

@@ -13,12 +13,12 @@ class CbtOrders
 	public $cbt;
 	function __construct($shop)
 	{	
-		$this->aws  = new amazonManager('AKIAIYEUT4YA3UTEPUNA','iiVSzwY9BI0CvSLcUshrJTv2q800GBvck3YVotnV','Tobon90-20');	
-		$this->conn = new DataBase();
-		$application = $this->conn->prepare("select * from cbt.shop where id = '".$shop."';");
+		$this->aws  	= new amazonManager('AKIAIYEUT4YA3UTEPUNA','iiVSzwY9BI0CvSLcUshrJTv2q800GBvck3YVotnV','Tobon90-20');	
+		$this->conn 	= new DataBase();
+		$application 	= $this->conn->prepare("select * from cbt.shop where id = '".$shop."';");
 		$application->execute();
-		$this->shop = $application->fetchAll();
-		$this->cbt = new items($this->shop[0]['access_token']);
+		$this->shop 	= $application->fetchAll();
+		$this->cbt 		= new items($this->shop[0]['access_token']);
 	}
 
 	function orders(){
@@ -52,7 +52,7 @@ class CbtOrders
 			$create_date	=$ord->created_date;
 
 			if(!isset($order_exist->id_order)){
-				$itm_sku		=$this->aws->search_item($sku); #extraido de aws
+				//$itm_sku		=$this->aws->search_item($sku); #extraido de aws
 				$mpid			=$order_items[0]->mpid;
 				$quantity 		=$order_items[0]->quantity;
 				$unit_price 	=$order_items[0]->merchandise_cost;
@@ -61,7 +61,7 @@ class CbtOrders
 				$shipping_label =$ord->shipment_label_location;
 				$avaliable='t';
 
-				if ($itm_sku == null){
+				/*if ($itm_sku == null){
 					while ($itm_sku == null ) {
 						$itm_sku	=$this->aws->search_item($sku); #extraido de aws						
 					}
@@ -116,7 +116,14 @@ class CbtOrders
 						$package_weight	=$itm_sku[0]['package_weight'];	
 						echo $n."\t- new order created-".$sku." - ".$id."---- ok show_aws \n";
 					}
-				}
+				}*/
+
+				$sale_price		=0;
+				$url_aws		="";
+				$package_weight	=0;
+				$is_prime       =0;
+
+				echo $n."\t- new order created-".$sku." - ".$id."---- notavaliable provivional\n";
 
 				$sql_o	="INSERT INTO system.orders(id_order, shop_id, sku, url, package_weight, sale_price, quantity, unit_price, total_paid, status,  create_date, mpid,avaliable,autorice,tracking_cbt,shipment_label) VALUES ('".$id."',".$this->shop[0]['id'].",'".$sku."','".$url_aws."','".$package_weight."','".$sale_price."',".$quantity.",'".$unit_price."','".$total_amount."','".$status."','".$create_date."','".$mpid."','".$avaliable."','G','".$int_tracking."','".$shipping_label."');";
 
