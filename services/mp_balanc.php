@@ -24,85 +24,57 @@ class MPbalance
 	function balance($alias){
 		echo "Inicio -".date("Y-m-d H:i:s")."******************************\n";
 		$detail_items 	= $this->mp->balanc($this->shop[0]['user_name']);
-		//$detail_items 	= $this->mepa->report();
-		//$detail_items 	= $this->mepa->ver_report();
-		//$result = $detail_items['response'];
-		//$detail_items 	= $this->mepa->get_url_print($result[0]['file_name']);
-		//$detail_items 	= $this->mepa->payment();
-		//$detail_items 	= $this->mepa->payment_by_id('4158971985');
 		print_r($detail_items);
 		$this->conn->close_con();
-
 		echo "Fin update -".date("Y-m-d H:i:s")."******************************\n";
 	}
 
 	function gen_report(){
 		echo "Inicio -".date("Y-m-d H:i:s")."******************************\n";
-		//$detail_items 	= $this->mp->balanc($this->shop[0]['user_name']);
 		$detail_items 	= $this->mepa->report();
-		//$detail_items 	= $this->mepa->ver_report();
-		//$result = $detail_items['response'];
-		//$detail_items 	= $this->mepa->get_url_print($result[0]['file_name']);
-		//$detail_items 	= $this->mepa->payment();
-		//$detail_items 	= $this->mepa->payment_by_id('4158971985');
 		print_r($detail_items);
 		$this->conn->close_con();
-
 		echo "Fin update -".date("Y-m-d H:i:s")."******************************\n";
 	}
+
 	function list_report(){
 		echo "Inicio -".date("Y-m-d H:i:s")."******************************\n";
-		//$detail_items 	= $this->mp->balanc($this->shop[0]['user_name']);
-		//$detail_items 	= $this->mepa->report();
 		$detail_items 	= $this->mepa->ver_report();
-		//$result = $detail_items['response'];
-		//$detail_items 	= $this->mepa->get_url_print($result[0]['file_name']);
-		//$detail_items 	= $this->mepa->payment();
-		//$detail_items 	= $this->mepa->payment_by_id('4158971985');
 		print_r($detail_items);
 		$this->conn->close_con();
 
 		echo "Fin update -".date("Y-m-d H:i:s")."******************************\n";
 	}
+
 	function print_report(){
 		echo "Inicio -".date("Y-m-d H:i:s")."******************************\n";
-		//$detail_items 	= $this->mp->balanc($this->shop[0]['user_name']);
-		//$detail_items 	= $this->mepa->report();
 		$detail_items 	= $this->mepa->ver_report();
 		$result = $detail_items['response'];
 		$detail_items 	= $this->mepa->get_url_print($result[0]['file_name']);
-		//$detail_items 	= $this->mepa->payment();
-		//$detail_items 	= $this->mepa->payment_by_id('4158971985');
 		echo $detail_items;
 		$this->conn->close_con();
 
 		echo "\nFin update -".date("Y-m-d H:i:s")."******************************\n";
 	}
+
 	function pay($alias){
 		echo "Inicio -".date("Y-m-d H:i:s")."******************************\n";
-		//$detail_items 	= $this->mp->balanc($this->shop[0]['user_name']);
-		//$detail_items 	= $this->mepa->report();
-		//$detail_items 	= $this->mepa->ver_report();
-		//$result = $detail_items['response'];
-		//$detail_items 	= $this->mepa->get_url_print($result[0]['file_name']);
 		$detail_items 	= $this->mepa->payment();
-		//$detail_items 	= $this->mepa->payment_by_id('4158971985');
 		print_r($detail_items);
 		$this->conn->close_con();
 
 		echo "Fin update -".date("Y-m-d H:i:s")."******************************\n";
 	}
+	
 	function pay_by_id($alias,$id_order){
-		
-
 		$detail_items 	= $this->mepa->payment_by_id($alias);
-
+		//print_r($detail_items);die();
 		$id_payment = $detail_items->id;
 		$date_created = $detail_items->date_created;
 		$date_approved = $detail_items->date_approved;
 		$date_last_updated = $detail_items->date_last_updated;
 		$money_release_date = $detail_items->money_release_date;  
-		$title = $detail_items->description;
+		$title = str_replace('\'','\'\'',$detail_items->description);
 		$id_order = $id_order;
 		$cuotas = $detail_items->installments;
 		$id_payer = $detail_items->payer->id;
@@ -111,31 +83,58 @@ class MPbalance
 		$shipping_amount  = $detail_items->shipping_amount;
 		$status  	= $detail_items->status;
 		$status_detail  = $detail_items->status_detail;
-		$transaction_amount  = $detail_items->transaction_amount;
-		$transaction_amount_refund  = $detail_items->transaction_amount_refunded;
-		$net_amount  = $detail_items->transaction_details->net_received_amount;
-		$total_paid_amount = $detail_items->transaction_details->total_paid_amount;
+		$transaction_amount  = $detail_items->transaction_amount; #monto de la transaccion
+		$transaction_amount_refund  = $detail_items->transaction_amount_refunded; #monto rechazado
+		$net_amount  = $detail_items->transaction_details->net_received_amount; # neto recibido
+		$total_paid_amount = $detail_items->transaction_details->total_paid_amount; #monto total pagado
+		$fee = $detail_items->fee_details[0]->amount; #porcentaje cobrado por ml
 
 
+		if ($status== 'cancelled' || $status== 'rejected'){
+			$sql="INSERT into system.mp (date_created,date_last_updated,title,id_order,cuotas,id_payer,payment_method,paymnt_type,shipping_amount,status,status_detail,transaction_amount,transaction_amount_refund,net_amount,total_paid_amount,fee_amount) values ('$date_created','$date_last_updated','$title','$id_order','$cuotas', '$id_payer', '$payment_method',  '$paymnt_type', '$shipping_amount',  '$status',  	'$status_detail',  '$transaction_amount',  '$transaction_amount_refund', '$net_amount',  '$total_paid_amount', '$fee' );";
+			$application = $this->conn->prepare($sql);
+			$application->execute();
+			echo "\t".date("Y-m-d H:i:s")." - Pago Cancelado o Rechazado ".$alias." - ".$detail_items->status."\n";
+		}else{
+			$sql="INSERT into system.mp (date_created,date_approved,date_last_updated,money_release_date,title,id_order,cuotas,id_payer,payment_method,paymnt_type,shipping_amount,status,status_detail,transaction_amount,transaction_amount_refund,net_amount,total_paid_amount,fee_amount) values ('$date_created','$date_approved', '$date_last_updated', '$money_release_date','$title','$id_order','$cuotas', '$id_payer', '$payment_method',  '$paymnt_type', '$shipping_amount',  '$status',  	'$status_detail',  '$transaction_amount',  '$transaction_amount_refund', '$net_amount',  '$total_paid_amount', '$fee' );";
+			$application = $this->conn->prepare($sql);
+			$application->execute();
+			echo "\t".date("Y-m-d H:i:s")." - Insertado - ".$alias." - ".$detail_items->status."\n";
+		}	
+	}
 
-		$sql="INSERT into system.mp (id_payment,date_created,date_approved,date_last_updated,money_release_date,title,id_order,cuotas,id_payer,payment_method,paymnt_type,shipping_amount,status,status_detail,transaction_amount,transaction_amount_refund,net_amount,total_paid_amount) values (
-		'$id_payment', '$date_created','$date_approved', '$date_last_updated', '$money_release_date','$title','$id_order','$cuotas', '$id_payer', '$payment_method',  '$paymnt_type', '$shipping_amount',  '$status',  	'$status_detail',  '$transaction_amount',  '$transaction_amount_refund', '$net_amount',  '$total_paid_amount' );";
-		$application = $this->conn->prepare($sql);
-		$application->execute();
-
-		echo "\t Fin update -".date("Y-m-d H:i:s")."***".$alias."**".$detail_items->status."*************************\n";
-
+	function check_pay_by_id($alias,$id_pay,$status){
+		$detail_items 	= $this->mepa->payment_by_id($alias);
+		$id_payment = $detail_items->id;
+		$status_a  	= $detail_items->status;
+		$status_detail  = $detail_items->status_detail;
+		
+		if ($status <> $status){
+			$sql="UPDATE system.mp set status='$status_a' where id=$id_pay;";
+			$application = $this->conn->prepare($sql);
+			$application->execute();
+			echo "\t".date("Y-m-d H:i:s")." - Pago Actualizado - ".$alias." - ".$detail_items->status."\n";
+		}else{
+			echo "\t".date("Y-m-d H:i:s")." - Pago sin cambios - ".$alias." - ".$detail_items->status."\n";
+		}	
 	}
 	
 }
+
+
+
+
+
+
+
 #Test section
-$test = new MPbalance(2);
+/*$test = new MPbalance(1);
 $conn = new DataBase();
 //$test->balance(1000);
-$test->list_report();
+//$test->list_report();
 
-/*
-$sql="select id,id_payments from system.orders where shop_id=1 and id_payments not in (select to_char(id_payment,'9999999999') as id_payment from system.mp);";
+
+$sql="select id,id_payments from system.orders where shop_id=1 and id not in (select id_order from system.mp);";
 $item = $conn->prepare($sql);
 $item->execute();
 $item = $item->fetchAll();

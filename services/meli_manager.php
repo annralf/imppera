@@ -97,6 +97,32 @@ if ($_POST['action'] == 'good_tarea') {
           echo json_encode(array('response'=>0));      
      }
 }
+
+if ($_POST['action'] == 'update_fecha') {
+     $id_t = $_POST['id_t'];
+     $fecha_form = $_POST['fecha'];
+     $fecha=date_create($fecha_form);
+     $date_asig=date_format($fecha,'Y-m-d 23:00:00');
+
+     $conn = new Connect();
+     $result = pg_query("update system.tarea set status = 'C', priority=1, color='#50ca44',asig_date='$date_asig' where id = '".$id_t."';");
+     if ($result > 0) {
+          echo json_encode(array('response'=>1));
+     }else{
+          echo json_encode(array('response'=>0));      
+     }
+}
+
+if ($_POST['action'] == 'archi_tarea') {
+     $id_t = $_POST['id_t'];
+     $conn = new Connect();
+     $result = pg_query("update system.tarea set archivar = 1 where id = '".$id_t."';");
+     if ($result > 0) {
+          echo json_encode(array('response'=>1));
+     }else{
+          echo json_encode(array('response'=>0));      
+     }
+}
 if ($_POST['action'] == 'bad_tarea') {
      $id_t = $_POST['id_t'];
      $conn = new Connect();
@@ -112,7 +138,7 @@ if ($_POST['action'] == 'check_tarea') {
      $user_id = $_POST['user_id'];
      $conn = new Connect();
      $date = date("Y-m-d H:i:s");
-     $sql="update system.tarea set status = 'NT' where asig_date < '$date' and status = 'C' and user_asig = '".$user_id."';";
+     $sql="update system.tarea set status = 'NT' where asig_date < '$date' and status = 'C';";
      $result = pg_query($sql);
      if ($result > 0) {
           echo json_encode(array('response'=>1));
@@ -135,7 +161,8 @@ if ($_POST['action'] == 'armar_e') {
      }if($type==2){
           $status="t.status in ('NT','B')";
      }
-     $sql = "select t.user_asig, u.name, u.last_name, u.avatar, u.user_name from system.tarea t join system.users u on t.user_asig=u.id where $status and t.user_id = $user group by t.user_asig,u.id order by u.name;";
+
+     $sql = "select t.user_asig, u.name, u.last_name, u.avatar, u.user_name from system.tarea t join system.users u on t.user_asig=u.id where $status and t.user_id = $user and archivar=0 group by t.user_asig,u.id order by u.name;";
      $result = pg_query($sql);
      while ($item = pg_fetch_array($result)) {
      //$sql = "select * from system.tarea where status = 'T';";
@@ -178,7 +205,9 @@ if ($_POST['action'] == 'list_porcent') {
      $user   = $_POST['user'];
      $orders = array();
      $conn = new Connect();
-     $sql = "select count(*) as total,status from system.tarea where user_asig='$user' group by status;";
+     $sql = "select count(t.*) as total,t.status,t.user_id,u.jerarquia from system.tarea t join system.users u on u.id=t.user_id  where t.user_asig='$user' and  to_char(asig_date,'mm')=to_char(current_date,'mm') group by t.status,t.user_id,u.jerarquia;";
+
+     //$sql = "select count(*) as total,status from system.tarea where user_asig='$user' group by status;";
      $result = pg_query($sql);
      while ($item = pg_fetch_array($result)) {
           array_push($orders, $item);        
@@ -197,7 +226,15 @@ if ($_POST['action'] == 'list_all_porcent') {
      $mes =$_POST['mes'];
      $orders = array();
      $conn = new Connect();
-     $sql = "select * from system.users where jerarquia not in (1);";
+
+     $sqlu = "select * from system.users where id=$user;";
+     $resultu = pg_query($sqlu);
+     $itemu = pg_fetch_array($resultu);
+     if ($itemu['jerarquia'] == 3 ){
+          $sql = "select * from system.users where id='$user';";
+     }else{
+          $sql = "select * from system.users where jerarquia not in (1);";
+     }
      $result = pg_query($sql);
      while ($item = pg_fetch_array($result)) {
      //$sql = "select * from system.tarea where status = 'T';";
@@ -240,6 +277,7 @@ if ($_POST['action'] == 'add_tarea') {
      $name     = $_POST['name'];
      $description     = $_POST['description'];
      $priority = $_POST['priority'];
+     $fecha_form = $_POST['fecha'];
      $user_a   = $_POST['user_asig'];
      $proyect_a  = $_POST['proyect_asig'];
      $user   = $_POST['user'];
@@ -260,6 +298,12 @@ if ($_POST['action'] == 'add_tarea') {
           }
           $date_asig=$fecha->format('Y-m-d')." 23:00:00";
      }
+     if(isset($fecha_form)){
+          $fecha=date_create($fecha_form);
+          $date_asig=date_format($fecha,'Y-m-d 23:00:00');
+     }
+
+
      $orders = array();
      $conn   = new Connect();
      $query  = "INSERT INTO system.tarea (tarea,user_id,create_date,status,priority,id_proyecto,user_asig,color,asig_date,description) VALUES ('$name', '$user', '$date','C','$priority',$proyect_a,$user_a,'$color','$date_asig','$description');";
@@ -291,7 +335,7 @@ if ($_POST['action'] == 'list_tarea') {
      $user   = $_POST['user'];
      $orders = array();
      $conn = new Connect();
-     $sql = "select * from system.tarea where user_asig = '".$user."' and status='C' order by id;";
+     $sql ="select * from system.tarea where user_asig = '".$user."' and status='C' order by id;";
      $result = pg_query($sql);
      while ($item = pg_fetch_array($result)) {
           array_push($orders, $item);        
@@ -307,7 +351,7 @@ if ($_POST['action'] == 'list_tarea_by_id') {
      $id   = $_POST['id_t'];
      $orders = array();
      $conn = new Connect();
-     $sql = "select t.*,u.name,u.last_name from system.tarea t join system.users u on u.id=t.user_asig where t.id = '".$id."' order by t.id;";
+     $sql = "select t.*,(u.name||' '||u.last_name) as nombre from system.tarea t join system.users u on t.user_id=u.id where t.id = '".$id."';";
      $result = pg_query($sql);
      while ($item = pg_fetch_array($result)) {
           array_push($orders, $item);        

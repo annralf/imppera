@@ -148,7 +148,7 @@
             <div class="x_panel">
               <div class="x_title collapse-link row" data-toggle="tooltip" data-placement="bottom" title="Ver listado Tiendas Oficiales">
                 <div class="title col-md-10 col-sm-10 col-xs-12" style="text-align: right;">
-                  <h2>Ranking de Ventas Mensual<small></small></h2>
+                  <h2>Ventas y Visitas<small></small></h2>
                   <div class="clearfix"></div>
                 </div>
                 <div class="col-md-2 col-sm-2 col-xs-12" style="text-align: right;">
@@ -156,23 +156,34 @@
                 </div>
                 <div class="clearfix"></div>
               </div>
-              <div class="x_content" display="none" style="display: block;">
-                <p class="text-muted font-12 m-b-30">
-                </p>
-                <table id="rankin_month" class="table table-striped table-bordered" width="100%">
-                 <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Mes</th>
-                    <th>Ventas</th>
-                    <th>Visitas</th>
-                  </tr>
-                </thead>
-                <tbody>
-                </tbody>
-              </table>
-              <div class="clearfix"></div>
-            </div>
+              <ul class="nav nav-tabs" id="sales_seller">
+                <li class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown">2018 <span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="#lol">Enero</a></li>
+                    <li><a href="">Febrero</a></li>
+                  </ul>
+                </li>
+              </ul>
+                <div id="lol" class="tab-pane fade in active">
+                  <div class="x_content" display="none" style="display: block;">
+                    <p class="text-muted font-12 m-b-30">
+                    </p>
+                    <table id="rankin_month" class="table table-striped table-bordered" width="100%">
+                     <thead>
+                      <tr>
+                        <th>Fecha</th>
+                        <th>Ventas</th>
+                        <th>Visitas</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                  <div class="clearfix"></div>
+                </div>
+                </div>
+              </div>
           </div>
         </div>
         <div class="row mauxi_panel" style="display: none;">
@@ -193,14 +204,17 @@
               <table id="items_sellers" class="table table-striped table-bordered" width="100%">
                 <thead>
                    <tr>
+                    <th>#</th>
                     <th>MPID</th>
                     <th>Título</th>
                     <th>Precio en Mercado Libre</th>
                     <th>Cantidad Vendida</th>
                     <th>Cantidad de Visitas</th>
+                    <th>Total Stock</th>
                     <th>Precio Amazon</th>
                     <th>Valor del dólar</th>
                     <th>Disponibilidad en tienda local</th>
+                    <th>Disponibilidad en tienda Amazon</th>
                     <th>Acciones</th>
                   </tr>
                 </thead>

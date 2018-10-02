@@ -20,10 +20,13 @@ function get_seller_details(){
 	}).done(function(e){
 		var response = JSON.parse(e);
 		$('#top_sellers > tbody').append(response.top_seller);
-		//init_DataTables_local("top_sellers");
 		$('#oficial_sellers > tbody').append(response.seller_oficial);
 		init_DataTables_local("oficial_sellers");
 		$('#oficial_no_sellers > tbody').append(response.seller_no_oficial);
 		init_DataTables_local("oficial_no_sellers");
 	});
+}
+
+function set_seller_session_id(seller_id){
+	sessionStorage.setItem('seller_id', seller_id);
 }

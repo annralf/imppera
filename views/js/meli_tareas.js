@@ -150,6 +150,8 @@ function archivo(evt) {
 
 function ver_comentario(id_t) {	
 	var id_t=id_t;
+	var row="";
+
 	$.post('../services/meli_manager.php',{
 		action 	: 'list_tarea_by_id',
 		id_t 	: id_t,
@@ -158,7 +160,9 @@ function ver_comentario(id_t) {
 		if (response.response == 0) {
 			alert("Ha ocurrido un error al procesar la información");
 		}else{
-			$('#comment_local').text(response[0].comentary);
+			row="<textarea class='form-control' rows='5' id='comment_local'>"+response[0].comentary+"</textarea>"
+			$('#comentaries').empty();
+			$('#comentaries').append(row);
 			$(".item_comentary_modal").modal("show");
 			$(".save_comment").attr('id_t',id_t);	
 		}
@@ -175,6 +179,10 @@ function ver_descrip(id_t) {
 		if (response.response == 0) {
 			alert("Ha ocurrido un error al procesar la información");
 		}else{
+			$('#asig_by').empty();
+			$('#expire').empty();
+			$('#asig_by').append("Asignado por: "+response[0].nombre);
+			$('#expire').append("Fecha expiracion: "+response[0].asig_date);
 			$('#descrip_local').text(response[0].description);
 			$(".item_descrip_modal").modal("show");
 		}
@@ -228,7 +236,7 @@ function update_comment(id_t){
 		var response = JSON.parse(e);
 		if (response.response == 1) {
 			alert("Actualizado con éxito");
-			$('#comment_local').val();
+			///$('#comment_local').text();
 			list_tarea();
 		}else{
 			alert("Ha ocurrido un error al procesar la información");
@@ -270,11 +278,13 @@ function end_tarea(id_t){
 		alert("Tarea no Confirmada")
 	}
 }
+
 function good_tarea(id_t){
 	var isGood=confirm("Desea aprobar la tarea ?");
 	if(isGood){
 		$.post('../services/meli_manager.php',{
 			action : 'good_tarea',
+			
 			id_t   : id_t,
 			user_id: sessionStorage.getItem('id')
 		}).done(function(e){
@@ -282,6 +292,7 @@ function good_tarea(id_t){
 			if (response.response == 1) {
 				alert("Tarea aprobada");
 				list_tarea_cumplidas();
+				list_tarea_no_cumplidas();
 			}else{
 				alert("Ha ocurrido un error al procesar la información");
 			}
@@ -290,6 +301,55 @@ function good_tarea(id_t){
 		alert("Tarea no Confirmada")
 	}
 }
+
+
+
+function update_fecha(id_t,fecha){
+	var isGood=confirm("Desea reprogramar la tarea ?");
+	if(isGood){
+		$.post('../services/meli_manager.php',{
+			action : 'update_fecha',
+			fecha  : fecha,
+			id_t   : id_t,
+			user_id: sessionStorage.getItem('id')
+		}).done(function(e){
+			var response = JSON.parse(e);
+			if (response.response == 1) {
+				alert("Tarea reprogramada");
+				list_tarea_asig();
+				list_tarea_term();
+				list_tarea_cumplidas();
+				list_tarea_no_cumplidas();
+			}else{
+				alert("Ha ocurrido un error al procesar la información");
+			}
+		});
+	}else{
+		alert("Tarea no programada")
+	}
+}
+function archivar_tarea(id_t){
+	var isGood=confirm("Desea aprobar la tarea ?");
+	if(isGood){
+		$.post('../services/meli_manager.php',{
+			action : 'archi_tarea',
+			id_t   : id_t,
+			user_id: sessionStorage.getItem('id')
+		}).done(function(e){
+			var response = JSON.parse(e);
+			if (response.response == 1) {
+				alert("Tarea archivada");
+				list_tarea_cumplidas();
+				list_tarea_no_cumplidas();
+			}else{
+				alert("Ha ocurrido un error al procesar la información");
+			}
+		});
+	}else{
+		alert("Tarea no Confirmada")
+	}
+}
+
 function bad_tarea(id_t){
 	var isGood=confirm("Desea reprobar la tarea?");
 	if(isGood){
@@ -301,6 +361,7 @@ function bad_tarea(id_t){
 			var response = JSON.parse(e);
 			if (response.response == 1) {
 				alert("Tarea reprobada");
+				list_tarea_cumplidas();
 				list_tarea_no_cumplidas();
 			}else{
 				alert("Ha ocurrido un error al procesar la información");
@@ -310,6 +371,7 @@ function bad_tarea(id_t){
 		alert("Tarea no Confirmada")
 	}
 }
+
 function update_file(id_t){
 
 
@@ -434,6 +496,7 @@ function add_tarea(){
 	        var values = $(this).val();
 			$.post('../services/meli_manager.php',
 				{ 	action  	: 'add_tarea', 
+					fecha 		: $('#fecha').val(),
 					name  		: $('#new_tarea').val(),
 					description : $('#des_tarea').val(),
 					priority 	: $('#priority_asig').val(),
@@ -457,6 +520,7 @@ function add_tarea(){
 		$('#content_r').show();
 		$('#new_tarea').val('');
 		$('#des_tarea').val('');
+		$('#fecha').val('');
 		$('#name_user').empty();
 		$('#form_tarea').hide();
 		list_user_tarea();
@@ -521,51 +585,112 @@ function list_porcent(){
 		if (response.response == 0){
 			rows += "0%";
 			color='#cd5832';
+			$('#porcent').empty();
         	$('#porcent').append(rows);
         	$('#medal').css("background",color)
+        	if(sessionStorage.getItem('id')==38){
+        		$('#medal').css("margin-left","80px");
+				$('#medal').css("background","#F400A1");	
+        	}
 		}else{
+			var jefe1=0;
+			var jefe2=0;
+			var porcent=0;
+        	var porcent1=0;
+        	var porcent2=0;
+			var total=0;
+			var total1=0;
+			var totala1=0;
+			var totals1=0;
+			var totalc1=0;
+			var totalr1=0;
+			var total2=0;
+			var totala2=0;
+			var totals2=0;
+			var totalc2=0;
+			var totalr2=0;
+			var rowsm="";
+			var rowsa="";
+			var rowsr="";
+			var rowsc="";
+			var rowss="";
+			var color="#E57200";
 	        for(var i in response){
-	        	total = total+parseFloat(response[i].total);
-
-	        	if (response[i].status=="C"){
-	        		rowsa ="Asignadas: "+response[i].total;
+		       	if(response[i].jerarquia==1){
+	        		jefe1=1;
+	        		total1=total1+parseFloat(response[i].total);
+	        		if (response[i].status=="C"){
+	        			totala1 =totala1+parseFloat(response[i].total);
+		        	}
+		        	if (response[i].status=="T"){
+		        		totals1 =totals1+parseFloat(response[i].total);
+		        	}
+		        	if (response[i].status=="G"){
+		        		totalc1 =totalc1+parseFloat(response[i].total);
+		        	}
+		        	if (response[i].status=="B"){
+		        		totalr1=totalr1+parseFloat(response[i].total);
+		        	}
+		        	if (response[i].status=="NT"){
+		        		totalr1=totalr1+parseFloat(response[i].total);
+		        	}
 	        	}
-	        	if (response[i].status=="T"){
-	        		rowss ="Sin calificar: "+response[i].total;
+	        	if(response[i].jerarquia==2){
+	        		jefe2=1;
+	        		total2=total2+parseFloat(response[i].total);	
+	        		if (response[i].status=="C"){
+	        			totala2 =totala2+parseFloat(response[i].total);
+		        	}
+		        	if (response[i].status=="T"){
+		        		totals2 =totals2+parseFloat(response[i].total);
+		        	}
+		        	if (response[i].status=="G"){
+		        		totalc2 =totalc2+parseFloat(response[i].total);
+		        	}
+		        	if (response[i].status=="B"){
+		        		totalr2=totalr2+parseFloat(response[i].total);
+		        	}
+		        	if (response[i].status=="NT"){
+		        		totalr2=totalr2+parseFloat(response[i].total);
+		        	}
 	        	}
-	        	if (response[i].status=="G"){
-	        		total_c=parseFloat(response[i].total);
-	        		rowsc ="Cumplidas: "+response[i].total;
-	        	}
-	        	if (response[i].status=="B"){
-	        		recha=recha+parseFloat(response[i].total);
-	        		rowsr ="Rechazadas: "+recha;
-	        	}
-	        	if (response[i].status=="NT"){
-	        		recha=recha+parseFloat(response[i].total);
-	        		rowsr ="Rechazadas: "+recha;
-	        	}
-	        }
-	        rowsm ="tareas en el mes: "+total;
+        	}
+        	total = parseFloat(total1+total2);
+        	rowsm ="tareas en el mes: "+parseFloat(total);
+    		rowsa ="Asignadas: "+parseFloat(totala1+totala2);
+    		rowsc ="Cumplidas: "+parseFloat(totalc1+totalc2);
+    		rowsr ="Rechazadas: "+parseFloat(totalr1+totalr2);
+    		rowss ="Sin calificar: "+parseFloat(totals1+totals2);
 	        if(total==0){
 	        	rowsp ="0%";
 	        	porcent=0;
 	        }else{
-	        	porcent = (total_c / total )*100;
-	        	rowsp =Math.round(porcent)+"%";
+	        	if(jefe1==0 && jefe2==1){
+	        		porcent = (totalc2 / total )*100;
+	        		rowsp =Math.round(porcent)+"%";
+	        	}else 
+	        	if(jefe1==1 && jefe2==0){
+	        		porcent = (totalc1 / total )*100;
+	        		rowsp =Math.round(porcent)+"%";
+	        	}else 
+	        	if(jefe1==1 && jefe2==1){
+	        		porcent1 = (totalc1 / total1 )*70;
+	        		porcent2 = (totalc2 / total2 )*30;
+	        		porcent=porcent1+porcent2;
+	        		rowsp =Math.round(porcent)+"%";
+	        	}
 	    	}
 
-	    	if(porcent>85){
+	    	if(porcent>=85){
 	    		color='#b9b8b5';
 	    	}
-	    	if(porcent<=85){
+	    	if(porcent<85){
 	    		color='#FFD700 ';
 	    	}
 	    	if(porcent<75){
 	    		color='#cd5832';
 	    	}
-
-	    	$('#medal').css("background",color)
+		    $('#medal').css("background",color)
 	        $('#porcent').empty();
 	        $('#porcent_m').empty();
 	        $('#porcent_a').empty();
@@ -579,7 +704,6 @@ function list_porcent(){
 	        $('#porcent_r').append(rowsr);
         	$('#porcent_s').append(rowss);
         	chech_menu();
-        	
         }
 	});
 }
@@ -774,7 +898,6 @@ function chech_menu(){
 				$('#menu_tareaok').hide();
 				$('#menu_tareanook').hide();
 				$('#menu_tareacump').hide();
-				$('#menu_panel').hide();
 	        	$('#menu_tareaasig').hide();
 			}	       
         }
@@ -938,18 +1061,26 @@ function armar_estrucctura(type){
 		if (response.response == 0){
 			row += "<p>No hay Tareas</p>";
         	if(type==1){
+        		$('#count_t').empty();
+				$('#count_t').append('0');
 				$('#endtareas').empty();
 				$('#endtareas').append(row);
 			}
 			if(type==2){
+				$('#count_t').empty();
+				$('#count_t').append('0');
 				$('#endtareasbad').empty();
 				$('#endtareasbad').append(row);
 			}
 			if(type==3){
+				$('#count_t').empty();
+				$('#count_t').append('0');
 				$('#asigtareas').empty();
 				$('#asigtareas').append(row);
 			}
 			if(type==4){
+				$('#count_t').empty();
+				$('#count_t').append('0');
 				$('#cumplitareas').empty();
 				$('#cumplitareas').append(row);
 			}
@@ -1002,20 +1133,35 @@ function armar_estrucctura(type){
 					 		count_t=count_t+1;
 						 	row += "<a class='btn' title='Cumplida' onclick='good_tarea(\""+response[i].tareas[y].id+"\")'>									<i class='fa fa-thumbs-o-up' style='font-size:15px;color:#292929;'></i></a>";
 						 	row += "<a class='btn' title='Rechazada' onclick='bad_tarea(\""+response[i].tareas[y].id+"\")'>									<i class='fa fa-thumbs-o-down' style='font-size:15px;color:#292929;'></i></a>";
-						 	row += "<a class='btn' title='eliminar' onclick='eliminar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-times' style='font-size:15px;color:#292929;'></i></a>";
+						 	
 						}
 						if(type==2){
 							count_n=count_n+1;
-							row += "<a class='btn' title='Reprogramar' onclick='reprogramar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-clock-o' style='font-size:15px;color:#292929;'></i></a>";
+							row += "<a class='fa fa-clock-o dropdown-toggle btn' data-toggle='dropdown' style='color:black;'></a>  ";
+                            row += "<ul class='dropdown-menu pull-right' role='menu' aria-labelledby='dLabel' style='width: 160px;'>";
+                            row += "  <li style='font-size: 12px;background: #fff'>";
+                            row += "    <input type='date' name='fechar' id='fechar' onchange='update_fecha(\""+response[i].tareas[y].id+"\",this.value)'>";
+                            row += "  </li>";
+                            row += "</ul>";
+
+							//row += "<a class='btn' title='Reprogramar' onclick='reprogramar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-clock-o' style='font-size:15px;color:#292929;'></i></a>";
 							row += "<a class='btn' title='eliminar' onclick='eliminar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-times' style='font-size:15px;color:#292929;'></i></a>";
+							row += "<a class='btn' title='Archivar' onclick='archivar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-download' style='font-size:15px;color:#292929;'></i></a>";
 						}
 						if(type==3){
 							count_a=count_a+1;
-							row += "<a class='btn' title='Reprogramar' onclick='reprogramar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-clock-o' style='font-size:15px;color:#292929;'></i></a>";
+							row += "<a class='fa fa-clock-o dropdown-toggle btn' data-toggle='dropdown' style='color:black;'></a>  ";
+                            row += "<ul class='dropdown-menu pull-right' role='menu' aria-labelledby='dLabel' style='width: 160px;'>";
+                            row += "  <li style='font-size: 12px;background: #fff'>";
+                            row += "    <input type='date' name='fechar' id='fechar' onchange='update_fecha(\""+response[i].tareas[y].id+"\",this.value)'>";
+                            row += "  </li>";
+                            row += "</ul>";
+							//row += "<a class='btn' title='Reprogramar' onclick='reprogramar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-clock-o' style='font-size:15px;color:#292929;'></i></a>";
 							row += "<a class='btn' title='eliminar' onclick='eliminar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-times' style='font-size:15px;color:#292929;'></i></a>";
 						}
 						if(type==4){
 							count_c=count_c+1;
+							row += "<a class='btn' title='Archivar' onclick='archivar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-download' style='font-size:15px;color:#292929;'></i></a>";
 						}
 					row += "</td>";	
 					row += "</tr>";
@@ -1055,6 +1201,10 @@ function armar_estrucctura(type){
 		}	
 	});
 }
+
+
+
+
 
 function reprogramar_tarea(id_t){
 	var id_t=id_t;
@@ -1272,7 +1422,6 @@ function select_priority(value,color){
 	$('#priority_asig').val(valor);
 	$('#color_asig').val(color);
 	$('#icon_priority').css("color",color)
-	
 }
 
 function select_proyect(value,namep){

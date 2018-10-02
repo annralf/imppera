@@ -336,7 +336,7 @@ class MeliUpdate
 			$detail_items 	= $this->meli->show($mpid);
 
 			
-			#print_r($detail_items);die();
+			//print_r($detail_items);die();
 			if (isset($detail_items->error)) {
 				echo $i++ ."\t- Error de conexion ".$detail_items->message."\n";
 				#$this->conn->exec("DELETE from meli.items where id='".$id_meli."' and shop_id='".$this->shop[0]['id']."';");

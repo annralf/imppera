@@ -63,20 +63,59 @@ switch ($action) {
 		$sql_seller_items = "SELECT * FROM  meli.bench_shops_items WHERE shop = $seller_id";
 		$seller_items_result = pg_query($sql_seller_items);
 		$seller_items_table = "";
+		$sql_seller_sales_detail = "select sum(visits) as visitas,sum(amount) as ventas, to_char(sales_date,'Day') as dia , to_char(sales_date,'DD') as dia_n, to_char(sales_date,'MM') as mes, to_char(sales_date,'YYYY') as anio from meli.bench_sales_day where seller = $seller_id group by dia, dia_n, mes, anio order by mes desc;";
+		$seller_sales_detail_result = pg_query($sql_seller_sales_detail);
+		$sales_seller_info = "";
+		$year = 0;
+		$month = 0;
+		while ($sales = pg_fetch_object($seller_sales_detail_result)) {
+			$year = $sales->anio;
+			$sales_seller_info .= "<li class='dropdown'>";
+			$sales_seller_info .= "<a class='dropdown-toggle' data-toggle='dropdown'>2018 <span class='caret'></span></a>";
+		        $sales_seller_info .= "<ul class='dropdown-menu'>";
+			$sales_seller_info .= "<li><a href='#lol'>Enero</a></li>";
+			$sales_seller_info .= "<li><a href=''>Febrero</a></li>";
+			$sales_seller_info .= "</ul>";
+			$sales_seller_info .= "</li>";
+		}
 		while ($item = pg_fetch_object($seller_items_result)) {
-			$local_item = "NO";
+			$seller_items_table .= "<tr>";
+			$seller_items_table .= "<td style='width: 90px; word-wrap: break-word;'><img style='height: 20vh;' src='$item->thumbnail'></td>";
+			$seller_items_table .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->mpid</td>";
+			$seller_items_table .= "<td style='width: 90px; word-wrap: break-word;'>$item->title</td>";
+			$seller_items_table .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$number_format($item->price) COP</td>";
+			$seller_items_table .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$number_format($item->sale_amount)</td>";
+			$seller_items_table .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$number_format($item->visits)</td>";
+			$seller_items_table .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$number_format($item->stock)</td>";
+			$seller_items_table .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>-</td>";
+			$seller_items_table .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>-</td";
+			$seller_items_table .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>";
 			if ($item->is_local) {
-				$local_item = "SI";
+			    $seller_items_table .= "<a href=' title='Publicado en Tiendas locales'>";
+			    $seller_items_table .= "<p style='color: white; background-color: #49ec49; text-align: center; font-size: 12px;'>Publicado</p>";
+			    $seller_items_table .= "</a>";
+			}else{
+			    $seller_items_table .= "<a href=' title='No se encuentra en las publicaciones locales'>";
+			    $seller_items_table .= "<p style='color: white; background-color: #f35858; text-align: center; font-size: 12px;'>No Publicado</p>";
+			    $seller_items_table .= "</a>";
 			}
-			$seller_items_table .= "<td style='width: 90px; word-wrap: break-word;'>".$item->mpid."</td>";
-			$seller_items_table .= "<td style='width: 90px; word-wrap: break-word;'>".$item->title."</td>";
-			$seller_items_table .= "<td style='width: 90px; word-wrap: break-word;'>".$item->sale_amount."</td>";
-			$seller_items_table .= "<td style='width: 90px; word-wrap: break-word;'>".$item->visits."</td>";
-			$seller_items_table .= "<td style='width: 90px; word-wrap: break-word;'>No Disponible</td>";
-			$seller_items_table .= "<td style='width: 90px; word-wrap: break-word;'>No Disponible</td>";
-			$seller_items_table .= "<td style='width: 90px; word-wrap: break-word;'>No Disponible</td>";
-			$seller_items_table .= "<td style='width: 90px; word-wrap: break-word;'>".$local_item."</td>";
-			$seller_items_table .= "<td style='width: 90px; word-wrap: break-word;'>Funcionalidades</td>";
+			$seller_items_table .= "</td>";
+			$seller_items_table .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>";
+			if ($item->is_aws) {
+			    $seller_items_table .= "<a href=' title='Disponible en Amazon'>";
+			    $seller_items_table .= "<p style='color: white; background-color: #f79530; text-align: center; font-size: 12px;'>Disponible</p>";
+			    $seller_items_table .= "</a>";				
+			}else{
+			    $seller_items_table .= "<a href=' title='No se encuentra artículo en Amazon'>";
+			    $seller_items_table .= "<p style='color: white; background-color: #f35858; text-align: center; font-size: 12px;'>No Disponible</p>";
+			    $seller_items_table .= "</a>";
+			}
+                        $seller_items_table .= "</td>";
+			$seller_items_table .= "<td style='width: 100px;word-wrap: break-word; padding-top: 8vh;text-align: center;'>";
+			$seller_items_table .= "<a href="" title='Descargar y publicar en portafolio local' style='font-size: 24px; margin-right: 10px; color: #73cbec;'><i class='fa fa-download' aria-hidden='true'></i></a>";
+                        $seller_items_table .="<a href=' title='Ver publicación en Mercado Libre' style='font-size: 24px; color: #49ec49;'><i class='fa fa-eye' aria-hidden='true'></i></a>";
+                        $seller_items_table .= "</td>";
+		       $seller_items_table .= "</tr>";
 		}
 		break;
 }

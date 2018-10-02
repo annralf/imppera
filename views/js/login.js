@@ -55,8 +55,10 @@
     case '7':
     $('[menu=compras]').hide();
     $('[menu=ordenes]').hide();
-    $('[menu=tracking]').hide();
+    $('[menu=tracking]').show();                      
     $('[menu=user]').hide();
+    $(".queen_panel").show();
+    $(".mauxi_panel").show();
     $('[menu=offer]').hide();
     $('[menu=tarea]').show();
     $('[menu=bechmark]').hide();

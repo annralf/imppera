@@ -373,7 +373,7 @@
               <td colspan="2"><h3 id ="nombre_c" style="text-align: center"></h3></td>
             </tr>
             <tr>
-              <td width="45%" ><div style='width: 130px;height: 130px;background: gold;border-radius: 60px;margin-top: 5px;margin-left: 10px' id='medal'>
+              <td width="45%" ><div style='width: 130px;height: 130px;border-radius: 60px;margin-top: 5px;margin-left: 10px' id='medal'>
                     <img src="" id="user_avatar"  width="110" height="110" alt="" style='margin-left: 10px;margin-top: 10px; border-radius: 60px'>
                   </div>
               </td>
@@ -602,6 +602,16 @@
                           <a class='fa fa-user dropdown-toggle' data-toggle='dropdown' id='icon_user'>
                           </a>  
                             <ul class='dropdown-menu pull-right' role='menu' aria-labelledby='dLabel' style='width: 360px;' id='list_user_tarea'>
+                            </ul>
+                         </div>                       
+                      </td>
+                      <td style='font-size: 20px;'> 
+                         <div class='dropdown'> 
+                          <a class='fa fa-clock-o dropdown-toggle' data-toggle='dropdown' id='icon_clock'></a>  
+                            <ul class='dropdown-menu pull-right' role='menu' aria-labelledby='dLabel' style='width: 160px;'>
+                              <li style='font-size: 20px;background: #fff'>                          
+                                <input type="date" name="fecha" id='fecha' onchange="select_priority(1,'#50ca44')">
+                              </li>
                             </ul>
                          </div>                       
                       </td>
@@ -1092,7 +1102,9 @@
         <div class="modal-body">
           <div class="detail_modal form-group" id="detail_modal" style="display: block;">
             <label for="comment_local">Comentario:</label>
-            <textarea class="form-control" rows="5" id="comment_local"></textarea>
+            <div id='comentaries'>
+              
+            </div>
           </div>
         </div>
         <div class="modal-footer" style="text-align: center;">
@@ -1112,6 +1124,7 @@
           <h4 class="modal-title cbt_modal" id="item_comentary_modal_title"></h4>
         </div>
         <div class="modal-body">
+          <label id="asig_by"></label><br><label id="expire"></label>
           <div class="detail_modal form-group" id="detail_modal" style="display: block;">
             <label for="descrip_local">Descripcion:</label>
             <textarea class="form-control" rows="5" id="descrip_local"></textarea>
@@ -1261,19 +1274,19 @@
 <script type="text/javascript">
 $(document).ready(function () {
   //list_proyect();
-  list_tarea();
-  list_user_tarea();
-  //list_proyect_tarea();
-  //check_tarea();
-  check_user();
   set_menu();
+  chech_menu();
+  check_user();
+  list_porcent();
+  list_user_tarea();
+  check_tarea();
+  list_tarea();
+  //list_proyect_tarea();
   list_tarea_cumplidas();
   list_tarea_term();
   list_tarea_no_cumplidas();
   list_tarea_asig();
-  list_porcent();
   //list_all_porcent();
-  chech_menu();
 
   setInterval(list_tarea, 60000);
 

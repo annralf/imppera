@@ -31,14 +31,31 @@ class Benchmark
 	}
 
 
-	function set_items_details(){
-		$sql = "SELECT mpid FROM meli.bench_local_items WHERE shop_id = 2 LIMIT 500";
+	function set_items_details($type){
+		switch ($type) {
+			case 1:
+			    $sql = "SELECT mpid FROM meli.bench_local_items";
+				break;
+			
+			case 2:
+			    $sql = "SELECT mpid, shop FROM meli.bench_shops_items";
+				# code...
+				break;
+		}
 		$shop = pg_fetch_object(pg_query("SELECT access_token FROM meli.shop WHERE id = 1;"));
 		$result_items = pg_query($sql);
 		$i = 0;
 		while ($item = pg_fetch_object($result_items)) {
 			$info = $this->get_items_details($item->mpid, $shop->access_token);
+			switch ($type) {
+			case 1:
 			$sql_update = "UPDATE meli.bench_local_items SET sales = '$info->sold_quantity' WHERE mpid = '$info->id'";
+				break;
+			
+			case 2:
+				$sql_update = "UPDATE meli.bench_shops_items SET sale_amount = '$info->sold_quantity', thumbnail = '$info->thumbnail', stock = $info->available_quantity WHERE mpid = '$info->id' AND shop = '$item->shop'";
+				break;
+		}
 			$result = pg_query($sql_update);
 			$date = date('Y-m-d H:i:s');
 			if ($result > 0) {
@@ -110,10 +127,10 @@ class Benchmark
 			$visit = $this->get_items_visits($start_date, $end_date, $info->mpid);
 			switch ($type) {
 				case 1:
-				$update = "UPDATE meli.bench_local_items SET visits = '$visit->total_visits';";
+				$update = "UPDATE meli.bench_local_items SET visits = '$visit->total_visits' WHERE mpid = '$info->mpid';";
 				break;
 				case 2:
-				$update = "UPDATE meli.bench_shops_items SET visits = '$visit->total_visits';";
+				$update = "UPDATE meli.bench_shops_items SET visits = '$visit->total_visits' WHERE mpid = '$info->mpid';";
 				break;
 			}
 			$result_update = pg_query($update);
@@ -217,10 +234,27 @@ class Benchmark
 			$transactions_completed = $info->seller_reputation->transactions->completed;
 			$total_sales = $transactions_completed - $seller->transactions_completed;
 			$date = date("Y-m-d H:i:m");
-			$sql = "INSERT INTO meli.bench_sales_day (seller, sales_date, amount) VALUES ($seller->id, '$date', $total_sales);";
+			$visit = $this->get_info_sellers_visits($date,$seller->id);
+			$sql = "INSERT INTO meli.bench_sales_day (seller, sales_date, amount, visits) VALUES ($seller->id, '$date', $total_sales,$visit->total_visits);";
 			$result = pg_query($sql);
 			if ($result > 0) {
 				echo "$i $info->nickname - Fecha: $date  - $total_sales \n";
+			}else{
+				echo "$i - Seller $seller->id Info NO created - $date\n";	    
+			}
+			$i++;
+		}
+	}
+
+	function set_info_sellers_daily_visits($date){
+	    $sql_query = pg_query("SELECT id FROM meli.bench_sellers;");
+		$i = 1;
+		while ($seller = pg_fetch_object($sql_query)) {
+			$info = $this->get_info_sellers_visits($date,$seller->id);
+			$sql = "UPDATE meli.bench_sales_day SET visits = '$info->total_visits' WHERE seller = $seller->id AND sales_date >= '$date' AND visits is null;";
+			$result = pg_query($sql);
+			if ($result > 0) {
+				echo "$i $seller->id - Fecha: $date - visitas: $info->total_visits\n";
 			}else{
 				echo "$i - Seller $seller->id Info NO created - $date\n";	    
 			}
@@ -251,6 +285,24 @@ class Benchmark
 	  		}
 	  		$i++;
 	  	}
+	  }
+
+	 /*    
+	  CURL function i get user daily visits Mercadolibre
+	*/
+	  function get_info_sellers_visits($base_date,$seller_id){
+		$date = $base_date;#date('Y-m-d');
+		$date = strtotime('-1 day', strtotime($date));
+		$start_date = date('Y-m-d', $date)."T00:00:00.000-00:00";
+		$end_date = $base_date."T00:00:00.000-00:00";
+	  	$show_url = "https://api.mercadolibre.com/users/$seller_id/items_visits?date_from=$start_date&date_to=$end_date";
+	  	$ch       = curl_init();
+	  	curl_setopt($ch, CURLOPT_URL, $show_url);
+	  	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	  	curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+	  	$show = json_decode(curl_exec($ch));
+	  	curl_close($ch);
+	  	return $show;
 	  }
 	/*    
 	  CURL function i get user services Mercadolibre
@@ -354,4 +406,6 @@ class Benchmark
 	}
 
 	$t = new Benchmark(2);
-	$t->get_aws_search("Allied Telesis 16 Puertos Gigabit Websmart");
+	#$t->get_aws_search("Allied Telesis 16 Puertos Gigabit Websmart");
+	    $date = "2018-10-01";
+	    $t->set_items_details(2);

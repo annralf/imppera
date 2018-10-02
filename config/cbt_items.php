@@ -789,7 +789,7 @@ class items {
 
 	public function get_orders($status) {
 		if ($status==null){
-		$url_products_publish_put = "https://api-cbt.mercadolibre.com/api/orders/search/?days=10&page=1&access_token=".$this->token;
+		$url_products_publish_put = "https://api-cbt.mercadolibre.com/api/orders/search/?days=182&page=1&access_token=".$this->token;
 		}else{
 		$url_products_publish_put = "https://api-cbt.mercadolibre.com/api/orders/search/?days=10&status=".$status."&page=1&access_token=".$this->token;
 		}
