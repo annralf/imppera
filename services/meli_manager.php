@@ -101,11 +101,20 @@ if ($_POST['action'] == 'good_tarea') {
 if ($_POST['action'] == 'update_fecha') {
      $id_t = $_POST['id_t'];
      $fecha_form = $_POST['fecha'];
+     $type = $_POST['type'];
      $fecha=date_create($fecha_form);
      $date_asig=date_format($fecha,'Y-m-d 23:00:00');
 
      $conn = new Connect();
-     $result = pg_query("update system.tarea set status = 'C', priority=1, color='#50ca44',asig_date='$date_asig' where id = '".$id_t."';");
+     if($type==1){
+          $result = pg_query("update system.tarea set status = 'C', priority=1, color='#50ca44',asig_date='$date_asig' where id = '".$id_t."';");
+     }
+     if($type==2){
+          $sql="insert into system.tarea (tarea,user_id,create_date,status,priority,id_proyecto,user_asig,color,asig_date,description)
+          SELECT tarea,user_id,create_date,'C',priority,id_proyecto,user_asig,color,'".$date_asig."',description FROM system.tarea WHERE id='".$id_t."';";         
+          $result = pg_query($sql); 
+          //$result = pg_query("update system.tarea set status = 'C', priority=1, color='#50ca44',asig_date='$date_asig' where id = '".$id_t."';");
+     }
      if ($result > 0) {
           echo json_encode(array('response'=>1));
      }else{
@@ -162,13 +171,40 @@ if ($_POST['action'] == 'armar_e') {
           $status="t.status in ('NT','B')";
      }
 
-     $sql = "select t.user_asig, u.name, u.last_name, u.avatar, u.user_name from system.tarea t join system.users u on t.user_asig=u.id where $status and t.user_id = $user and archivar=0 group by t.user_asig,u.id order by u.name;";
+     $sql = "select t.user_asig, u.name, u.last_name, u.avatar, u.user_name from system.tarea t join system.users u on t.user_asig=u.id where $status and t.user_id = $user and t.archivar=0 group by t.user_asig,u.id order by u.name;";
      $result = pg_query($sql);
      while ($item = pg_fetch_array($result)) {
      //$sql = "select * from system.tarea where status = 'T';";
      $orders2 = array();
      $concat = array();
-         $sql2 = "select t.* from system.tarea t where $status and t.user_id = $user and t.user_asig=".$item['user_asig']." order by t.id;";
+         $sql2 = "select t.* from system.tarea t where $status and t.user_id = $user and t.user_asig=".$item['user_asig']." and t.archivar=0 order by t.id;";
+          $result2 = pg_query($sql2);
+          while ($item2 = pg_fetch_array($result2)) {
+               array_push($orders2, $item2);
+          }
+          $concat = array_merge($item,array('tareas'=>$orders2));
+
+          array_push($orders, $concat);
+     }
+     if (isset($orders[0][0])) {
+          echo json_encode($orders);
+     }else{
+          echo json_encode(array('response'=>0));      
+     }
+}
+
+if ($_POST['action'] == 'armar_arch') {
+     $user   = $_POST['user'];
+     $orders = array();
+     $conn = new Connect();
+
+     $sql = "select t.user_asig, u.name, u.last_name, u.avatar, u.user_name from system.tarea t join system.users u on t.user_asig=u.id where t.user_id = $user and t.archivar=1 group by t.user_asig,u.id order by u.name;";
+     $result = pg_query($sql);
+     while ($item = pg_fetch_array($result)) {
+     //$sql = "select * from system.tarea where status = 'T';";
+     $orders2 = array();
+     $concat = array();
+         $sql2 = "select t.* from system.tarea t where t.user_id = $user and t.user_asig=".$item['user_asig']." and t.archivar=1 order by t.id;";
           $result2 = pg_query($sql2);
           while ($item2 = pg_fetch_array($result2)) {
                array_push($orders2, $item2);

@@ -12,6 +12,7 @@ function show_asig_tareas(){
 	$("#tablero_panel").hide();
 	$("#tablero_asig").hide();
 	$("#tablero_cumpli").hide();
+	$("#tablero_archivo").hide();
 }
 
 function show_today(){
@@ -24,6 +25,7 @@ function show_today(){
 	$("#tablero_panel").hide();
 	$("#tablero_asig").hide();
 	$("#tablero_cumpli").hide();
+	$("#tablero_archivo").hide();
 	list_tarea();
 	list_porcent();
 }
@@ -37,6 +39,7 @@ function show_week(){
 	$("#tablero_panel").hide();
 	$("#tablero_asig").hide();
 	$("#tablero_cumpli").hide();
+	$("#tablero_archivo").hide();
 	list_tarea();
 	list_porcent();
 }
@@ -50,6 +53,7 @@ function show_check(){
 	$("#tablero_panel").hide();
 	$("#tablero_asig").hide();
 	$("#tablero_cumpli").hide();
+	$("#tablero_archivo").hide();
 	list_tarea_term();
 }
 function show_cumpl(){
@@ -62,6 +66,7 @@ function show_cumpl(){
 	$("#tablero_no_check").hide();
 	$("#tablero_panel").hide();
 	$("#tablero_asig").hide();
+	$("#tablero_archivo").hide();
 	list_tarea_cumplidas();
 }
 function show_asig(){
@@ -74,6 +79,7 @@ function show_asig(){
 	$("#tablero_no_check").hide();
 	$("#tablero_panel").hide();
 	$("#tablero_cumpli").hide();
+	$("#tablero_archivo").hide();
 	list_tarea_asig();
 }
 function show_no_check(){
@@ -86,6 +92,7 @@ function show_no_check(){
 	$("#tablero_panel").hide();
 	$("#tablero_asig").hide();
 	$("#tablero_cumpli").hide();
+	$("#tablero_archivo").hide();
 	list_tarea_no_cumplidas();
 }
 function show_panel(){
@@ -98,6 +105,20 @@ function show_panel(){
 	$("#tablero_panel").show();
 	$("#tablero_asig").hide();
 	$("#tablero_cumpli").hide();
+	$("#tablero_archivo").hide();
+}
+function show_archivo(){
+	$("#tablero_asignar").hide();
+	$("#tablero_today").hide();
+	$("#tablero_today").hide();
+	$("#tablero_week").hide();
+	$("#tablero_check").hide();
+	$("#tablero_no_check").hide();
+	$("#tablero_panel").hide();
+	$("#tablero_asig").hide();
+	$("#tablero_cumpli").hide();
+	$("#tablero_archivo").show();
+	armar_archivo();
 }
 function tarea_file(id_t){
 	var e = new FormData();
@@ -302,14 +323,13 @@ function good_tarea(id_t){
 	}
 }
 
-
-
-function update_fecha(id_t,fecha){
+function update_fecha(id_t,fecha,type){
 	var isGood=confirm("Desea reprogramar la tarea ?");
 	if(isGood){
 		$.post('../services/meli_manager.php',{
 			action : 'update_fecha',
 			fecha  : fecha,
+			type   : type,
 			id_t   : id_t,
 			user_id: sessionStorage.getItem('id')
 		}).done(function(e){
@@ -328,26 +348,23 @@ function update_fecha(id_t,fecha){
 		alert("Tarea no programada")
 	}
 }
+
 function archivar_tarea(id_t){
-	var isGood=confirm("Desea aprobar la tarea ?");
-	if(isGood){
-		$.post('../services/meli_manager.php',{
-			action : 'archi_tarea',
-			id_t   : id_t,
-			user_id: sessionStorage.getItem('id')
-		}).done(function(e){
-			var response = JSON.parse(e);
-			if (response.response == 1) {
-				alert("Tarea archivada");
-				list_tarea_cumplidas();
-				list_tarea_no_cumplidas();
-			}else{
-				alert("Ha ocurrido un error al procesar la información");
-			}
-		});
-	}else{
-		alert("Tarea no Confirmada")
-	}
+	
+	$.post('../services/meli_manager.php',{
+		action : 'archi_tarea',
+		id_t   : id_t,
+		user_id: sessionStorage.getItem('id')
+	}).done(function(e){
+		var response = JSON.parse(e);
+		if (response.response == 1) {
+			alert("Tarea archivada");
+			list_tarea_cumplidas();
+			list_tarea_no_cumplidas();
+		}else{
+			alert("Ha ocurrido un error al procesar la información");
+		}
+	});
 }
 
 function bad_tarea(id_t){
@@ -462,22 +479,27 @@ function add_proyect(){
 
 
 function eliminar_tarea(id_t){
-	$.post('../services/meli_manager.php',
-		{ 	action  : 'delete_tarea', 
-			id_t  	: id_t,
-		}).fail(function(){ alert('error delete tarea');
-	}).done(function(e){
-		var response = JSON.parse(e); 
-		if (response.response==1){
-			list_tarea();
-			list_tarea_no_cumplidas();
-			list_tarea_cumplidas();
-			list_tarea_term();
-			list_tarea_asig();
-		}else{
-			alert('no se pudo eliminar la tarea');
-        }
-	});
+	var isGood=confirm("Desea Eliminar la tarea ?");
+	if(isGood){
+		$.post('../services/meli_manager.php',
+			{ 	action  : 'delete_tarea', 
+				id_t  	: id_t,
+			}).fail(function(){ alert('error delete tarea');
+		}).done(function(e){
+			var response = JSON.parse(e); 
+			if (response.response==1){
+				list_tarea();
+				list_tarea_no_cumplidas();
+				list_tarea_cumplidas();
+				list_tarea_term();
+				list_tarea_asig();
+			}else{
+				alert('no se pudo eliminar la tarea');
+	        }
+		});
+	}else{
+		alert("Tarea no Eliminada")
+	}
 }
 
 function add_tarea(){
@@ -899,6 +921,7 @@ function chech_menu(){
 				$('#menu_tareanook').hide();
 				$('#menu_tareacump').hide();
 	        	$('#menu_tareaasig').hide();
+	        	$('#menu_archivo').hide();
 			}	       
         }
 	});
@@ -1140,7 +1163,7 @@ function armar_estrucctura(type){
 							row += "<a class='fa fa-clock-o dropdown-toggle btn' data-toggle='dropdown' style='color:black;'></a>  ";
                             row += "<ul class='dropdown-menu pull-right' role='menu' aria-labelledby='dLabel' style='width: 160px;'>";
                             row += "  <li style='font-size: 12px;background: #fff'>";
-                            row += "    <input type='date' name='fechar' id='fechar' onchange='update_fecha(\""+response[i].tareas[y].id+"\",this.value)'>";
+                            row += "    <input type='date' name='fechar' id='fechar' onchange='update_fecha(\""+response[i].tareas[y].id+"\",this.value,\"2\")'>";
                             row += "  </li>";
                             row += "</ul>";
 
@@ -1153,7 +1176,7 @@ function armar_estrucctura(type){
 							row += "<a class='fa fa-clock-o dropdown-toggle btn' data-toggle='dropdown' style='color:black;'></a>  ";
                             row += "<ul class='dropdown-menu pull-right' role='menu' aria-labelledby='dLabel' style='width: 160px;'>";
                             row += "  <li style='font-size: 12px;background: #fff'>";
-                            row += "    <input type='date' name='fechar' id='fechar' onchange='update_fecha(\""+response[i].tareas[y].id+"\",this.value)'>";
+                            row += "    <input type='date' name='fechar' id='fechar' onchange='update_fecha(\""+response[i].tareas[y].id+"\",this.value,\"1\")'>";
                             row += "  </li>";
                             row += "</ul>";
 							//row += "<a class='btn' title='Reprogramar' onclick='reprogramar_tarea(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-clock-o' style='font-size:15px;color:#292929;'></i></a>";
@@ -1203,8 +1226,74 @@ function armar_estrucctura(type){
 }
 
 
-
-
+function armar_archivo(){
+	var type=type;
+	var row="";
+	var titulo="";
+	$.post('../services/meli_manager.php',
+		{ 	action  : 'armar_arch', 
+			user  	: sessionStorage.getItem('id'),
+		}).fail(function(){ alert('error list tarea');
+	}).done(function(e){
+		var response = JSON.parse(e);
+		if (response.response == 0){
+			row += "<p>No hay Tareas</p>";
+       
+        		$('#count_arch').empty();
+				$('#count_arch').append('0');
+				$('#archtareas').empty();
+				$('#archtareas').append(row);
+		}else{
+			var count_arch=0;
+			for(var i in response){
+				row +="<div class='row "+response[i].user_name+" tabl_t'>";
+	            row +="    <div class='x_panel'>";
+	            row +="      <div class='x_title collapse-link row' data-toggle='tooltip' data-placement='bottom' title='Ver listado de tareas de '>";
+	            row +="        <div class=''>";
+	            row +="           <img  class='foto' src='"+response[i].avatar+"' style='width: 100px;border-radius: 60px;margin-left:20px'><span class='title_t'> Tareas de "+response[i].name+" "+response[i].last_name+"</span >";
+	            row +="          <div class='clearfix'></div>";
+	            row +="        </div>";
+	            row +="        <div class='clearfix'></div>";
+	            row +="      </div>";
+	            row +="      <div class='x_content' display='' style='display: block;'>";
+	            row +="        <table id='list_"+response[i].user_asig+"' class='table table-striped table-bordered' width='100%'>";
+	            row +="          <tbody>";
+	            row +="				<tr ><td>Tareas Archivadas</td><td>Acciones</td></tr>";
+	            for(var y in response[i].tareas){
+	            	var colorc=""
+					var colorf="";
+					var thumb="";
+					var dato="";
+					count_arch=count_arch+1;
+					if (response[i].tareas[y].comentary) {	colorc="blue";	}else{	colorc="#292929"	}
+					if (response[i].tareas[y].file) {		colorf="blue";	}else{	colorf="#292929";	}
+					if (response[i].tareas[y].status== 'G')		{ 	dato="Cumplida";}
+					if (response[i].tareas[y].status== 'B') 	{	dato="Rechazada";	}
+					if (response[i].tareas[y].status== 'NT') 	{	dato="Expirada";	}
+					row += "<tr style='background-color:"+response[i].tareas[y].color+";'>";
+					row += "<td style='width: 80%; ' title='"+dato+"'><i class='fa fa-navicon' style='font-size:18px;color:#292929' onclick='ver_descrip(\""+response[i].tareas[y].id+"\")'></i><span style='color:#292929;margin-left:10px;font-weight: bold;font-size:15px'>"+response[i].tareas[y].tarea+"</span><span style='margin-right:10px;float: right'>"+dato+"</span></td>";
+					row += "<td style='width: 20%; '>";
+					row += "<a class='btn' title='Ver comentario' onclick='ver_comentario(\""+response[i].tareas[y].id+"\")'>	<i class='fa fa-comments-o' 	style='font-size:15px;color:"+colorc+";'></i></a>";	
+					row += "<a class='btn' title='Adjuntar Archivo' onclick='ver_file_preview(\""+response[i].tareas[y].id+"\",\""+response[i].tareas[y].file+"\")'>			<i class='fa fa-eye' 	style='font-size:15px;color:"+colorf+";'></i></a>";
+					row += "</td>";	
+					row += "</tr>";
+	            }
+	            row +="          </tbody>";
+	            row +="        </table>";
+	            row +="        <div class='clearfix'></div>";
+	            row +="      </div>";
+	            row +="    </div>";
+	            row +="</div>";
+			}
+			
+			$('#count_arch').empty();
+			$('#count_arch').append(count_arch);
+			$('#archtareas').empty();
+			$('#archtareas').append(row);
+		
+		}	
+	});
+}
 
 function reprogramar_tarea(id_t){
 	var id_t=id_t;

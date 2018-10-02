@@ -405,7 +405,7 @@ class Benchmark
     }
 	}
 
-	$t = new Benchmark(2);
+	#$t = new Benchmark(2);
 	#$t->get_aws_search("Allied Telesis 16 Puertos Gigabit Websmart");
-	    $date = "2018-10-01";
-	    $t->set_items_details(2);
+	#$date = "2018-10-01";
+	#$t->set_items_details(2);
