@@ -334,9 +334,10 @@ if ($_POST['action'] == 'add_tarea') {
           }
           $date_asig=$fecha->format('Y-m-d')." 23:00:00";
      }
-     if(isset($fecha_form)){
+     if($priority==4){
           $fecha=date_create($fecha_form);
           $date_asig=date_format($fecha,'Y-m-d 23:00:00');
+          $priority=1;
      }
 
 

@@ -94,46 +94,46 @@ switch ($action) {
 		$sales_seller_info .= "<a class='dropdown-toggle' data-toggle='dropdown'>$year<span class='caret'></span></a>";
 		$sales_seller_info .= "<ul class='dropdown-menu'>";
 		foreach ($main_detail['month'] as $m) {
-		    if ($m['year'] == $year ) {
-			$mo = $m['month'];
-			$total_sales = 0;
-			$total_visits = 0;
-			$sales_seller_info .= "<li><a data-toggle='tab' href='#$mo'>$mo</a></li>";		
-			$sales_seller_detail .= "<div id='$mo' class='tab-pane'>";
-			$sales_seller_detail .= "<table id='rankin_month_$mo' class='table table-striped table-bordered' width='100%'>";
-			$sales_seller_detail .= "<thead>";
-			$sales_seller_detail .= "<tr>";
-			$sales_seller_detail .= "<th>Fecha</th>";
-			$sales_seller_detail .= "<th>Ventas</th>";
-			$sales_seller_detail .= "<th>Visitas</th>";
-			$sales_seller_detail .= "</tr>";
-			$sales_seller_detail .= "</thead>";
-			$sales_seller_detail .= "<tbody>";
-			foreach ($main_detail['days'] as $d) {
-				if ($d['month'] == $m['month']) {
-					$dia = $d['day'];
-					$visitas = number_format($d['visits']);
-					$ventas = number_format($d['sales']);
-					$total_sales += $d['sales'];
-					$total_visits += $d['visits'];
-					$sales_seller_detail .= "<tr>";
-					$sales_seller_detail .= "<td style='width: 90px; word-wrap: break-word;'>$dia</td>";
-					$sales_seller_detail .= "<td style='width: 90px; word-wrap: break-word;'>$ventas</td>";
-					$sales_seller_detail .= "<td style='width: 90px; word-wrap: break-word;'>$visitas</td>";
-					$sales_seller_detail .= "</tr>";
+			if ($m['year'] == $year ) {
+				$mo = $m['month'];
+				$total_sales = 0;
+				$total_visits = 0;
+				$sales_seller_info .= "<li><a data-toggle='tab' href='#$mo'>$mo</a></li>";		
+				$sales_seller_detail .= "<div id='$mo' class='tab-pane'>";
+				$sales_seller_detail .= "<table id='rankin_month_$mo' class='table table-striped table-bordered' width='100%'>";
+				$sales_seller_detail .= "<thead>";
+				$sales_seller_detail .= "<tr>";
+				$sales_seller_detail .= "<th>Fecha</th>";
+				$sales_seller_detail .= "<th>Ventas</th>";
+				$sales_seller_detail .= "<th>Visitas</th>";
+				$sales_seller_detail .= "</tr>";
+				$sales_seller_detail .= "</thead>";
+				$sales_seller_detail .= "<tbody>";
+				foreach ($main_detail['days'] as $d) {
+					if ($d['month'] == $m['month']) {
+						$dia = $d['day'];
+						$visitas = number_format($d['visits']);
+						$ventas = number_format($d['sales']);
+						$total_sales += $d['sales'];
+						$total_visits += $d['visits'];
+						$sales_seller_detail .= "<tr>";
+						$sales_seller_detail .= "<td style='width: 90px; word-wrap: break-word;'>$dia</td>";
+						$sales_seller_detail .= "<td style='width: 90px; word-wrap: break-word;'>$ventas</td>";
+						$sales_seller_detail .= "<td style='width: 90px; word-wrap: break-word;'>$visitas</td>";
+						$sales_seller_detail .= "</tr>";
+					}
 				}
+				$sales_seller_detail .= "<tr>";
+				$total_visits = number_format($total_visits);
+				$total_sales = number_format($total_sales);
+				$sales_seller_detail .= "<td style='width: 90px; word-wrap: break-word;'><b>TOTAL</b></td>";
+				$sales_seller_detail .= "<td style='width: 90px; word-wrap: break-word;'><b>$total_sales</b></td>";
+				$sales_seller_detail .= "<td style='width: 90px; word-wrap: break-word;'><b>$total_visits</b></td>";
+				$sales_seller_detail .= "</tr>";
+				$sales_seller_detail .= "</tbody>";
+				$sales_seller_detail .= "</table>";
+				$sales_seller_detail .= "</div>";
 			}
-			$sales_seller_detail .= "<tr>";
-					$total_visits = number_format($total_visits);
-					$total_sales = number_format($total_sales);
-					$sales_seller_detail .= "<td style='width: 90px; word-wrap: break-word;'><b>TOTAL</b></td>";
-					$sales_seller_detail .= "<td style='width: 90px; word-wrap: break-word;'><b>$total_sales</b></td>";
-					$sales_seller_detail .= "<td style='width: 90px; word-wrap: break-word;'><b>$total_visits</b></td>";
-					$sales_seller_detail .= "</tr>";
-			$sales_seller_detail .= "</tbody>";
-			$sales_seller_detail .= "</table>";
-			$sales_seller_detail .= "</div>";
-		    }
 		}
 		$sales_seller_info .= "</ul>";
 		$sales_seller_info .= "</li>";
@@ -184,6 +184,61 @@ switch ($action) {
 		$seller_items_table .= "</tr>";
 	}
 	echo json_encode(array('seller_info' => $seller_info, 'seller_sales_header' => $sales_seller_info, 'seller_sales_body' => $sales_seller_detail, 'seller_top_items' => $seller_items_table));
+	break;
+	case 'get_local_items':
+	$sql = "SELECT  i.title,i.aws_id, i.mpid, i.id,i.seller_mpid, i.is_high, i.external_store_id, i.local_store_id, i.thumbnail,
+		TO_CHAR(i.aws_price,'FM999,999,999') AS aws_price,
+		TO_CHAR(i.sales_amount,'FM999,999,999') AS sales_amount, TO_CHAR(local_price,'FM999,999,999') AS local_price,
+		TO_CHAR(seller_sales_amount,'FM999,999,999') AS seller_sales_amount, 
+		TO_CHAR(sales_price,'FM999,999,999') AS sales_price, TO_CHAR(sales_dolar_price,'FM999,999,999') AS sales_dolar_price,
+		TO_CHAR(difference_price,'FM999,999,999') AS difference_price, a.sku FROM meli.bench_price_comparison AS i
+		JOIN aws.items AS a ON a.id = i.aws_id
+		WHERE external_store_id IS NOT NULL LIMIT 10";
+	$query_sql = pg_query($sql);
+	$items_qb = "";
+	$items_mx = "";
+	while ($item = pg_fetch_object($query_sql)) {
+		$table_structure = "";
+		$table_structure .= "<tr>";
+		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'><img style='height: 20vh;' src='$item->thumbnail'></td>";
+		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->mpid</td>";
+		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->title</td>";
+		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->local_price</td>";
+		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->sales_amount</td>";
+		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->sku</td>";
+		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->aws_price</td>";
+		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->external_store_id</td>";
+		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->seller_mpid</td>";
+		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->sales_price</td>";
+		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->seller_sales_amount</td>";
+		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->sales_dolar_price</td>";
+		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->difference_price</td>";
+		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>";
+		if ($item->is_high) {
+			$table_structure .= "<a href=' title='El artículo publicado es mas costoso que la competencia'>";
+			$table_structure .= "<p style='color: white; background-color: #f35858; text-align: center; font-size: 12px;'>Precio Alto</p>";
+			$table_structure .= "</a>";
+		}else{
+			$table_structure .= "<a href=' title='No posee referencia de competencia'>";
+			$table_structure .= "<p style='color: white; background-color: #f35858; text-align: center; font-size: 12px;'>Sin referencia</p>";
+			$table_structure .= "</a>";
+		}
+		$table_structure .="</td>";
+		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>";
+		$table_structure .= "<a href='' title='Actualizar Precio' style='font-size: 24px; margin-right: 10px; color: #73cbec;'><i class='fa fa-refresh' aria-hidden='true'></i></a>";
+		$table_structure .= "</td>";
+		$table_structure .= "</tr>";
+		switch ($item->local_store_id) {
+			case '209935315':
+			    $items_qb .= $table_structure;
+			break;
+
+			case '192538642':
+			    $items_mx .= $table_structure;
+			break;
+		}
+	}
+	echo json_encode(array('items_qb' => $items_qb, 'items_mx' => $items_mx));
 	break;
 }
 

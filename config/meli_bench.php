@@ -10,6 +10,65 @@ class Benchmark
 		$this->shop_id = $shop_id;
 		$this->db = new Connect();
 	}
+	function set_comparison_item(){
+		$shop = pg_fetch_object(pg_query("SELECT access_token FROM meli.shop WHERE id = 2"));
+		$sql_items = "SELECT  * FROM meli.bench_price_comparison WHERE local_price IS NOT NULL AND aws_price IS NOT NULL AND aws_price <> 0 AND external_store_id IS NULL LIMIT 1000";
+		$result_items = pg_query($sql_items);
+		$site = "MCO";
+		$j = 0;
+		while ($items = pg_fetch_object($result_items)) {
+			$title = urlencode($items->title);
+			$info = $this->get_comparison_item($title, $site);
+			$compared_item = array();
+			$comp_seller_sales_amount = 0;
+			$result_mpid = $this->get_items_details($items->mpid, $shop->access_token);
+			foreach ($info->results as $key) {
+				if ($key->seller->id !== $items->local_store_id) {
+					if ($key->sold_quantity > $result_mpid->sold_quantity && $key->sold_quantity > $comp_seller_sales_amount) {
+						$compared_item['sales_price'] = $key->price;
+						$compared_item['seller_sales_amount'] = $key->sold_quantity;
+						$compared_item['sales_dolar_price'] = $key->price/$items->aws_price;
+						$compared_item['is_high'] = 'true';
+						$compared_item['difference_price'] = ($key->price > $result_mpid->price) ? ($key->price - $result_mpid->price) : ($result_mpid->price - $key->price);
+						$compared_item['external_store_id'] = $key->seller->id;
+						$compared_item['seller_mpid'] = $key->id;
+						$compared_item['local_mpid'] = $items->mpid;
+						$compared_item['aws_id'] = $items->aws_id;
+						$compared_item['local_price'] = $result_mpid->price;
+						$comp_seller_sales_amount = $key->sold_quantity;
+					}
+				}
+			}
+			$date = date("Y-m-d H:i:s");
+			if (empty($compared_item)) {
+				echo "----------------------- No Comparation $j MPID  $result_mpid->id - $date -----------------------\n";
+				$sql_update = "UPDATE meli.bench_price_comparison SET sales_amount = $result_mpid->sold_quantity, local_price = $result_mpid->price, update_date = '$date', thumbnail = '$result_mpid->thumbnail' WHERE id = $items->id";
+
+			}else{
+				$compared_item = json_decode(json_encode($compared_item), FALSE);
+				echo "----------------------- Comparation $j - MPID Local $result_mpid->id - MPID Seller $compared_item->seller_mpid -  $date -----------------------\n";
+				$sql_update = "UPDATE meli.bench_price_comparison SET sales_amount = $result_mpid->sold_quantity, local_price = $result_mpid->price, sales_price = $compared_item->sales_price, seller_sales_amount = $compared_item->seller_sales_amount, sales_dolar_price = $compared_item->sales_dolar_price, is_high = $compared_item->is_high, difference_price = $compared_item->difference_price, external_store_id = '$compared_item->external_store_id', update_date = '$date', thumbnail = '$result_mpid->thumbnail' WHERE id = $items->id";
+			}
+			$source_update = pg_query($sql_update);
+			if ($source_update > 0) {
+				echo "\tUpdated Item $items->mpid\n";
+			}else{
+				echo "\tNO updated Item $items->mpid\n";
+			}
+			$j++;
+		}
+	}
+
+	function get_comparison_item($title, $site_id){
+		$url = "https://api.mercadolibre.com/sites/$site_id/search?q=$title&sort=relevance";
+		$ch       = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+		$show = json_decode(curl_exec($ch));
+		curl_close($ch);
+		return $show;
+	}
 
 	function get_aws_search($title){
 		$title = $this->translate($title);
@@ -34,13 +93,13 @@ class Benchmark
 	function set_items_details($type){
 		switch ($type) {
 			case 1:
-			    $sql = "SELECT mpid FROM meli.bench_local_items";
-				break;
+			$sql = "SELECT mpid FROM meli.bench_local_items";
+			break;
 			
 			case 2:
-			    $sql = "SELECT mpid, shop FROM meli.bench_shops_items";
+			$sql = "SELECT mpid, shop FROM meli.bench_shops_items";
 				# code...
-				break;
+			break;
 		}
 		$shop = pg_fetch_object(pg_query("SELECT access_token FROM meli.shop WHERE id = 1;"));
 		$result_items = pg_query($sql);
@@ -48,14 +107,14 @@ class Benchmark
 		while ($item = pg_fetch_object($result_items)) {
 			$info = $this->get_items_details($item->mpid, $shop->access_token);
 			switch ($type) {
-			case 1:
-			$sql_update = "UPDATE meli.bench_local_items SET sales = '$info->sold_quantity' WHERE mpid = '$info->id'";
+				case 1:
+				$sql_update = "UPDATE meli.bench_local_items SET sales = '$info->sold_quantity' WHERE mpid = '$info->id'";
 				break;
-			
-			case 2:
+
+				case 2:
 				$sql_update = "UPDATE meli.bench_shops_items SET sale_amount = '$info->sold_quantity', thumbnail = '$info->thumbnail', stock = $info->available_quantity WHERE mpid = '$info->id' AND shop = '$item->shop'";
 				break;
-		}
+			}
 			$result = pg_query($sql_update);
 			$date = date('Y-m-d H:i:s');
 			if ($result > 0) {
@@ -170,29 +229,29 @@ class Benchmark
 			array_push($final_result, $info2->results);
 			$j = 1;
 			foreach ($final_result as $key) {
-			    foreach ($key as $val) {
-				echo "Total $i: ";
-				echo "Seller $seller_counter : $j - $seller->id ";
-				$search = pg_fetch_object(pg_query("SELECT mpid FROM meli.bench_shops_items WHERE mpid = '$val->id' AND shop = '$seller->id';"));
-				$date = date("Y-m-d H:i:m");
-				if (!isset($search->mpid)) {
-					$title = pg_escape_string(utf8_encode($val->title));
-					$sql = "INSERT INTO meli.bench_shops_items(mpid, title, price, sale_amount, permalink, is_local, shop)
-					VALUES ('$val->id', '$title', '$val->price', '$val->sold_quantity', '$val->permalink', 'false', '$seller->id');";
-					$result = pg_query($sql);
-					if ($result > 0) {
-						echo "MPID $val->id Insert Ok  - $date\n";
+				foreach ($key as $val) {
+					echo "Total $i: ";
+					echo "Seller $seller_counter : $j - $seller->id ";
+					$search = pg_fetch_object(pg_query("SELECT mpid FROM meli.bench_shops_items WHERE mpid = '$val->id' AND shop = '$seller->id';"));
+					$date = date("Y-m-d H:i:m");
+					if (!isset($search->mpid)) {
+						$title = pg_escape_string(utf8_encode($val->title));
+						$sql = "INSERT INTO meli.bench_shops_items(mpid, title, price, sale_amount, permalink, is_local, shop)
+						VALUES ('$val->id', '$title', '$val->price', '$val->sold_quantity', '$val->permalink', 'false', '$seller->id');";
+						$result = pg_query($sql);
+						if ($result > 0) {
+							echo "MPID $val->id Insert Ok  - $date\n";
+						}else{
+							echo "MPID $val->id NO Insert  - $date\n";	    
+						}
 					}else{
-						echo "MPID $val->id NO Insert  - $date\n";	    
+						echo "MPID $search->mpid Inserted   - $date\n";
 					}
-				}else{
-					echo "MPID $search->mpid Inserted   - $date\n";
+					$i++;
+					$j++;
 				}
-				$i++;
-				$j++;
-			    }
 			}
-		    $seller_counter++;
+			$seller_counter++;
 		}
 	}
 
@@ -247,7 +306,7 @@ class Benchmark
 	}
 
 	function set_info_sellers_daily_visits($date){
-	    $sql_query = pg_query("SELECT id FROM meli.bench_sellers;");
+		$sql_query = pg_query("SELECT id FROM meli.bench_sellers;");
 		$i = 1;
 		while ($seller = pg_fetch_object($sql_query)) {
 			$info = $this->get_info_sellers_visits($date,$seller->id);
@@ -295,15 +354,15 @@ class Benchmark
 		$date = strtotime('-1 day', strtotime($date));
 		$start_date = date('Y-m-d', $date)."T00:00:00.000-00:00";
 		$end_date = $base_date."T00:00:00.000-00:00";
-	  	$show_url = "https://api.mercadolibre.com/users/$seller_id/items_visits?date_from=$start_date&date_to=$end_date";
-	  	$ch       = curl_init();
-	  	curl_setopt($ch, CURLOPT_URL, $show_url);
-	  	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	  	curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
-	  	$show = json_decode(curl_exec($ch));
-	  	curl_close($ch);
-	  	return $show;
-	  }
+		$show_url = "https://api.mercadolibre.com/users/$seller_id/items_visits?date_from=$start_date&date_to=$end_date";
+		$ch       = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $show_url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+		$show = json_decode(curl_exec($ch));
+		curl_close($ch);
+		return $show;
+	}
 	/*    
 	  CURL function i get user services Mercadolibre
 	*/
@@ -361,51 +420,51 @@ class Benchmark
 	  }
 	  
 	  function search_item($title) {
-		$endpoint = "webservices.amazon.com";
-		$uri = "/onca/xml";
-		$access_key_id = "AKIAJIM77WK37THIDD2A";
-		$secret_key = "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";
-		$params = array(
-			"Service" => "AWSECommerceService",
-			"Operation" => "ItemSearch",
-			"AWSAccessKeyId" => "AKIAJIM77WK37THIDD2A",
-			"AssociateTag" => "alexarodri-20",
-			"SearchIndex" => "All",
-			"Keywords" => $title,
-			"ResponseGroup" => "Images,ItemAttributes,Offers"
-		);
-		if (!isset($params["Timestamp"])) {
-			$params["Timestamp"] = gmdate("Y-m-d\TH:i:s\Z");
-		}
-		ksort($params);
-		$pairs = array();
-		foreach ($params as $key => $value) {
-			array_push($pairs, rawurlencode($key)."=".rawurlencode($value));
-		}
-		$canonical_query_string = join("&", $pairs);
-		$string_to_sign         = "GET\n".$endpoint."\n".$uri."\n".$canonical_query_string;
-		$signature              = base64_encode(hash_hmac("sha256", $string_to_sign, $secret_key, true));
-		$request_url            = 'http://'.$endpoint.$uri.'?'.$canonical_query_string.'&Signature='.rawurlencode($signature);
-		$url                    = "http://webservices.amazon.com/onca/xml";
+	  	$endpoint = "webservices.amazon.com";
+	  	$uri = "/onca/xml";
+	  	$access_key_id = "AKIAJIM77WK37THIDD2A";
+	  	$secret_key = "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";
+	  	$params = array(
+	  		"Service" => "AWSECommerceService",
+	  		"Operation" => "ItemSearch",
+	  		"AWSAccessKeyId" => "AKIAJIM77WK37THIDD2A",
+	  		"AssociateTag" => "alexarodri-20",
+	  		"SearchIndex" => "All",
+	  		"Keywords" => $title,
+	  		"ResponseGroup" => "Images,ItemAttributes,Offers"
+	  	);
+	  	if (!isset($params["Timestamp"])) {
+	  		$params["Timestamp"] = gmdate("Y-m-d\TH:i:s\Z");
+	  	}
+	  	ksort($params);
+	  	$pairs = array();
+	  	foreach ($params as $key => $value) {
+	  		array_push($pairs, rawurlencode($key)."=".rawurlencode($value));
+	  	}
+	  	$canonical_query_string = join("&", $pairs);
+	  	$string_to_sign         = "GET\n".$endpoint."\n".$uri."\n".$canonical_query_string;
+	  	$signature              = base64_encode(hash_hmac("sha256", $string_to_sign, $secret_key, true));
+	  	$request_url            = 'http://'.$endpoint.$uri.'?'.$canonical_query_string.'&Signature='.rawurlencode($signature);
+	  	$url                    = "http://webservices.amazon.com/onca/xml";
 
 		#Accediendo al url encoding xml
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $request_url);
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
-		$response = curl_exec($ch);
-		curl_close($ch);
+	  	$ch = curl_init();
+	  	curl_setopt($ch, CURLOPT_URL, $request_url);
+	  	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+	  	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	  	curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+	  	$response = curl_exec($ch);
+	  	curl_close($ch);
 		#$xml = simplexml_load_string($response);
-		$result = array();
-		echo "<pre>";
-		echo $response;
+	  	$result = array();
+	  	echo "<pre>";
+	  	echo $response;
 		#print_r($xml->Items->Request->ItemLookupRequest->ItemId);
 		#die();
-    }
+	  }
 	}
 
-	#$t = new Benchmark(2);
+	$t = new Benchmark(2);
 	#$t->get_aws_search("Allied Telesis 16 Puertos Gigabit Websmart");
 	#$date = "2018-10-01";
-	#$t->set_items_details(2);
+	$t->set_comparison_item();
