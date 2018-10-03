@@ -546,7 +546,8 @@ function add_tarea(){
 		$('#name_user').empty();
 		$('#form_tarea').hide();
 		list_user_tarea();
-		list_tarea();	
+		list_tarea();
+		list_tarea_asig();
 	}
 }
 
@@ -951,13 +952,9 @@ function list_tarea(){
         	$('#info_t1').empty();
         	$('#info_t1').append(rows);
         	$('#job1').show()
-			$('#content_r').hide();
-			$('#content_a').hide();
-			$('#content_v').hide();
+			$('#count_r').append('0');
+			$('#count_m').append('0');
 		}else{
-			$('#content_r').hide();
-			$('#content_a').hide();
-			$('#content_v').hide();
 			$('#bell').hide();
  			$('#info_t').empty();
  			$('#job').hide();

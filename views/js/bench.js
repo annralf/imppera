@@ -5,7 +5,6 @@ function get_sellers_details(){
 	}).done(function(e){
 		var response = JSON.parse(e);
 		$('#top_sellers > tbody').append(response.top_seller);
-		//init_DataTables_local("top_sellers");
 		$('#oficial_sellers > tbody').append(response.seller_oficial);
 		init_DataTables_local("oficial_sellers");
 		$('#oficial_no_sellers > tbody').append(response.seller_no_oficial);
@@ -35,4 +34,18 @@ function get_seller_details(){
 function set_seller_session_id(seller_id){
 	sessionStorage.setItem('seller_id',seller_id);
 	$(location).attr('href','https://core.enkargo.com.co/views/seller_detail.html');
+}
+
+function get_local_items(){
+	$.post(url,{
+		action : 'get_local_items',
+	}).done(function(e){
+		var response = JSON.parse(e);
+		$('#qb_items > tbody').append(response.items_qb);
+		init_DataTables_local("qb_items");
+		$('#mx_items > tbody').append(response.items_mx);
+		init_DataTables_local("mx_items");
+		console.log(response);
+		
+	});
 }
