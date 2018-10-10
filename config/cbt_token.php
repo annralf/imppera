@@ -55,6 +55,7 @@ class conex_manager {
 			return 0;
 		}
 	}
+	
 	public function get_token($CODE, $client_id,$client_secret) {
 
 		$VAR = [
@@ -70,13 +71,16 @@ class conex_manager {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		$server_output = curl_exec($ch);
 		$opciones = get_object_vars(json_decode($server_output, false));
-		print_r($opciones);
+		
 		$refresh_token = $opciones['refresh_token'];
 		$access_token  = $opciones['access_token'];
 		$time_token    = $opciones['expires_in'];		
 		curl_close($ch);
 
-		$sql = "UPDATE cbt.shop  SET access_token='".$opciones['access_token']."', refresh_access_token='".$opciones['refresh_token']."', update_date= '".date("Y-m-d H:i:s")."' WHERE id ='".$this->id_application."';";
+		echo "ACCESS TOKEN: ".$access_token."\n";
+		echo "REFRESH TOKEN: ".$refresh_token."\n\n";
+
+		echo $sql = "UPDATE cbt.shop  SET access_token='".$opciones['access_token']."', refresh_access_token='".$opciones['refresh_token']."', update_date= '".date("Y-m-d H:i:s")."' WHERE id ='".$this->id_application."';";
 
 		try {
 			pg_query($sql);

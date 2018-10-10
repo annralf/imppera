@@ -634,10 +634,14 @@ if ($_POST['action'] == 'combo_talla') {
      	$sql_order = "select * from system.view_sl where autorice = 'SL';";
      	$response = array();
      	$query = pg_query($sql_order);
-     	while($result_order = pg_fetch_object($query)){
-     		$info = order_by_id($result_order->user_name,$result_order->id_order, $result_order->access_token);	
+          while($result_order = pg_fetch_object($query)){
+               $info = order_by_id($result_order->user_name,$result_order->id_order, $result_order->access_token); 
+               $show = show($result_order->mpid, $result_order->access_token); 
+               #print_r($show);
      		#creating PDF label for print
-     		$image = explode("~^~", $result_order->image_url);
+               $image = $show[0]->pictures[0]->url;
+               $title = $show[0]->title;
+     		//$image = explode("~^~", $result_order->image_url);
      		$notes = getNote($result_order->id_order,$result_order->access_token);	
      		$notes_list = array();
      		foreach ($notes[0]->results as $key) {
@@ -647,12 +651,11 @@ if ($_POST['action'] == 'combo_talla') {
      			));
      		}
      		$result_shipping = array(
-     			"image" => $image[0],
+     			"image" => $image,
      			"order" => $result_order->id_order,
      			"account" => $result_order->id,
-     			"title" => $result_order->title,
-     			"price" => $result_order->price,
-     			"price_aws" => $result_order->sale_price,
+     			"title" => $title,
+     			"price" => $result_order->total_paid,
      			"quantity" => $result_order->quantity,
      			"notes" => $notes_list,
      			"comment" => $result_order->comentary,
@@ -682,12 +685,24 @@ if ($_POST['action'] == 'combo_talla') {
      	$shop_id = $_POST['shop_id'];
      	$orders = array();
      	$conn = new Connect();
-     	$sql = "select * from system.orders where shop_id = '$shop_id' and autorice = 'SD';";
+     	$sql = "select o.*,s.access_token from system.orders o join meli.shop s on s.id=o.shop_id where o.shop_id = '$shop_id' and o.autorice = 'SD';";
      	$result = pg_query($sql);
      	while ($item = pg_fetch_array($result)) {
      		array_push($orders, $item);		
      	}
      	echo json_encode($orders);
+     }
+
+     if ($_POST['action'] == 'get_mp') {
+          $mes = $_POST['mes'];
+          $orders = array();
+          $conn = new Connect();
+          $sql = "select * from system.order_mp where to_char(date_created,'mm')='".$mes."'";
+          $result = pg_query($sql);
+          while ($item = pg_fetch_array($result)) {
+               array_push($orders, $item);        
+          }
+          echo json_encode($orders);
      }
 
 
@@ -699,13 +714,15 @@ if ($_POST['action'] == 'combo_talla') {
      	$query = pg_query($sql_order);
      	while($result_order = pg_fetch_object($query)){
      		$info = order_by_id($result_order->user_name,$result_order->id_order, $result_order->access_token);	
+               $show = show($result_order->mpid, $result_order->access_token); 
      		#print_r($info);
                #die();
-		#creating PDF label for print
-     		$image = explode("~^~", $result_order->image_url);
-               
+		     #creating PDF label for print
 
-               
+               $image = $show[0]->pictures[0]->url;
+               $title = $show[0]->title;     
+     		//$image = explode("~^~", $result_order->image_url);
+                              
      		$notes = getNote($result_order->id_order,$result_order->access_token);
      		$notes_list = array();
      		if(isset($notes->error)){
@@ -720,12 +737,11 @@ if ($_POST['action'] == 'combo_talla') {
                }
 
      		$result_shipping = array(
-     			"image" => $image[0],
+     			"image" => $image,
      			"order" => $result_order->id_order,
      			"account" => $result_order->id,
-     			"title" => $result_order->title,
-     			"price" => $result_order->price,
-     			"price_aws" => $result_order->sale_price,
+     			"title" => $title,
+     			"price" => $result_order->total_paid,
      			"quantity" => $result_order->quantity,
      			"notes" => $notes_list,
      			"comment" => $result_order->comentary,
@@ -1163,11 +1179,11 @@ if ($_POST['action'] == 'combo_talla') {
      if ($_POST['action'] == 'confirm_order') {
      	$id_order = $_POST['id_order'];
      	$conn = new Connect();
-	#----------------- USER LOG -----------------
+	    #----------------- USER LOG -----------------
      	$user_id = $_POST['user_id'];
      	$activity = "Aprobar órden #$id_order para COMPRA";
      	set_user_log($user_id, $activity);
-	#----------------- USER LOG -----------------
+	    #----------------- USER LOG -----------------
      	$result = pg_query("update system.orders set autorice = 'C', update_date ='".date('Y-m-d H:i:s')."' where id = '".$id_order."';");
      	if ($result > 0) {
      		echo json_encode(array('responseA'=>1));
@@ -1221,6 +1237,48 @@ if ($_POST['action'] == 'combo_talla') {
      	}
      }
 
+     if ($_POST['action'] == 'date_print') {
+          $tracking_number="";
+          $tracking_method="";
+          $tracking_cost=0;
+          $id_order = $_POST['id'];
+          if (isset($_POST['shipping_id'])){
+               $token = $_POST['token'];
+               $id_shipping = $_POST['shipping_id'];
+               $shipping= shipping_by_id($id_shipping,$token);
+               $tracking_number= $shipping->tracking_number;
+               $tracking_method= $shipping->tracking_method;
+               $tracking_cost= $shipping->base_cost;
+          }
+          $conn = new Connect();
+          $sql="update system.orders set date_print_label ='".date('Y-m-d H:i:s')."',shipping_tracking='".$tracking_number."',shipping_company='".$tracking_method."',shipping_cost='".$tracking_cost."' where id_order = '".$id_order."';";
+          $result = pg_query($sql);
+          if ($result > 0) {
+               echo json_encode(array('response'=>1));
+          }else{
+               echo json_encode(array('response'=>0));      
+          }
+     }
+
+     if ($_POST['action'] == 'status_ship') {
+          $tracking_status="";
+          $id_order = $_POST['id'];
+          if (isset($_POST['shipping_id'])){
+               $token = $_POST['token'];
+               $id_shipping = $_POST['shipping_id'];
+               $shipping= shipping_by_id($id_shipping,$token);
+               $tracking_status= $shipping->status;
+          }
+          $conn = new Connect();
+          $sql="update system.orders set shipping_status='".$tracking_status."' where id_order = '".$id_order."';";
+          $result = pg_query($sql);
+          if ($result > 0) {
+               echo json_encode(array('response'=>1));
+          }else{
+               echo json_encode(array('response'=>0));      
+          }
+     }
+
      if ($_POST['action'] == 'loadFile') {
      	$file = $_FILES['file']['name'];
      	$file_tmp = $_FILES['file']['tmp_name'];
@@ -1229,9 +1287,9 @@ if ($_POST['action'] == 'combo_talla') {
      	$conn = new Connect();
      	$arch= move_uploaded_file($_FILES['file']['tmp_name'], $target_file);
           if($arch){
-               echo "Successfully uploaded";         
+               
           } else {
-               echo "Not uploaded";
+               
           }
      	$fila = 1;
      	if (($gestor = fopen($target_file, "r")) !== FALSE) {
@@ -1269,7 +1327,7 @@ if ($_POST['action'] == 'combo_talla') {
      		$result = pg_query($sql);
      		if ($result > 0) {
 			#Set tracking number only if item was buy and has the same SKU
-     			$sql = "UPDATE system.orders SET  create_date_buy= '".$aws_order_date."', tracking_aws ='".$tracking_number."', track_status='".$aws_order_status."', cuenta='".$email_account."', update_date ='".date("Y-m-d H:i:s")."' WHERE sku = '".$sku."' AND autorice = 'B' AND id_order_aws = '".$aws_order."';";
+     			echo $sql = "UPDATE system.orders SET  create_date_buy= '".$aws_order_date."', tracking_aws ='".$tracking_number."', track_status='".$aws_order_status."', cuenta='".$email_account."', update_date ='".date("Y-m-d H:i:s")."' WHERE sku = '".$sku."' AND autorice = 'B' AND id_order_aws = '".$aws_order."';";
      			$result = pg_query($sql);
      		}
      	}
@@ -1284,6 +1342,7 @@ if ($_POST['action'] == 'combo_talla') {
      		echo json_encode(array('response'=>0));		
      	}
      }
+
      if ($_POST['action'] == 'view_item_detail') {
      	$id = $_POST['id'];
      	$conn = new Connect();
@@ -1313,34 +1372,57 @@ if ($_POST['action'] == 'combo_talla') {
      		echo json_encode(array('response'=>0));		
      	}
      }
+
      if ($_POST['action'] == 'update_item_detail') {
-	$sql = "UPDATE system.orders SET ";
-     	$sql .= (isset($_POST['priceMl']) && $_POST['priceMl'] !== "")  ? 'sale_price = '.$_POST['priceMl'].',': '';
-     	$sql .= (isset($_POST['quantity']) && $_POST['quantity'] !== "") ? 'quantity = '.$_POST['quantity'].',': '';
-     	$sql .= (isset($_POST['statusMl']) && $_POST['statusMl'] !== "") ? 'status = \''.$_POST['statusMl'].'\',' : '';
-     	$sql .= (isset($_POST['orderAws']) && $_POST['orderAws'] !== "") ? 'id_order_aws = \''.$_POST['orderAws'].'\',' : '';
-     	$sql .= (isset($_POST['buyDate']) && $_POST['buyDate'] !== "") ? 'create_date_buy = \''.$_POST['buyDate'].'\',' : '';
-     	$sql .= (isset($_POST['trackingNumber']) && $_POST['trackingNumber'] !== "") ? 'tracking_aws = \''.$_POST['trackingNumber'].'\',' : '';
-     	$sql .= (isset($_POST['trackingStatus']) && $_POST['trackingStatus'] !== "") ? 'track_status = \''.$_POST['trackingStatus'].'\',' : '';
-     	$sql .= (isset($_POST['arrivalDate']) && $_POST['arrivalDate'] !== "") ? 'date_arrival = \''.$_POST['arrivalDate'].'\',' : '';
-     	$sql .= (isset($_POST['awsAccount']) && $_POST['awsAccount'] !== "") ? 'aws_buyer_name = \''.$_POST['awsAccount'].'\',' : '';
-     	$sql .= (isset($_POST['comentary']) && $_POST['comentary'] !== "") ? 'comentary = \''.$_POST['comentary'].'\',' : '';
-	$sql  = substr($sql,0,-1);
-	$sql .= " WHERE id='".$_POST['id']."';";
-     	$conn = new Connect();
-     	$orders = array();
-     	$result = pg_query($sql);
-     	if ($result > 0) {
-		#----------------- USER LOG -----------------
-     		$user_id = $_POST['user_id'];
-     		$activity = "Actualizar información de ORDEN #$orderAws";
-     		set_user_log($user_id, $activity);
-		#----------------- USER LOG -----------------
-     		echo json_encode(array('response'=>1));
-     	}else{
-     		echo json_encode(array('response'=>0));		
-     	}
+     	$sql = "UPDATE system.orders SET ";
+          	$sql .= (isset($_POST['priceMl']) && $_POST['priceMl'] !== "")  ? 'sale_price = '.$_POST['priceMl'].',': '';
+          	$sql .= (isset($_POST['quantity']) && $_POST['quantity'] !== "") ? 'quantity = '.$_POST['quantity'].',': '';
+          	$sql .= (isset($_POST['statusMl']) && $_POST['statusMl'] !== "") ? 'status = \''.$_POST['statusMl'].'\',' : '';
+          	$sql .= (isset($_POST['orderAws']) && $_POST['orderAws'] !== "") ? 'id_order_aws = \''.$_POST['orderAws'].'\',' : '';
+          	$sql .= (isset($_POST['buyDate']) && $_POST['buyDate'] !== "") ? 'create_date_buy = \''.$_POST['buyDate'].'\',' : '';
+          	$sql .= (isset($_POST['trackingNumber']) && $_POST['trackingNumber'] !== "") ? 'tracking_aws = \''.$_POST['trackingNumber'].'\',' : '';
+          	$sql .= (isset($_POST['trackingStatus']) && $_POST['trackingStatus'] !== "") ? 'track_status = \''.$_POST['trackingStatus'].'\',' : '';
+          	$sql .= (isset($_POST['arrivalDate']) && $_POST['arrivalDate'] !== "") ? 'date_arrival = \''.$_POST['arrivalDate'].'\',' : '';
+          	$sql .= (isset($_POST['awsAccount']) && $_POST['awsAccount'] !== "") ? 'aws_buyer_name = \''.$_POST['awsAccount'].'\',' : '';
+          	$sql .= (isset($_POST['comentary']) && $_POST['comentary'] !== "") ? 'comentary = \''.$_POST['comentary'].'\',' : '';
+     	$sql  = substr($sql,0,-1);
+     	$sql .= " WHERE id='".$_POST['id']."';";
+          	$conn = new Connect();
+          	$orders = array();
+          	$result = pg_query($sql);
+          	if ($result > 0) {
+     		#----------------- USER LOG -----------------
+          		$user_id = $_POST['user_id'];
+          		$activity = "Actualizar información de ORDEN #$orderAws";
+          		set_user_log($user_id, $activity);
+     		#----------------- USER LOG -----------------
+          		echo json_encode(array('response'=>1));
+          	}else{
+          		echo json_encode(array('response'=>0));		
+          	}
      }
+
+     if ($_POST['action'] == 'update_shipp_detail') {
+          $id_order = $_POST['id'];
+          $tracking = $_POST['tracking'];
+          $cost = $_POST['cost'];
+          $company = $_POST['company'];
+          $status = $_POST['status'];
+          $conn = new Connect();
+          $sql="update system.orders set shipping_tracking = '".$tracking."', shipping_company='".$company."', shipping_cost='".$cost."', shipping_status='".$status."', update_date ='".date('Y-m-d H:i:s')."' where id = '".$id_order."';";
+          $result = pg_query($sql);
+          if ($result > 0) {
+          #----------------- USER LOG -----------------
+               $user_id = $_POST['user_id'];
+               $activity = "Update tracking órden #$id_order";
+               set_user_log($user_id, $activity);
+          #----------------- USER LOG -----------------
+               echo json_encode(array('response'=>1));
+          }else{
+               echo json_encode(array('response'=>0));          
+          }
+     }
+
      if ($_POST['action'] == 'buy_order') {
      	$id_order = $_POST['id_order'];
      	$conn = new Connect();
@@ -1445,6 +1527,17 @@ if ($_POST['action'] == 'send_message') {
 	}
 }
 #*/
+function shipping_by_id($id,$access_token) {
+     $show_url = "https://api.mercadolibre.com/shipments/".$id."?access_token=".$access_token;
+     $ch       = curl_init();
+     curl_setopt($ch, CURLOPT_URL, $show_url);
+     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+     curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+     $show = json_decode(curl_exec($ch));
+     curl_close($ch);
+     return $show;
+}
+
 function getNote($id_order,$access_token){
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, 'https://api.mercadolibre.com/orders/'.$id_order.'/notes?access_token='.$access_token);
@@ -1498,6 +1591,18 @@ function order_by_id($shop,$id, $access_token) {
 	curl_close($ch);
 	#return $show->results[0]->shipping;
 	return $show->results[0];
+}
+
+function show($item,$access_token) {
+     $show_url = "https://api.mercadolibre.com/items?ids=".$item."?access_token=".$access_token;
+     $ch       = curl_init();
+     curl_setopt($ch, CURLOPT_URL, $show_url);
+     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+     curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+     $show = json_decode(curl_exec($ch));
+     curl_close($ch);
+     return $show;
 }
 
 function validateCategory($category_id) {

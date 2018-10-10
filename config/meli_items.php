@@ -496,6 +496,17 @@ class items {
 		return $show;
 	}
 
+	public function shipping_by_id($id) {
+		$show_url = "https://api.mercadolibre.com/shipments/".$id."?access_token=".$this->access_token;
+		$ch       = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $show_url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+		$show = json_decode(curl_exec($ch));
+		curl_close($ch);
+		return $show;
+	}
+
 	public function order_by_id($shop,$id) {
 		$show_url = "https://api.mercadolibre.com/orders/search?seller=".$shop."&q=".$id."&access_token=".$this->access_token;
 		$ch       = curl_init();
@@ -520,7 +531,7 @@ class items {
 		switch ($status) {
 			case 1:
 			$message ="Hola 😄, muy buen día, espero te encuentres muy bien, mi nombre es Sebastian y voy a acompañarte en todo el proceso de tu compra. 😎 \n
-			Primero que todo, gracias por preferirnos, te comentamos que ya está acreditado tu pago 💰 y el numero de compra es el  ,a partir de hoy realizaremos la orden de importación de tu producto, recuerda que el tiempo de entrega es de ✈ 4 a 10 días hábiles (como máximo) ✈ , esto se debe a que trabajamos directamente con la marca en Estados Unidos. 😄\n
+			Primero que todo, gracias por preferirnos, te comentamos que ya está acreditado tu pago 💰 y el numero de compra es el  ,a partir de hoy realizaremos la orden de importación de tu producto, recuerda que el tiempo de entrega es de ✈ 7 a 10 días hábiles (como máximo) ✈ , esto se debe a que trabajamos directamente con la marca en Estados Unidos. 😄\n
 			Por favor ten en cuenta que MercadoLibre maneja una fecha de entrega estimada diferente a la nuestra, por lo tanto te llegaran diferentes correos de MercadoLibre preguntándote como va el proceso de tu compra, estos correos solo debes omitirlos, yo te estaré informando todo el tiempo el estado de tu pedido, si tienes alguna duda, pregunta, queja o reclamo, no dudes primero en comunicarte conmigo por este medio o si gustas puedes comunicarte vía teléfono al PBX 7535495 Opción 1 📞 donde te atenderé personalmente para responder todas tus inquietudes. 😄\n
 			Gracias nuevamente por tu compra y que tengas un día increíble. 😄";
 			break;

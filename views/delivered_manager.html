@@ -147,14 +147,17 @@
                       <thead>
                         <tr>
                           <th>ID Orden</th>
-                          <th>Fecha</th>
-                          <th>SKU</th>
+                          <th>Fecha de Compra</th>
+                          <th>Fecha de impresión</th>
                           <th>MPID</th>
                           <th># Tracking</th>
                           <th>Cantidad Vendida</th>
-                          <th>URL</th>
+                          <th>Metodo de Envio</th>
+                          <th>Numero de Envio</th>
+                          <th>Transportadora</th>
                           <th>Nota</th>
                           <th>Comentario</th>
+                          <th>Acciones</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -184,14 +187,17 @@
                       <thead>
                         <tr>
                           <th>ID Orden</th>
-                          <th>Fecha</th>
-                          <th>SKU</th>
+                          <th>Fecha de Compra</th>
+                          <th>Fecha de impresión</th>
                           <th>MPID</th>
                           <th># Tracking</th>
                           <th>Cantidad Vendida</th>
-                          <th>URL</th>
+                          <th>Metodo de Envio</th>
+                          <th>Numero de Envio</th>
+                          <th>Transportadora</th>
                           <th>Nota</th>
                           <th>Comentario</th>
+                          <th>Acciones</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -207,6 +213,46 @@
         </div>
         <!-- /page content -->
         <!-- /page modal -->
+        <div class="modal price_tool_modal" tabindex="-1" role="dialog" id="price_tool_modal">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-body">
+                <form class="row">
+                  <div class="form-group col-md-4">
+                    <label for="shipping_track">Tracking de envio</label>
+                    <input type="text" class="form-control" id="shipping_track" aria-describedby="Tracking de envio" placeholder="">
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label for="shipping_cost">Costo de envio</label>
+                    <input type="text" class="form-control" id="shipping_cost" aria-describedby="Costo del envio" placeholder="">
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label for="shipping_company">Transportadora</label><br>
+                    <select id="shipping_company" aria-describedby="Transportadora" placeholder="">
+                      <option value="">--SELECCIONE--</option>
+                      <option value="Envia">Envia</option>
+                      <option value="Servientrega">Servientrega</option>
+                      <option value="Interrapidisimo">Interrapidisimo</option>
+                    </select> 
+                  </div>
+                  <div class="form-group col-md-12">
+                    <label for="shipping_status">Estatus</label><br>
+                    <select  id="shipping_status" aria-describedby="Transportadora" placeholder="">
+                      <option value="">--SELECCIONE--</option>
+                      <option value="shipped">Enviado</option>
+                      <option value="delivered">Entregado</option>
+                    </select>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer" style="text-align: center;">
+                <button type="button" class="btn btn-app" onclick="update_shipp_detail()" title="Guardar cambios"><i class="fa fa-save"></i></button>
+                <button type="button" class="btn btn-app" onclick="close_item_detail()" data-dismiss="modal" title="Cancelar cambios"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="modal fade bs-example-modal-lg item_detail_modal" tabindex="-1" role="dialog" aria-hidden="true">
           <div class="modal-dialog modal-lg">
             <div class="modal-content">

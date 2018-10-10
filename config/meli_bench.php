@@ -10,9 +10,139 @@ class Benchmark
 		$this->shop_id = $shop_id;
 		$this->db = new Connect();
 	}
+	function delete_top_sale($type,$id_category){
+	    $id_category = str_replace("cat_", "", $id_category);
+	    $sql_trend = "";
+	    $sql = "";
+	    switch ($type) {
+	    	case 1:
+	    		$sql_trend = "DELETE FROM meli.bench_shops_items WHERE trend_id = $id_category";
+	    		$sql = "DELETE FROM meli.bench_trend_items WHERE id = $id_category";
+	    		break;
+	    	
+	    	case 2:
+	    		$sql_trend = "DELETE FROM meli.bench_shops_items WHERE trend_id (SELECT id FROM meli.bench_trend_items)";
+	    		$sql = "DELETE FROM meli.bench_trend_items";
+	    	break;
+	    }
+	    $result_trend = pg_query($sql_trend);
+	    if ($result_trend > 0) {
+	    	$result = pg_query($sql);
+		if ($result > 0) {
+			return 1;
+		}else{
+		    return 0;
+		}		
+	    }else{
+		return 0;
+	    }
+	}
+	/*Get trending items*/
+	function set_trending_items(){
+		$trend_keys = $this->get_trending_items();
+		$site = "MCO";
+		$i = 0;
+		$j = 0;
+		foreach ($trend_keys as $key) {
+			$date = date("Y-m-d H:i:s");
+			$query_trend = pg_fetch_object(pg_query("SELECT id FROM meli.bench_trend_items WHERE key_word = '$key->keyword';"));
+			if (!isset($query_trend->id)) {
+				$sql_trend = "INSERT INTO meli.bench_trend_items (key_word, url, date_trend) VALUES ('$key->keyword', '$key->url', '$date') RETURNING id";
+				$query_trend = pg_fetch_object(pg_query($sql_trend));
+			}
+			if(isset($query_trend->id)){
+				echo "----------------------- $j - $key->keyword - Inserted -----------------------\n";
+				$search = urlencode($key->keyword);
+				$result = $this->get_comparison_item($search, $site);
+				$total_sales = $result->paging;
+				$sql_update = "UPDATE meli.bench_trend_items SET quantity = $total_sales->total WHERE id = $query_trend->id;";
+				pg_query($sql_update);
+				/*foreach ($result->results as $k) {
+					$id_seller = $k->seller->id;
+					$sql_item = "INSERT INTO meli.bench_shops_items(mpid, title, price, sale_amount, permalink, is_local, shop, is_aws, thumbnail, type_item, trend_id)  VALUES ('$k->id', '$k->title', '$k->price', '$k->sold_quantity', '$k->permalink', 'false', '$id_seller', 'false', '$k->thumbnail', 'trend', $query_trend->id);";
+					$query_item = pg_query($sql_item);
+					if ($query_item > 0) {
+						echo "$i Item $k->id created - $date\n";
+					}else{
+						echo "$i Item $k->id Not created - $date\n";
+					}
+					$i++;
+				}*/
+			}else{
+				echo "----------------------- $j - $key->keyword - Not created -----------------------\n";
+			}
+			$j++;
+		}
+
+	}
+	/*Get key words from trending items*/
+	function get_trending_items(){
+		$url = "https://api.mercadolibre.com/sites/MCO/trends/search";
+		$ch       = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+		$show = json_decode(curl_exec($ch));
+		curl_close($ch);
+		return $show;
+	}
+	/*Read new sellers result of items comparation and add then at sellers table*/
+	function seller_monitor($type){
+		switch ($type) {
+			case 1:
+			$counter = pg_fetch_object(pg_query("SELECT COUNT(DISTINCT (external_store_id)) FROM meli.bench_price_comparison  WHERE external_store_id NOT IN (SELECT id FROM meli.bench_sellers)"));
+			$date = date("Y-m-d H:i:s");
+			$search = pg_query("INSERT INTO meli.bench_sellers  (id) SELECT DISTINCT (external_store_id) FROM meli.bench_price_comparison  WHERE external_store_id NOT IN (SELECT id FROM meli.bench_sellers)");
+			break;
+			
+			case 2:
+			$counter = pg_fetch_object(pg_query("SELECT COUNT(DISTINCT (shop)) FROM meli.bench_shops_items  WHERE shop NOT IN (SELECT id FROM meli.bench_sellers)"));
+			$date = date("Y-m-d H:i:s");
+			$search = pg_query("INSERT INTO meli.bench_sellers  (id) SELECT DISTINCT (shop) FROM meli.bench_shops_items  WHERE shop NOT IN (SELECT id FROM meli.bench_sellers)");
+			break;
+		}
+		if ($search > 0) {
+			pg_query("UPDATE meli.bench_sellers SET is_oficial = false WHERE is_oficial IS NULL");
+			echo "Inserted $counter->count items $date\n";	    	
+		}else{
+			echo "Wrong insertion $date\n";	    			
+		}
+
+
+	}
+	function set_price($mpid, $price, $shop){
+		$details['price'] =  $price;
+		$sql = "SELECT access_token FROM meli.shop WHERE id = $shop;";
+		$shop = pg_fetch_object(pg_query("$sql"));
+		$response = $this->update_item($details, $shop->access_token, $mpid);
+		if (isset($response->id)){
+			$update = pg_query("UPDATE meli.items SET price = $price WHERE mpid = $mpid");
+			if ($update > 0) {
+				return 1;
+			}else{
+				return 2;
+			}
+		}else{
+			return 0;
+		}
+	}
+	function update_item($array, $access_token, $mpid){
+		$update_url = "https://api.mercadolibre.com/items/".$mpid."?access_token=".$access_token;
+		$ch         = curl_init();
+		$item       = json_encode($array);
+		curl_setopt($ch, CURLOPT_URL, $update_url);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $item);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+		$update = json_decode(curl_exec($ch));
+		curl_close($ch);
+		return $update;
+	}
 	function set_comparison_item(){
 		$shop = pg_fetch_object(pg_query("SELECT access_token FROM meli.shop WHERE id = 2"));
-		$sql_items = "SELECT  * FROM meli.bench_price_comparison WHERE local_price IS NOT NULL AND aws_price IS NOT NULL AND aws_price <> 0 AND external_store_id IS NULL LIMIT 1000";
+		$sql_items = "SELECT  * FROM meli.bench_price_comparison WHERE local_price IS NOT NULL AND aws_price IS NOT NULL AND aws_price <> 0 AND external_store_id IS NOT NULL";
 		$result_items = pg_query($sql_items);
 		$site = "MCO";
 		$j = 0;
@@ -47,7 +177,7 @@ class Benchmark
 			}else{
 				$compared_item = json_decode(json_encode($compared_item), FALSE);
 				echo "----------------------- Comparation $j - MPID Local $result_mpid->id - MPID Seller $compared_item->seller_mpid -  $date -----------------------\n";
-				$sql_update = "UPDATE meli.bench_price_comparison SET sales_amount = $result_mpid->sold_quantity, local_price = $result_mpid->price, sales_price = $compared_item->sales_price, seller_sales_amount = $compared_item->seller_sales_amount, sales_dolar_price = $compared_item->sales_dolar_price, is_high = $compared_item->is_high, difference_price = $compared_item->difference_price, external_store_id = '$compared_item->external_store_id', update_date = '$date', thumbnail = '$result_mpid->thumbnail' WHERE id = $items->id";
+				$sql_update = "UPDATE meli.bench_price_comparison SET sales_amount = $result_mpid->sold_quantity, local_price = $result_mpid->price, sales_price = $compared_item->sales_price, seller_mpid = '$compared_item->seller_mpid', seller_sales_amount = $compared_item->seller_sales_amount, sales_dolar_price = $compared_item->sales_dolar_price, is_high = $compared_item->is_high, difference_price = $compared_item->difference_price, external_store_id = '$compared_item->external_store_id', update_date = '$date', thumbnail = '$result_mpid->thumbnail' WHERE id = $items->id";
 			}
 			$source_update = pg_query($sql_update);
 			if ($source_update > 0) {
@@ -58,7 +188,7 @@ class Benchmark
 			$j++;
 		}
 	}
-
+	/**Get information from search keywords or titles searches*/
 	function get_comparison_item($title, $site_id){
 		$url = "https://api.mercadolibre.com/sites/$site_id/search?q=$title&sort=relevance";
 		$ch       = curl_init();
@@ -137,7 +267,7 @@ class Benchmark
 		return $show;   
 	}
 
-
+	/*Compare local items with top 100 each seller*/
 	function compare_items(){
 		$sql_local = "SELECT mpid, title, price, shop_id FROM meli.bench_local_items WHERE sales is not null";
 		$sql_sellers = "SELECT id FROM meli.bench_sellers;";
@@ -168,7 +298,7 @@ class Benchmark
 			}
 		}
 	}
-
+	/*Update visits amount per seller daily*/
 	function set_items_visits($type){
 		switch ($type) {
 			case 1:
@@ -203,7 +333,7 @@ class Benchmark
 		}
 	}
 
-
+	/*Get from MELI visits info*/
 	function get_items_visits($start_date, $end_date, $mpid){
 		$url = "https://api.mercadolibre.com/items/$mpid/visits?date_from=$start_date&date_to=$end_date";
 		$ch       = curl_init();
@@ -215,8 +345,9 @@ class Benchmark
 		return $show;   
 	}
 
+	/*Get TOP 100 best seller items per sellers*/
 	function set_top_items(){
-		$sql_query = pg_query("SELECT id FROM meli.bench_sellers;");
+		$sql_query = pg_query("select id from meli.bench_sellers where id not in (select distinct (shop) from meli.bench_shops_items)");
 		$i = 1;
 		$site_id = "MCO";
 		$offset = 0;
@@ -236,8 +367,8 @@ class Benchmark
 					$date = date("Y-m-d H:i:m");
 					if (!isset($search->mpid)) {
 						$title = pg_escape_string(utf8_encode($val->title));
-						$sql = "INSERT INTO meli.bench_shops_items(mpid, title, price, sale_amount, permalink, is_local, shop)
-						VALUES ('$val->id', '$title', '$val->price', '$val->sold_quantity', '$val->permalink', 'false', '$seller->id');";
+						$sql = "INSERT INTO meli.bench_shops_items(mpid, title, price, sale_amount, permalink, is_local, shop, type)
+						VALUES ('$val->id', '$title', '$val->price', '$val->sold_quantity', '$val->permalink', 'false', '$seller->id', 'shop');";
 						$result = pg_query($sql);
 						if ($result > 0) {
 							echo "MPID $val->id Insert Ok  - $date\n";
@@ -254,7 +385,7 @@ class Benchmark
 			$seller_counter++;
 		}
 	}
-
+	/*Update Total stock info from seller*/
 	function set_seller_total_stock(){
 		$sql_query = pg_query("SELECT id FROM meli.bench_sellers;");
 		$i = 1;
@@ -266,14 +397,14 @@ class Benchmark
 			$date = date("Y-m-d H:i:m");
 			$result = pg_query($sql);
 			if ($result > 0) {
-				echo "$i - Seller $seller->id Info updated - $date\n";
+				echo "$i - Seller $seller->id - Stock $total - Info updated - $date\n";
 			}else{
 				echo "$i - Seller $seller->id Info NO updated - $date\n";	    
 			}
 			$i++;
 		}
 	}
-
+	/*Get sellers items details info from MELI*/
 	function get_seller_items($site_id, $seller_id, $offset){
 		$url = "https://api.mercadolibre.com/sites/$site_id/search?seller_id=$seller_id&sort=relevance&offset=$offset";
 		$ch       = curl_init();
@@ -285,6 +416,7 @@ class Benchmark
 		return $show;
 	}
 
+	/*GET info dayli per sales seller from MELI*/
 	function set_info_sellers_daily_sales(){
 		$sql_query = pg_query("SELECT id, transactions_completed FROM meli.bench_sellers;");
 		$i = 1;
@@ -324,8 +456,8 @@ class Benchmark
 	  Function for set users details at database
 	*/
 	  function set_info_sellers(){
-	  	/*Is Nuñ for identify new sellers added manually*/
-	  	$sql_query = pg_query("SELECT id FROM meli.bench_sellers;");
+	  	/*Is for identify new sellers added manually*/
+	  	$sql_query = pg_query("SELECT id FROM meli.bench_sellers WHERE nick_name IS NULL;");
 	  	$i = 1;
 	  	while ($seller = pg_fetch_object($sql_query)) {
 	  		$info = $this->get_info_sellers($seller->id);
@@ -464,7 +596,7 @@ class Benchmark
 	  }
 	}
 
-	$t = new Benchmark(2);
+	#$t = new Benchmark(2);
 	#$t->get_aws_search("Allied Telesis 16 Puertos Gigabit Websmart");
 	#$date = "2018-10-01";
-	$t->set_comparison_item();
+	#$t->set_trending_items();

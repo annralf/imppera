@@ -266,7 +266,7 @@
     </div>
   </div>
   <!--Page modal comentary-->
-  <div class="modal fade bs-example-modal-lg item_comentary_modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal fade bs-example-modal-lg price_update" tabindex="-1" role="dialog" aria-hidden="true" >
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
@@ -276,13 +276,19 @@
         </div>
         <div class="modal-body">
           <div class="detail_modal form-group" id="detail_modal" style="display: block;">
-            <label for="comment_local">Comentario:</label>
-            <textarea class="form-control" rows="5" id="comment_local"></textarea>
+            <label for="local_price">Precio COP:</label>
+            <input type="text" name="local_price" id="local_price" class="form-control modal_cancel">
+            <label for="shop">Tienda a publicar:</label>
+            <select id="shop" class="form-control">
+              <option value=""></option>
+              <option value="1">Queen Bee</option>
+              <option value="2">Mauxi Shop</option>
+            </select>
           </div>
         </div>
         <div class="modal-footer" style="text-align: center;">
-          <button type="button" class="btn btn-default save_comment" data-dismiss="modal" id_order="" onclick="update_comment(this)"><i class='fa fa-refresh' style='font-size:20px;'></i> Guardar</button>
-          <button type="button" class="btn btn-default close_modal" data-dismiss="modal" id_order="" onclick=""><i class='fa fa-times' style='font-size:20px;'></i> Cerrar</button>
+          <button type="button" class="btn btn-default close_modal" data-dismiss="modal" id="update_price_modal" onclick="cancel_modal()"><i class='fa fa-times' style='font-size:20px;'></i> Cancelar</button>
+          <button type="button" class="btn btn-default save_comment" data-dismiss="modal" onclick="set_update_price()"><i class='fa fa-refresh' style='font-size:20px;'></i> Guardar y Actualizar</button>
         </div>
       </div>
     </div>

@@ -45,7 +45,70 @@ function get_local_items(){
 		init_DataTables_local("qb_items");
 		$('#mx_items > tbody').append(response.items_mx);
 		init_DataTables_local("mx_items");
-		console.log(response);
 		
+	});
+}
+
+function get_update_price(id_item){
+	$('#update_price_modal').attr("id_item",id_item);
+	$(".price_update").modal("show");
+	$("#local_price").val(" ");
+}
+
+function cancel_modal(){
+	$(".modal_cancel").empty();
+}
+
+function set_update_price(){
+	$.post(url,{
+		action : 'set_update_price',
+		item_id: $("#update_price_modal").attr("id_item"),
+		price : $("#local_price").val(),
+		shop : $("#shop").val()
+	}).done(function(e){
+		var response = JSON.parse(e);
+		if (response.response == 1) {
+			alert("Item actualizado con éxito!");
+		}else{
+			alert("Ha ocurrido un error al actualizar el ítem");
+		}
+	});
+}
+
+function get_top_sales(){
+	$.post(url,{
+		action : 'get_top_sales'
+	}).done(function(e){
+		var response = JSON.parse(e);
+		for(var r in response){
+			$('#sales_content').append(response[r].content);
+		}
+		$('[data-toggle="tooltip"]').tooltip();
+	});
+}
+
+function view_table(id){
+	if ($('#id_'+id).is(':hidden')) {
+		$('#id_'+id).show();				
+	}else{
+		$('#id_'+id).hide();				
+	}
+}
+
+function hide_sale(category_id){
+	$('#'+category_id).hide();
+}
+
+function delete_sale(category_id){
+	$.post(url,{
+		action:'delete_top_sale_category',
+		id_category: category_id
+	}).done(function(e){
+		var response = JSON.parse(e);
+		if (response.result == 1) {
+			alert("Categoría Eliminada con éxito!");
+		}else{
+			alert("Ha ocurrido un error al eliminar la categoría");
+		}
 	});
 }

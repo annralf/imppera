@@ -951,9 +951,12 @@ function list_tarea(){
         	$('#job').show()
         	$('#info_t1').empty();
         	$('#info_t1').append(rows);
-        	$('#job1').show()
+        	$('#job1').show();
+        	$('#count_r').empty();
+			$('#count_m').empty();
 			$('#count_r').append('0');
 			$('#count_m').append('0');
+			$('#bell1').hide();
 		}else{
 			$('#bell').hide();
  			$('#info_t').empty();

@@ -1122,18 +1122,15 @@ function get_meli_not_delivered() {
 				content += '<label for="title">Título:</label>';
 				content += '<input type="text" name="title" id="title" class="form-control" value="'+response[i].title+'" disable>';
 				content += '</div>';
-				content += '<div class="row">';
-				content += '<label for="aws:price">Precio de compra:</label>';
-				content += '<input type="text" name="aws:price" id="aws:price" class="form-control" value="'+response[i].price_aws+'" disable>';
-				content += '</div>';
+				
 				content += '<div class="row">';
 				content += '<div class="col-md-6" style="padding-left: 0;">';
 				content += '<label for="price">Precio de venta:</label>';
-				content += '<input type="text" name="price" id="price" class="form-control" value="'+response[i].price+'" disable>';
+				content += '<input type="text" name="price" id="price" class="form-control"  value="'+response[i].price+'" disable>';
 				content += '</div>';
 				content += '<div class="col-md-6" style="padding-right: 0;">';
 				content += '<label for="quantity">Cantidad:</label>';
-				content += '<input type="text" name="quantity" id="quantity" class="form-control" value="'+response[i].quantity+'" disable>';
+				content += '<input type="text" name="quantity" id="quantity" class="form-control" style="color:red;font-weight: bold;" value="'+response[i].quantity+'" disable>';
 				content += '</div>';
 				content += '</div>';
 				content += '<div class="row">';
@@ -1312,6 +1309,7 @@ function get_meli_not_delivered() {
 
 //******* START  DELIVERED 
 function get_delivered_items_queen_bee() {
+	//check_status_shipp_qb();
 	console.log('getting items delivered queen bee...');
 	var shop_id = 1;
 	$.post(url_base+'services/meli_manager.php',{ action : 'get_order_delivered', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
@@ -1324,8 +1322,8 @@ function get_delivered_items_queen_bee() {
 		for(var i in response){
 			rows += "<tr>";
 			rows += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].id_order+"</td>";
-			rows += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].update_date+"</td>";
-			rows += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].sku+"</td>";
+			rows += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].create_date+"</td>";
+			rows += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].date_print_label+"</td>";
 			rows += "<td style='width: 100px; word-wrap: break-word;'>"+response[i].mpid+"</td>";
 			rows += "<td style='width: 100px; word-wrap: break-word;'>"+response[i].tracking_aws+"</td>";
 			if (response[i].quantity != 1){
@@ -1333,7 +1331,9 @@ function get_delivered_items_queen_bee() {
 			}else{
 				rows += "<td style='width: 75px; word-wrap: break-word;'>"+response[i].quantity+"</td>";
 			}
-			rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Ver ítem' href = '"+response[i].url+"' target='_blank'><i class='fa fa-eye' style='font-size:24px;'></i></a></td>";
+			rows += "<td style='width: 75px; word-wrap: break-word;'><b>"+response[i].shipping_mode+"</b></td>";
+			rows += "<td style='width: 75px; word-wrap: break-word;'><b style='color:green;'>"+response[i].shipping_tracking+"</b></td>";
+			rows += "<td style='width: 75px; word-wrap: break-word;'><b style='color:green;'>"+response[i].shipping_company+"</b></td>";
 			rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Ver nota' onclick='ver_nota(\""+response[i].id_order+"\",\""+shop_id+"\")'>";
 			rows += "<i class='fa fa-edit'></i>";
 			rows += "</a></td>";
@@ -1342,13 +1342,44 @@ function get_delivered_items_queen_bee() {
 			}else{
 				rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Ver comentario' onclick='ver_comentario(\""+response[i].id_order+"\",\""+response[i].comentary+"\")'><i class='fa fa-comments-o' style='font-size:20px;'></i></a></td>";	
 			}
+			switch (response[i].shipping_mode) {
+				case 'me2':
+					if (response[i].shipping_status=='ready_to_ship'){
+						rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Reimprimir' style='background-color:  #0085ff; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;' onclick='print_meli_label(\""+response[i].access_token+"\",\""+response[i].shipping_id+"\",\""+response[i].id_order+"\")'>Reimprimir Guia</a></td>";
+					}
+					if (response[i].shipping_status=='delivered'){
+						rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Entregado' style='background-color:  green; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>Entregado</a></td>";
+					}
+					if (response[i].shipping_status=='not_delivered'){
+						rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='No Entregado' style='background-color:  red; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>No Entregado</a></td>";
+					}
+					if (response[i].shipping_status=='cancelled'){
+						rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Cancelado' style='background-color:  orange; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>Cancelado</a></td>";
+					}
+					if (response[i].shipping_status=='pending'){
+						rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Pendiente' style='background-color:  yellow; width:  97px;height:  25px; color:black; font-size:9px; margin-top:13px;'>Pendiente</a></td>";
+					}
+					if (response[i].shipping_status=='shipped'){
+						rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Enviado' style='background-color:  gray; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>Enviado</a></td>";
+					}	
+					break;
+				default:
+            		if (response[i].shipping_status=='delivered'){
+						rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Entregado' style='background-color:  green; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>Entregado</a></td>";
+					}else{
+            			rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Actualizar Envio' onclick='ver_shipp_detail(\""+response[i].id+"\")'><i class='fa fa-file-text-o' style='font-size:20px;'></i></a></td>";	
+					}
+					break;		
+			}		
 			rows += "</tr>";		
 		}
 		$('#list_queen_bee > tbody').append(rows);
 		init_DataTables_local("list_queen_bee");
 	});
 }
+
 function get_delivered_items_mauxi() {
+	//check_status_shipp_mx();
 	console.log('getting items delivered mauxi...');
 	var shop_id = 2;
 	$.post(url_base+'services/meli_manager.php',{ action : 'get_order_delivered', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
@@ -1361,8 +1392,8 @@ function get_delivered_items_mauxi() {
 		for(var i in response){
 			rows += "<tr>";
 			rows += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].id_order+"</td>";
-			rows += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].update_date+"</td>";
-			rows += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].sku+"</td>";
+			rows += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].create_date+"</td>";
+			rows += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].date_print_label+"</td>";
 			rows += "<td style='width: 100px; word-wrap: break-word;'>"+response[i].mpid+"</td>";
 			rows += "<td style='width: 100px; word-wrap: break-word;'>"+response[i].tracking_aws+"</td>";
 			if (response[i].quantity != 1){
@@ -1370,7 +1401,9 @@ function get_delivered_items_mauxi() {
 			}else{
 				rows += "<td style='width: 75px; word-wrap: break-word;'>"+response[i].quantity+"</td>";
 			}
-			rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Ver ítem' href = '"+response[i].url+"' target='_blank'><i class='fa fa-eye' style='font-size:24px;'></i></a></td>";
+			rows += "<td style='width: 75px; word-wrap: break-word;'><b>"+response[i].shipping_mode+"</b></td>";
+			rows += "<td style='width: 75px; word-wrap: break-word;'><b style='color:green;'>"+response[i].shipping_tracking+"</b></td>";
+			rows += "<td style='width: 75px; word-wrap: break-word;'><b style='color:green;'>"+response[i].shipping_company+"</b></td>";
 			rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Ver nota' onclick='ver_nota(\""+response[i].id_order+"\",\""+shop_id+"\")'>";
 			rows += "<i class='fa fa-edit'></i>";
 			rows += "</a></td>";
@@ -1379,12 +1412,42 @@ function get_delivered_items_mauxi() {
 			}else{
 				rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Ver comentario' onclick='ver_comentario(\""+response[i].id_order+"\",\""+response[i].comentary+"\")'><i class='fa fa-comments-o' style='font-size:20px;'></i></a></td>";	
 			}
+			switch (response[i].shipping_mode) {
+				case 'me2':
+					if (response[i].shipping_status=='ready_to_ship'){
+						rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Reimprimir' style='background-color:  #0085ff; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;' onclick='print_meli_label(\""+response[i].access_token+"\",\""+response[i].shipping_id+"\",\""+response[i].id_order+"\")'>Reimprimir Guia</a></td>";
+					}
+					if (response[i].shipping_status=='delivered'){
+						rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Entregado' style='background-color:  green; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>Entregado</a></td>";
+					}
+					if (response[i].shipping_status=='not_delivered'){
+						rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='No Entregado' style='background-color:  red; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>No Entregado</a></td>";
+					}
+					if (response[i].shipping_status=='cancelled'){
+						rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Cancelado' style='background-color:  orange; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>Cancelado</a></td>";
+					}
+					if (response[i].shipping_status=='pending'){
+						rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Pendiente' style='background-color:  yellow; width:  97px;height:  25px; color:black; font-size:9px; margin-top:13px;'>Pendiente</a></td>";
+					}
+					if (response[i].shipping_status=='shipped'){
+						rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Enviado' style='background-color:  gray; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>Enviado</a></td>";
+					}	
+					break;
+				default:
+					if (response[i].shipping_status=='delivered'){
+						rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Entregado' style='background-color:  green; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>Entregado</a></td>";
+					}else{
+            			rows += "<td style='width: 40px; word-wrap: break-word;'><a class='btn' title='Actualizar Envio' onclick='ver_shipp_detail(\""+response[i].id+"\")'><i class='fa fa-file-text-o' style='font-size:20px;'></i></a></td>";	
+					}
+					break;	
+			}		
 			rows += "</tr>";		
 		}
 		$('#list_mauxi > tbody').append(rows);
 		init_DataTables_local("list_mauxi");
 	});
 }
+
 //******* END DELIVERED 
 
 //******* START SEARCH TRACKING NUMBER
@@ -1432,10 +1495,7 @@ function search_item(element){
 			content += '<label for="title">Título:</label>';
 			content += '<input type="text" name="title" id="title" class="form-control" value="'+response[i].title+'" disable>';
 			content += '</div>';
-			content += '<div class="row">';
-			content += '<label for="aws:price">Precio de compra:</label>';
-			content += '<input type="text" name="aws:price" id="aws:price" class="form-control" value="'+response[i].price_aws+'" disable>';
-			content += '</div>';
+			
 			content += '<div class="row">';
 			content += '<div class="col-md-6" style="padding-left: 0;">';
 			content += '<label for="price">Precio de venta:</label>';
@@ -1443,7 +1503,7 @@ function search_item(element){
 			content += '</div>';
 			content += '<div class="col-md-6" style="padding-right: 0;">';
 			content += '<label for="quantity">Cantidad:</label>';
-			content += '<input type="text" name="quantity" id="quantity" class="form-control" value="'+response[i].quantity+'" disable>';
+			content += '<input type="text" name="quantity" id="quantity" class="form-control" style="color:red;font-weight: bold;" value="'+response[i].quantity+'" disable>';
 			content += '</div>';
 			content += '</div>';
 			content += '<div class="row">';
@@ -1748,6 +1808,198 @@ function get_orders_mauxi() {
 //+++++++++++++++++++++++++++++++++++ END ORDERS FUNCTIONS ++++++++++++++++++++++++++++++++++++++++++++
 /*
 +
+	B   | Comprada
+	N   | Negada
+	SD  | Enviado
+	G   | Default al crer orden en BD
+	P   | Pendiente
+	C   | Cancelada
+	NV  | Novedad
+	SL  | Enviar Después
+
++
+*/
+//+++++++++++++++++++++++++++++++++++ START MP FUNCTIONS ++++++++++++++++++++++++++++++++++++++++++++
+
+function list_pagos(mes) {
+	console.log('getting payments items...');
+
+	$.post(url_base+'services/meli_manager.php',{ action : 'get_mp', mes : mes}).fail(function(){
+
+	}).done(function(e){
+		var rowsm = "";
+		var rowsq = "";
+		var tab="";
+		var msn = "";
+		var icon = "";
+		var response = JSON.parse(e); 
+		rowsq +="<table id='list_queen_bee' class='table table-striped table-bordered' width='100%'>";
+        rowsq +="	<thead>";
+        rowsq +="   	<tr>";
+        rowsq +="           <th>ID Orden</th>";
+        rowsq +="           <th>ID Pago</th>";
+        rowsq +="           <th>MPID</th>";
+        rowsq +="           <th data-class='hidden'>SKU</th>";
+        rowsq +="           <th data-class='hidden'>Orden Amazon</th>";
+        rowsq +="           <th data-class='hidden'>Tracking Amazon</th>";
+        rowsq +="           <th data-class='hidden'>Cuenta</th>";
+        rowsq +="           <th>Fecha Creación</th>";
+        rowsq +="           <th data-class='hidden'>Fecha Aprovación</th>";
+        rowsq +="           <th>Fecha Liberación</th>";
+        rowsq +="           <th>Estatus de Pago</th>";
+        rowsq +="           <th data-class='hidden'>Sub-Estatus</th>";
+        rowsq +="           <th data-class='hidden'>Metodo de Pago</th>";
+        rowsq +="           <th data-class='hidden'>Tipo de Pago</th>";
+        rowsq +="           <th>Cantidad</th>";
+        rowsq +="           <th>Monto Transaccion</th>";
+        rowsq +="           <th>Monto Envio</th>";
+        rowsq +="           <th>Monto Total Pagado</th>";
+        rowsq +="           <th>Monto Rechazado</th>";
+        rowsq +="           <th>Monto a Cobrar</th>";
+        rowsq +="           <th>Monto Fee</th>";
+        rowsq +="       </tr>";
+        rowsq +="	</thead>";
+        rowsq +="	<tbody>";
+
+		rowsm +="<table id='list_mauxi' class='table table-striped table-bordered' width='100%'>";
+        rowsm +="   <thead>";
+        rowsm +="      <tr>";
+        rowsm +="           <th>ID Orden</th>";
+        rowsm +="           <th>ID Pago</th>";
+        rowsm +="           <th>MPID</th>";
+        rowsm +="           <th data-class='hidden'>SKU</th>";
+        rowsm +="           <th data-class='hidden'>Orden Amazon</th>";
+        rowsm +="           <th data-class='hidden'>Tracking Amazon</th>";
+        rowsm +="           <th data-class='hidden'>Cuenta</th>";
+        rowsm +="           <th>Fecha Creación</th>";
+        rowsm +="           <th data-class='hidden'>Fecha Aprovación</th>";
+        rowsm +="           <th>Fecha Liberación</th>";
+        rowsm +="           <th>Estatus de Pago</th>";
+        rowsm +="           <th data-class='hidden'>Sub-Estatus</th>";
+        rowsm +="           <th data-class='hidden'>Metodo de Pago</th>";
+        rowsm +="           <th data-class='hidden'>Tipo de Pago</th>";
+        rowsm +="           <th>Cantidad</th>";
+        rowsm +="           <th>Monto Transaccion</th>";
+        rowsm +="           <th>Monto Envio</th>";
+        rowsm +="           <th>Monto Total Pagado</th>";
+        rowsm +="           <th>Monto Rechazado</th>";
+        rowsm +="           <th>Monto a Cobrar</th>";
+        rowsm +="           <th>Monto Fee</th>";
+        rowsm +="       </tr>";
+		rowsm +="	</thead>";
+        rowsm +="	<tbody>";
+		for(var i in response){
+
+			if(response[i].shop_id==1){
+				rowsq += "<tr>";
+				rowsq += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].id_order+"</td>";
+				rowsq += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].id_payments+"</td>";
+				rowsq += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].mpid+"</td>";
+				rowsq += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].sku+"</td>";
+				rowsq += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].id_orders_aws+"</td>";
+				rowsq += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].tracking_aws+"</td>";
+				rowsq += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].cuenta+"</td>";
+				rowsq += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].date_created+"</td>";
+				rowsq += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].date_approved+"</td>";
+				rowsq += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].money_release_date+"</td>";
+				switch(response[i].status){
+					case 'approved':
+						rowsq += "<td style='width: 90px; word-wrap: break-word;'><a class='btn' title='Aprobado' style='background-color: green; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>APROBADO</a></td>";								
+					break
+					case 'refunded':
+						rowsq += "<td style='width: 90px; word-wrap: break-word;'><a class='btn' title='Reintegrado' style='background-color: blue; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>REINTEGRADO</a></td>";								
+					break
+					case 'cancelled':
+						rowsq += "<td style='width: 90px; word-wrap: break-word;'><a class='btn' title='Cancelado' style='background-color: red; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>CANCELADO</a></td>";								
+					break
+					case 'charged_back':
+						rowsq += "<td style='width: 90px; word-wrap: break-word;'><a class='btn' title='Cargado de vuelta' style='background-color: red; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>CARGADO DE VUELTA</a></td>";								
+					break
+					case 'rejected':
+						rowsq += "<td style='width: 90px; word-wrap: break-word;'><a class='btn' title='Rechazado' style='background-color: red; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>RECHAZADO</a></td>";								
+					break
+					default:
+						rowsq += "<td style='width: 90px; word-wrap: break-word;'><a class='btn' title='En mediación' style='background-color: orange; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>EN MEDIACION</a></td>";								
+					break
+				}
+				//rowsq += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].status+"</td>";
+				rowsq += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].status_detail+"</td>";
+				rowsq += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].payment_method+"</td>";
+				rowsq += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].paymnt_type+"</td>";
+				rowsq += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].quantity+"</td>";
+				rowsq += "<td style='width: 90px; word-wrap: break-word;'>$"+response[i].transaction_amount+"</td>";
+				rowsq += "<td style='width: 90px; word-wrap: break-word;'>$"+response[i].shipping_amount+"</td>";
+				rowsq += "<td style='width: 90px; word-wrap: break-word;'>$"+response[i].total_paid_amount+"</td>";
+				rowsq += "<td style='width: 90px; word-wrap: break-word;'>$"+response[i].transaction_amount_refund+"</td>";
+				rowsq += "<td style='width: 90px; word-wrap: break-word;'>$"+response[i].net_amount+"</td>";
+				rowsq += "<td style='width: 90px; word-wrap: break-word;'>$"+response[i].fee_amount+"</td>";
+				rowsq += "</tr>";
+			}
+			if(response[i].shop_id==2){
+
+				rowsm += "<tr>";
+				rowsm += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].id_order+"</td>";
+				rowsm += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].id_payments+"</td>";
+				rowsm += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].mpid+"</td>";
+				rowsm += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].sku+"</td>";
+				rowsm += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].id_orders_aws+"</td>";
+				rowsm += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].tracking_aws+"</td>";
+				rowsm += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].cuenta+"</td>";
+				rowsm += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].date_created+"</td>";
+				rowsm += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].date_approved+"</td>";
+				rowsm += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].money_release_date+"</td>";
+				switch(response[i].status){
+					case 'approved':
+						rowsm += "<td style='width: 90px; word-wrap: break-word;'><a class='btn' title='Aprobado' style='background-color: green; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>APROBADO</a></td>";								
+					break
+					case 'refunded':
+						rowsm += "<td style='width: 90px; word-wrap: break-word;'><a class='btn' title='Reintegrado' style='background-color: blue; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>REINTEGRADO</a></td>";								
+					break
+					case 'cancelled':
+						rowsm += "<td style='width: 90px; word-wrap: break-word;'><a class='btn' title='Cancelado' style='background-color: red; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>CANCELADO</a></td>";								
+					break
+					case 'charged_back':
+						rowsm += "<td style='width: 90px; word-wrap: break-word;'><a class='btn' title='Cargado de vuelta' style='background-color: red; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>CARGADO DE VUELTA</a></td>";								
+					break
+					case 'rejected':
+						rowsm += "<td style='width: 90px; word-wrap: break-word;'><a class='btn' title='Rechazado' style='background-color: red; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>RECHAZADO</a></td>";								
+					break
+					default:
+						rowsm += "<td style='width: 90px; word-wrap: break-word;'><a class='btn' title='En mediación' style='background-color: orange; width:  97px;height:  25px; color:white; font-size:9px; margin-top:13px;'>EN MEDIACION</a></td>";								
+					break
+				}
+				//rowsm += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].status+"</td>";
+				rowsm += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].status_detail+"</td>";
+				rowsm += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].payment_method+"</td>";
+				rowsm += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].paymnt_type+"</td>";
+				rowsm += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].quantity+"</td>";
+				rowsm += "<td style='width: 90px; word-wrap: break-word;'>"+response[i].transaction_amount+"</td>";
+				rowsm += "<td style='width: 90px; word-wrap: break-word;'>$"+response[i].shipping_amount+"</td>";
+				rowsm += "<td style='width: 90px; word-wrap: break-word;'>$"+response[i].total_paid_amount+"</td>";
+				rowsm += "<td style='width: 90px; word-wrap: break-word;'>$"+response[i].transaction_amount_refund+"</td>";
+				rowsm += "<td style='width: 90px; word-wrap: break-word;'>$"+response[i].net_amount+"</td>";
+				rowsm += "<td style='width: 90px; word-wrap: break-word;'>$"+response[i].fee_amount+"</td>";
+				rowsm += "</tr>";
+			}
+		}
+        rowsq +="	</tbody>";
+        rowsq +="</table>";
+        rowsm +="	</tbody>";
+        rowsm +="</table>";
+		$('#table_qb').empty();
+		$('#table_qb').append(rowsq);
+		init_DataTables_local("list_queen_bee");
+		$('#table_mx').empty();
+		$('#table_mx').append(rowsm);
+		init_DataTables_local("list_mauxi");
+		$('[data-toggle="tooltip"]').tooltip();
+	});
+}
+
+//+++++++++++++++++++++++++++++++++++ END MP FUNCTIONS ++++++++++++++++++++++++++++++++++++++++++++
+/*
++
+
 +
 */
 //+++++++++++++++++++++++++++++++++++ START PENDING(P) ORDERS FUNCTIONS ++++++++++++++++++++++++++++++++++++++++++++
@@ -1811,6 +2063,7 @@ function get_orders_quee_bee_pending() {
 		init_DataTables_local("list_queen_bee");
 	});
 }
+
 function get_orders_mauxi_pending() {
 	console.log('getting pending items mauxi...');
 	var shop_id = 2;
@@ -2486,9 +2739,19 @@ function aws_extra_file(){
 
 //******* START TRACKING FUNCTIONS MANAGER
 function print_local_label(id_order){
-	$('#'+id_order).show();
-	$('.print').show();
-	$('.preview').show();
+	$.post(url_base+'services/meli_manager.php',{
+		action:'date_print',
+		id: id_order,
+	}).done(function(e){
+		var response = JSON.parse(e);
+		if(response.response == 0){
+			alert("Error al imprimir label ");
+		}else{		
+			$('#'+id_order).show();
+			$('.print').show();
+			$('.preview').show();
+		}
+	});
 }
 
 function hide_label(id_order){
@@ -2503,28 +2766,96 @@ function send_later(id_order){
 function print_label(id_order,id_shop){
 	alert('Imprimiendo...');
 	var image;
-	//var pdfDoc = new jsPDF('landscape', 'px', 'letter');
-	var pdfDoc = new jsPDF('p', 'mm', [297, 210]);
-	var specialElementHandlers = {
-		'.ignoreContent' : function(element, render){return true;}};
-		html2canvas(document.getElementById(id_order), {
-			onrendered: function(canvas) {
-				var imgData = canvas.toDataURL('image/png');
-				console.log(imgData);
-				pdfDoc.addImage(imgData, 'PNG', 0, 0,210, 297);
-				pdfDoc.save('orden_'+id_order+'.pdf');
-			}
-		});
-		refuse_order(id_order,null,3);
-	}
+	$.post(url_base+'services/meli_manager.php',{
+		action:'date_print',
+		id: id_order,
+	}).done(function(e){
+		var response = JSON.parse(e);
+		if(response.response == 0){
+			alert("Error al imprimir label ");
+		}else{		
+			//var pdfDoc = new jsPDF('landscape', 'px', 'letter');
+			var pdfDoc = new jsPDF('p', 'mm', [297, 210]);
+			var specialElementHandlers = {'.ignoreContent' : function(element, render){return true;}};
+			html2canvas(document.getElementById(id_order), {
+				onrendered: function(canvas) {
+					var imgData = canvas.toDataURL('image/png');
+					console.log(imgData);
+					pdfDoc.addImage(imgData, 'PNG', 0, 0,210, 297);
+					pdfDoc.save('orden_'+id_order+'.pdf');
+				}
+			});
+			refuse_order(id_order,null,3);
+		}
+	});
+}
+
 function print_meli_label(access_token, shipping_id, id_order,element){
 	var url="";
-	refuse_order(id_order,null,3);
-	alert('Imprimiendo etiqueta de Mercado Envíos');
-	$('.mercadoenvio_'+id_order).hide();
-	alert(url="http://api.mercadolibre.com/shipment_labels?shipment_ids="+shipping_id+"&savePdf=Y&access_token="+access_token);
-	window.open(url);
+	$.post(url_base+'services/meli_manager.php',{
+		action 		:'date_print',
+		id 			: id_order,
+		shipping_id	: shipping_id,
+		token 		: access_token,
+	}).done(function(e){
+		var response = JSON.parse(e);
+		if(response.response == 0){
+			alert("Error al imprimir label ");
+		}else{		
+			refuse_order(id_order,null,3);
+			alert('Imprimiendo etiqueta de Mercado Envíos');
+			$('.mercadoenvio_'+id_order).hide();
+			alert(url="http://api.mercadolibre.com/shipment_labels?shipment_ids="+shipping_id+"&savePdf=Y&access_token="+access_token);
+			window.open(url);
+		}
+	});
 }
+
+function check_status_shipp_qb(){
+	var shop_id = 1;
+	$.post(url_base+'services/meli_manager.php',{ action : 'get_order_delivered', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
+	}).done(function(e){
+		var rows = "";
+		var rows_1 = "";
+		var response = JSON.parse(e); 
+		var color;
+		for(var i in response){
+			status_ship(response[i].access_token,response[i].shipping_id,response[i].id_order);
+		}
+	});	
+}
+
+function check_status_shipp_mx(){
+	var shop_id = 2;
+	$.post(url_base+'services/meli_manager.php',{ action : 'get_order_delivered', shop_id : shop_id, user_id: sessionStorage.getItem('id')}).fail(function(){
+	}).done(function(e){
+		var rows = "";
+		var rows_1 = "";
+		var response = JSON.parse(e); 
+		var color;
+		for(var i in response){
+			status_ship(response[i].access_token,response[i].shipping_id,response[i].id_order);
+		}
+	});	
+}
+
+function status_ship(access_token, shipping_id, id_order){
+	var url="";
+	$.post(url_base+'services/meli_manager.php',{
+		action 		:'status_ship',
+		id 			: id_order,
+		shipping_id	: shipping_id,
+		token 		: access_token,
+	}).done(function(e){
+		var response = JSON.parse(e);
+		if(response.response == 0){
+			
+		}else{		
+			
+		}
+	});
+}
+
 //******* END TRACKING FUNCTIONS MANAGER
 
 //******* START ORDERS FUNCTIONS MANAGER
@@ -2553,6 +2884,7 @@ function ver_item_detail(id){
 		}
 	});
 }
+
 
 function update_item_detail(){
 	$.post(url_base+'services/meli_manager.php',{
@@ -2583,6 +2915,48 @@ function update_item_detail(){
 function close_item_detail(){
 	$("#price_tool_modal").hide();
 }
+
+function ver_shipp_detail(id){
+	sessionStorage.setItem('id_order',id);
+	$.post(url_base+'services/meli_manager.php',{
+		action:'view_item_detail',
+		id: id,
+		user_id: sessionStorage.getItem('id')
+	}).done(function(e){
+		var response = JSON.parse(e);
+		if(response.response == 0){
+			alert("Error al cargar la información");
+		}else{
+			$('#shipping_track').val(response[0].shipping_tracking);
+			$('#shipping_cost').val(response[0].shipping_cost);
+			$('#shipping_status').val(response[0].shipping_status);
+			$('#shipping_company').val(response[0].shipping_company);
+			$("#price_tool_modal").show();
+			}
+	});
+			
+}
+
+function update_shipp_detail(){
+	$.post(url_base+'services/meli_manager.php',{
+		action 	 :'update_shipp_detail',
+		id 		 : sessionStorage.getItem('id_order'),
+		tracking : $('#shipping_track').val(),
+		cost 	 :$('#shipping_cost').val(),
+		company  :$('#shipping_company').val(),
+		status 	 :$('#shipping_status').val(),
+		user_id: sessionStorage.getItem('id'),
+	}).done(function(e){
+		var response = JSON.parse(e);
+		if(response.response == 1){
+			alert("Actualizado con exito!");
+		}else{
+			alert("Error al cargar la información");
+		}
+		$("#price_tool_modal").hide();
+	});
+}
+
 //******* END ORDERS FUNCTIONS MANAGER
 
 //+++++++++++++++++++++++++++++++++++ END WORKFLOW MANAGER FUNCTIONS ++++++++++++++++++++++++++++++++++++++++++++

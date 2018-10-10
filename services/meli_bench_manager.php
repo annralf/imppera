@@ -1,9 +1,10 @@
 <?php
 include "/var/www/html/enkargo/config/googleTranslate.php";
-include "/var/www/html/enkargo/config/conex_manager.php";
+include "/var/www/html/enkargo/config/meli_bench.php";
 include "/var/www/html/enkargo/services/aws_update.php";
 $conn = new Connect();
 $action = $_POST['action'];
+$bench = new Benchmark(2);
 
 
 switch ($action) {
@@ -186,14 +187,7 @@ switch ($action) {
 	echo json_encode(array('seller_info' => $seller_info, 'seller_sales_header' => $sales_seller_info, 'seller_sales_body' => $sales_seller_detail, 'seller_top_items' => $seller_items_table));
 	break;
 	case 'get_local_items':
-	$sql = "SELECT  i.title,i.aws_id, i.mpid, i.id,i.seller_mpid, i.is_high, i.external_store_id, i.local_store_id, i.thumbnail,
-		TO_CHAR(i.aws_price,'FM999,999,999') AS aws_price,
-		TO_CHAR(i.sales_amount,'FM999,999,999') AS sales_amount, TO_CHAR(local_price,'FM999,999,999') AS local_price,
-		TO_CHAR(seller_sales_amount,'FM999,999,999') AS seller_sales_amount, 
-		TO_CHAR(sales_price,'FM999,999,999') AS sales_price, TO_CHAR(sales_dolar_price,'FM999,999,999') AS sales_dolar_price,
-		TO_CHAR(difference_price,'FM999,999,999') AS difference_price, a.sku FROM meli.bench_price_comparison AS i
-		JOIN aws.items AS a ON a.id = i.aws_id
-		WHERE external_store_id IS NOT NULL LIMIT 10";
+	$sql = "SELECT  * FROM meli.comparation_local_items WHERE nick_name IS NOT NULL";
 	$query_sql = pg_query($sql);
 	$items_qb = "";
 	$items_mx = "";
@@ -207,7 +201,7 @@ switch ($action) {
 		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->sales_amount</td>";
 		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->sku</td>";
 		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->aws_price</td>";
-		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->external_store_id</td>";
+		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->nick_name</td>";
 		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->seller_mpid</td>";
 		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->sales_price</td>";
 		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$item->seller_sales_amount</td>";
@@ -225,20 +219,159 @@ switch ($action) {
 		}
 		$table_structure .="</td>";
 		$table_structure .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>";
-		$table_structure .= "<a href='' title='Actualizar Precio' style='font-size: 24px; margin-right: 10px; color: #73cbec;'><i class='fa fa-refresh' aria-hidden='true'></i></a>";
+		$table_structure .= "<a title='Actualizar Precio' style='font-size: 24px; margin-right: 10px; color: #73cbec;' onclick='get_update_price($item->id)'><i class='fa fa-refresh' aria-hidden='true'></i></a>";
 		$table_structure .= "</td>";
 		$table_structure .= "</tr>";
 		switch ($item->local_store_id) {
 			case '209935315':
-			    $items_qb .= $table_structure;
+			$items_qb .= $table_structure;
 			break;
 
 			case '192538642':
-			    $items_mx .= $table_structure;
+			$items_mx .= $table_structure;
 			break;
 		}
 	}
 	echo json_encode(array('items_qb' => $items_qb, 'items_mx' => $items_mx));
+	break;
+	case 'set_update_price':
+	$item_id = $_POST['item_id'];
+	$shop = $_POST['shop'];
+	$price = $_POST['price'];
+	$sql = "SELECT mpid FROM meli.items WHERE id = $item_id";
+	$item = pg_fetch_object(pg_query($sql));
+	$result = $bench->set_price($item->mpid, $price, $shop);
+	echo json_encode(array('response' => $result));
+	break;
+	case 'get_top_sales':
+	$sql_top_sales = "SELECT * FROM meli.top_sales ORDER BY key_word ASC;";
+	$query_top_sales = pg_query($sql_top_sales);
+	$year = 0;
+	$month = 1;
+	$month_number = array('01','02','03','04','05','06','07','08','09','10','11','12');
+	$month_name = array('Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre');
+	$main_detail = array();
+	$key_word = "";
+	$key_word_array = array();
+	$i = 0;
+	$j = 0;
+	$array_items = array();
+	while ($items = pg_fetch_object($query_top_sales)) {
+		if ($key_word !== $items->key_word) {
+			$key_word = $items->key_word;
+			array_push($key_word_array, array('keyword'=> $key_word, 'year' => $items->year, 'id' => $j, 'id_category' => $items->trend_id,'total'=>$items->total));
+			$j++;
+		}
+		array_push($array_items, $items);
+	}
+	foreach ($key_word_array as $key) {
+		$items_content = "";
+		$key_word_content = "";
+		foreach ($array_items as $k) {
+			if ($k->key_word == $key['keyword']) {
+				$items_content .= "<tr>";
+				#$items_content .= "<td style='width: 90px; word-wrap: break-word;'><img style='height: 20vh;' src='$k->thumbnail'></td>";
+				$items_content .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$k->mpid</td>";
+				$items_content .= "<td style='width: 90px; word-wrap: break-word;'>$k->title</td>";
+				$items_content .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$k->price COP</td>";
+				$items_content .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$k->sale_amount</td>";
+				$items_content .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$k->visits</td>";
+				$items_content .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>$k->stock</td>";
+				$items_content .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>-</td>";
+				$items_content .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>-</td>";
+				$items_content .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>";
+				if ($k->is_local) {
+					$items_content .= "<a href=' title='Publicado en Tiendas locales'>";
+					$items_content .= "<p style='color: white; background-color: #49ec49; text-align: center; font-size: 12px;'>Publicado</p>";
+					$items_content .= "</a>";
+				}else{
+					$items_content .= "<a href=' title='No se encuentra en las publicaciones locales'>";
+					$items_content .= "<p style='color: white; background-color: #f35858; text-align: center; font-size: 12px;'>No Publicado</p>";
+					$items_content .= "</a>";
+				}
+				$items_content .= "</td>";
+				$items_content .= "<td style='width: 90px; word-wrap: break-word; padding-top: 8vh;'>";
+				if ($item->is_aws) {
+					$items_content .= "<a href=' title='Disponible en Amazon'>";
+					$items_content .= "<p style='color: white; background-color: #f79530; text-align: center; font-size: 12px;'>Disponible</p>";
+					$items_content .= "</a>";				
+				}else{
+					$items_content .= "<a href=' title='No se encuentra artículo en Amazon'>";
+					$items_content .= "<p style='color: white; background-color: #f35858; text-align: center; font-size: 12px;'>No Disponible</p>";
+					$items_content .= "</a>";
+				}
+				$items_content .= "</td>";
+				$items_content .= "<td style='width: 100px;word-wrap: break-word; padding-top: 8vh;text-align: center;'>";
+				$items_content .= "<a href='' title='Descargar y publicar en portafolio local' style='font-size: 24px; margin-right: 10px; color: #73cbec;'><i class='fa fa-download' aria-hidden='true'></i></a>";
+				$items_content .="<a href='$k->permalink' title='Ver publicación en Mercado Libre' style='font-size: 24px; color: #49ec49;'><i class='fa fa-eye' aria-hidden='true'></i></a>";
+				$items_content .= "</td>";
+				$items_content .= "</tr>";
+			}
+		}
+		$month_translation = str_replace($month_number, $month_name, $k->month);
+		$year = $key['year'];
+		$id = $key['id'];
+		$title_table = strtoupper($key['keyword']);
+		$id_category = "cat_".$key['id_category'];
+		$total_sales = $key['total'];
+		$key_word_content .= "<div class='row mauxi_panel' id='$id_category'>";
+		$key_word_content .= "<div class='x_panel'>";
+		$key_word_content .= "<div class='x_title collapse-link row' data-toggle='tooltip' data-placement='bottom' title='Ver listado de $title_table'>";
+		$key_word_content .= "<div class='title col-md-6 col-sm-6 col-xs-6' style='text-align: right;'>";
+		$key_word_content .= "<h2>$title_table $month_translation $year</h2>";
+		$key_word_content .= "<div class='clearfix'></div>";
+		$key_word_content .= "</div>";
+		$key_word_content .= "<div class='title col-md-6 col-sm-6 col-xs-6' style='text-align: right;'>";
+		$key_word_content .= "<ul style='list-style-type: none; display:inline-flex; font-size:24px;'>";
+		$key_word_content .= "<li title='Total de items en esta categoría' style='margin-right:10px;'><a style='background-color:#ededed; border-radius:50%; padding:6px;'>$total_sales</a></li>";
+		$key_word_content .= "<li title='Expandir Resultados' style='margin-right:10px;'><a onclick='view_table($id)'><i class='fa fa-caret-down' aria-hidden='true'></i></a></li>";
+		$key_word_content .= "<li title='Ocultar Categoría' style='margin-right:10px;'><a onclick='hide_sale(\"$id_category\")'><i class='fa fa-eye-slash' aria-hidden='true'></i></a></li>";
+		$key_word_content .= "<li title='Eliminar Categoría' style='margin-right:10px;'><a onclick='delete_sale(\"$id_category\")'><i class='fa fa-trash-o' aria-hidden='true'></i></a></li>";
+		$key_word_content .= "</ul>";
+		$key_word_content .= "<div class='clearfix'></div>";
+		$key_word_content .= "</div>";
+		$key_word_content .= "<div class='col-md-2 col-sm-2 col-xs-12' style='text-align: right;'>";
+		$key_word_content .= "<img  class=' src=' style='width: 100px;'>";
+		$key_word_content .= "</div>";
+		$key_word_content .= "<div class='clearfix'></div>";
+		$key_word_content .= "</div>";
+		$key_word_content .= "<div class='x_content' id='id_$id' style='display:none;'>";
+		$key_word_content .= "<p class='text-muted font-12 m-b-30'>";
+		$key_word_content .= "</p>";
+		$key_word_content .= "<table id='keyword_$i' class='table table-striped table-bordered' width='100%'>";
+		$key_word_content .= "<thead>";
+		$key_word_content .= "<tr>";
+		#$key_word_content .= "<th>#</th>";
+		$key_word_content .= "<th>MPID</th>";
+		$key_word_content .= "<th>Título</th>";
+		$key_word_content .= "<th>Precio en Mercado Libre</th>";
+		$key_word_content .= "<th>Cantidad Vendida</th>";
+		$key_word_content .= "<th>Cantidad de Visitas</th>";
+		$key_word_content .= "<th>Total Stock</th>";
+		$key_word_content .= "<th>Precio Amazon</th>";
+		$key_word_content .= "<th>Valor del dólar</th>";
+		$key_word_content .= "<th>Disponibilidad en tienda local</th>";
+		$key_word_content .= "<th>Disponibilidad en tienda Amazon</th>";
+		$key_word_content .= "<th>Acciones</th>";
+		$key_word_content .= "</tr>";
+		$key_word_content .= "</thead>";
+		$key_word_content .= "<tbody>";
+		$key_word_content .= $items_content;
+		$key_word_content .= "</tbody>";
+		$key_word_content .= "</table>";
+		$key_word_content .= "<div class='clearfix'></div>";
+		$key_word_content .= "</div>";
+		$key_word_content .= "</div>";
+		$key_word_content .= "</div>";
+		$main_detail[$i]['name'] = "keyword_$i";
+		$main_detail[$i]['content'] = $key_word_content;
+		$i++;
+	}
+	echo json_encode($main_detail);
+	break;
+	case 'delete_top_sale_category':
+	    $id_category = $_POST['id_category'];
+	    echo json_encode(array('result' => $bench->delete_top_sale(1,$id_category)));
 	break;
 }
 
